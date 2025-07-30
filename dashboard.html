@@ -5,7 +5,41 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dashboard – Open Data Africa</title>
   <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
   <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f8f8;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav {
+      background: linear-gradient(to right, #8b0000, #000000);
+      padding: 1rem;
+    }
+
+    .nav-list {
+      list-style: none;
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin: 0;
+      padding: 0;
+    }
+
+    .nav-list li a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .nav-list li a:hover {
+      text-decoration: underline;
+    }
+
     .dashboard-container {
       padding: 2rem;
       max-width: 1200px;
@@ -20,16 +54,22 @@
 
     .chart-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
       gap: 2rem;
       margin-top: 2rem;
     }
 
-    canvas {
+    .chart-card {
       background: #fff;
+      padding: 1.5rem;
       border-radius: 10px;
-      padding: 1rem;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+      overflow-x: auto;
+    }
+
+    canvas {
+      width: 100% !important;
+      height: 350px !important;
     }
   </style>
 </head>
@@ -45,83 +85,92 @@
       <li><a href="resources.html">Resources</a></li>
       <li><a href="contribute.html">Contribute</a></li>
       <li><a href="contact.html">Contact</a></li>
-      <li><a href="dashboard.html" aria-current="page">Dashboard</a></li>
     </ul>
   </nav>
 
+  <!-- Dashboard Content -->
   <div class="dashboard-container">
-    <h1>📊 Interactive Dashboard</h1>
-    <p style="text-align: center;">Explore trends from the Open Data Africa catalog: countries, domains, licenses, and freshness of datasets.</p>
+    <h1>Interactive Data Dashboard</h1>
+    <p style="text-align: center;">Visual insights into dataset availability and trends across Africa.</p>
 
     <div class="chart-grid">
-      <canvas id="chartCountry"></canvas>
-      <canvas id="chartDomain"></canvas>
-      <canvas id="chartType"></canvas>
-      <canvas id="chartFreshness"></canvas>
-      <canvas id="chartLicense"></canvas>
+      <div class="chart-card"><canvas id="chartCountry"></canvas></div>
+      <div class="chart-card"><canvas id="chartDomain"></canvas></div>
+      <div class="chart-card"><canvas id="chartType"></canvas></div>
+      <div class="chart-card"><canvas id="chartFreshness"></canvas></div>
+      <div class="chart-card"><canvas id="chartLicense"></canvas></div>
     </div>
   </div>
 
-  <!-- Load Libraries -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-
   <script>
-    function groupCount(data, field) {
-      const counts = {};
-      data.forEach(row => {
-        const value = row[field]?.trim();
-        if (value) {
-          counts[value] = (counts[value] || 0) + 1;
-        }
-      });
-      return counts;
-    }
-
-    function drawChart(canvasId, label, dataObj, chartType = 'bar') {
-      const ctx = document.getElementById(canvasId).getContext('2d');
-      const labels = Object.keys(dataObj);
-      const data = Object.values(dataObj);
-      const colors = labels.map(() => `hsl(${Math.random() * 360}, 70%, 60%)`);
-
-      new Chart(ctx, {
-        type: chartType,
-        data: {
-          labels,
-          datasets: [{
-            label: label,
-            data: data,
-            backgroundColor: colors,
-            borderColor: '#444',
-            borderWidth: 1
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: { display: chartType !== 'bar' },
-            tooltip: { mode: 'index', intersect: false }
-          },
-          scales: chartType === 'bar' ? {
-            y: { beginAtZero: true }
-          } : {}
-        }
-      });
-    }
-
-    Papa.parse('datasets/catalog.csv', {
-      header: true,
+    Papa.parse("datasets/catalog.csv", {
       download: true,
+      header: true,
       complete: function(results) {
         const data = results.data;
 
-        drawChart('chartCountry', 'Datasets by Country', groupCount(data, 'Country'));
-        drawChart('chartDomain', 'Dataset Domains', groupCount(data, 'Domain'));
-        drawChart('chartType', 'Data Types', groupCount(data, 'Data Type'), 'doughnut');
-        drawChart('chartFreshness', 'Dataset Freshness (Year)', groupCount(data, 'Last Updated'), 'bar');
-        drawChart('chartLicense', 'Licenses Used', groupCount(data, 'License'), 'pie');
+        const countryCount = {};
+        const domainCount = {};
+        const typeCount = {};
+        const licenseCount = {};
+        const freshnessCount = {};
+
+        data.forEach(row => {
+          countryCount[row.Country] = (countryCount[row.Country] || 0) + 1;
+          domainCount[row.Domain] = (domainCount[row.Domain] || 0) + 1;
+          typeCount[row["Data Type"]] = (typeCount[row["Data Type"]] || 0) + 1;
+          licenseCount[row.License] = (licenseCount[row.License] || 0) + 1;
+          freshnessCount[row["Last Updated"]] = (freshnessCount[row["Last Updated"]] || 0) + 1;
+        });
+
+        const createChart = (id, label, dataObj, chartType = 'bar') => {
+          const ctx = document.getElementById(id).getContext('2d');
+          new Chart(ctx, {
+            type: chartType,
+            data: {
+              labels: Object.keys(dataObj),
+              datasets: [{
+                label: label,
+                data: Object.values(dataObj),
+                backgroundColor: [
+                  '#FF6384', '#36A2EB', '#FFCE56', '#66BB6A', '#BA68C8',
+                  '#FFA726', '#8D6E63', '#42A5F5', '#26A69A', '#D4E157'
+                ],
+                borderWidth: 1
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  display: false
+                }
+              },
+              scales: {
+                x: {
+                  ticks: {
+                    autoSkip: false,
+                    maxRotation: 45,
+                    minRotation: 45
+                  }
+                },
+                y: {
+                  beginAtZero: true
+                }
+              }
+            }
+          });
+        };
+
+        createChart("chartCountry", "Datasets by Country", countryCount);
+        createChart("chartDomain", "Datasets by Domain", domainCount);
+        createChart("chartType", "Data Types", typeCount);
+        createChart("chartFreshness", "Dataset Freshness", freshnessCount, 'line');
+        createChart("chartLicense", "License Distribution", licenseCount, 'doughnut');
       }
     });
   </script>
+
 </body>
 </html>
