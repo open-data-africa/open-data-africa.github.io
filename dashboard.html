@@ -43,7 +43,7 @@
 
     .dashboard-container {
       padding: 2rem;
-      max-width: 1200px;
+      max-width: 100%;
       margin: auto;
     }
 
@@ -53,14 +53,15 @@
       margin-bottom: 1rem;
     }
 
-    /* Horizontal scroll container */
     .chart-grid {
       display: flex;
-      gap: 2rem;
+      gap: 3rem;
       overflow-x: auto;
-      padding-bottom: 1rem;
+      padding-bottom: 2rem;
+      padding-top: 1rem;
       -webkit-overflow-scrolling: touch;
       scroll-behavior: smooth;
+      margin-bottom: 3rem;
     }
 
     .chart-card {
@@ -68,13 +69,13 @@
       padding: 1.5rem;
       border-radius: 10px;
       box-shadow: 0 3px 10px rgba(0,0,0,0.08);
-      min-width: 700px; /* wider chart cards */
-      flex-shrink: 0; /* prevent shrinking */
+      min-width: 850px; /* Increased width */
+      flex-shrink: 0;
     }
 
     canvas {
       width: 100% !important;
-      height: 450px !important; /* bigger height */
+      height: 450px !important;
     }
   </style>
 </head>
@@ -108,10 +109,20 @@
   </div>
 
   <script>
-    // Helper to sort data descending by count
+    function normalize(text) {
+      if (!text) return null;
+      return text.trim().toLowerCase().replace(/[^a-z0-9 ]/gi, '').replace(/\s+/g, ' ');
+    }
+
+    function titleCase(str) {
+      return str.replace(/\w\S*/g, function(txt) {
+        return txt.charAt(0).toUpperCase() + txt.substring(1).toLowerCase();
+      });
+    }
+
     function sortDataDesc(dataObj) {
       return Object.entries(dataObj)
-        .filter(([key]) => key) // filter out empty keys
+        .filter(([key]) => key)
         .sort((a, b) => b[1] - a[1])
         .reduce((acc, [key, val]) => {
           acc[key] = val;
@@ -132,14 +143,19 @@
         const freshnessCount = {};
 
         data.forEach(row => {
-          if(row.Country) countryCount[row.Country] = (countryCount[row.Country] || 0) + 1;
-          if(row.Domain) domainCount[row.Domain] = (domainCount[row.Domain] || 0) + 1;
-          if(row["Data Type"]) typeCount[row["Data Type"]] = (typeCount[row["Data Type"]] || 0) + 1;
-          if(row.License) licenseCount[row.License] = (licenseCount[row.License] || 0) + 1;
-          if(row["Last Updated"]) freshnessCount[row["Last Updated"]] = (freshnessCount[row["Last Updated"]] || 0) + 1;
+          const country = row.Country?.trim();
+          const domain = titleCase(normalize(row.Domain));
+          const type = titleCase(normalize(row["Data Type"]));
+          const license = row.License?.trim();
+          const freshness = row["Last Updated"]?.trim();
+
+          if (country) countryCount[country] = (countryCount[country] || 0) + 1;
+          if (domain) domainCount[domain] = (domainCount[domain] || 0) + 1;
+          if (type) typeCount[type] = (typeCount[type] || 0) + 1;
+          if (license) licenseCount[license] = (licenseCount[license] || 0) + 1;
+          if (freshness) freshnessCount[freshness] = (freshnessCount[freshness] || 0) + 1;
         });
 
-        // Sort all data descending
         const sortedCountry = sortDataDesc(countryCount);
         const sortedDomain = sortDataDesc(domainCount);
         const sortedType = sortDataDesc(typeCount);
@@ -155,10 +171,9 @@
               datasets: [{
                 label: label,
                 data: Object.values(dataObj),
-                backgroundColor: [
-                  '#FF6384', '#36A2EB', '#FFCE56', '#66BB6A', '#BA68C8',
-                  '#FFA726', '#8D6E63', '#42A5F5', '#26A69A', '#D4E157'
-                ],
+                backgroundColor: Object.keys(dataObj).map((_, i) =>
+                  `hsl(${i * 35 % 360}, 70%, 60%)`
+                ),
                 borderWidth: 1
               }]
             },
@@ -168,14 +183,10 @@
               plugins: {
                 legend: {
                   display: true,
-                  position: 'bottom',
-                  labels: {
-                    boxWidth: 15,
-                    padding: 15
-                  }
+                  position: 'bottom'
                 },
                 tooltip: {
-                  mode: 'nearest',
+                  mode: 'index',
                   intersect: false
                 }
               },
