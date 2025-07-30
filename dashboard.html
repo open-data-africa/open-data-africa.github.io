@@ -3,79 +3,70 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Dashboard – Open Data Africa</title>
+  <title>Open Data Dashboard</title>
   <link rel="stylesheet" href="style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #f7f7f7;
       margin: 0;
       padding: 0;
+      background: #f9f9f9;
     }
 
     nav {
-      background: linear-gradient(to right, #8b0000, #000000);
-      padding: 1rem;
+      background-color: #330000;
+      color: white;
+      padding: 1em;
     }
 
     .nav-list {
-      list-style: none;
       display: flex;
-      justify-content: center;
-      gap: 2rem;
+      list-style-type: none;
       margin: 0;
       padding: 0;
+      justify-content: center;
       flex-wrap: wrap;
     }
 
-    .nav-list li a {
-      color: #fff;
+    .nav-list li {
+      margin: 0 1em;
+    }
+
+    .nav-list a {
+      color: white;
       text-decoration: none;
       font-weight: bold;
     }
 
-    .nav-list li a:hover {
-      text-decoration: underline;
-    }
-
-    .dashboard-container {
+    .container {
       padding: 2rem;
-      max-width: 1400px;
+      max-width: 1200px;
       margin: auto;
     }
 
     h1 {
       text-align: center;
-      color: #b30000;
-      margin-bottom: 1rem;
+      margin-bottom: 2rem;
+      color: #333;
     }
 
-    .charts-wrapper {
-      display: flex;
-      flex-direction: column;
-      gap: 4rem;
-      padding-bottom: 4rem;
+    .chart-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 3rem;
     }
 
-    .chart-card {
-      background: #fff;
-      padding: 2rem;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      width: 100%;
+    @media (min-width: 800px) {
+      .chart-grid {
+        grid-template-columns: 1fr 1fr;
+      }
     }
 
     canvas {
-      width: 100% !important;
-      height: 500px !important;
-    }
-
-    @media (max-width: 768px) {
-      canvas {
-        height: 400px !important;
-      }
+      background: white;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
   </style>
 </head>
@@ -90,46 +81,80 @@
       <li><a href="use-cases.html">Use Cases</a></li>
       <li><a href="resources.html">Resources</a></li>
       <li><a href="contribute.html">Contribute</a></li>
-      <li><a href="dashboard.html">Dashboard</a></li>
       <li><a href="contact.html">Contact</a></li>
     </ul>
   </nav>
 
   <!-- Dashboard -->
-  <div class="dashboard-container">
-    <h1>Interactive Open Data Dashboard</h1>
-    <p style="text-align: center;">Explore trends across African open datasets</p>
-
-    <div class="charts-wrapper">
-      <div class="chart-card"><canvas id="chartCountry"></canvas></div>
-      <div class="chart-card"><canvas id="chartDomain"></canvas></div>
-      <div class="chart-card"><canvas id="chartType"></canvas></div>
-      <div class="chart-card"><canvas id="chartFreshness"></canvas></div>
-      <div class="chart-card"><canvas id="chartLicense"></canvas></div>
+  <div class="container">
+    <h1>📊 Open Data Dashboard</h1>
+    <div class="chart-grid">
+      <canvas id="chartCountry" height="300"></canvas>
+      <canvas id="chartDomain" height="300"></canvas>
+      <canvas id="chartType" height="300"></canvas>
+      <canvas id="chartFreshness" height="300"></canvas>
+      <canvas id="chartLicense" height="300"></canvas>
     </div>
   </div>
 
-  <!-- JavaScript -->
+  <!-- Chart.js and PapaParse -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
   <script>
-    function normalize(text) {
-      if (!text) return null;
-      return text.trim().toLowerCase().replace(/[^a-z0-9 ]/gi, '').replace(/\s+/g, ' ');
-    }
-
-    function titleCase(str) {
-      return str.replace(/\w\S*/g, function(txt) {
-        return txt.charAt(0).toUpperCase() + txt.substring(1).toLowerCase();
+    function countOccurrences(data, column) {
+      const counts = {};
+      data.forEach(row => {
+        const value = (row[column] || "").trim();
+        if (value && value !== "") {
+          const clean = value.toLowerCase().replace(/\s+/g, ' ').trim();
+          counts[clean] = (counts[clean] || 0) + 1;
+        }
       });
+      return counts;
     }
 
-    function sortDataDesc(dataObj) {
-      return Object.entries(dataObj)
-        .filter(([key]) => key)
-        .sort((a, b) => b[1] - a[1])
-        .reduce((acc, [key, val]) => {
-          acc[key] = val;
-          return acc;
-        }, {});
+    function sortByValue(obj) {
+      return Object.fromEntries(
+        Object.entries(obj).sort(([, a], [, b]) => b - a)
+      );
+    }
+
+    function createChart(id, label, dataMap, type = 'bar') {
+      const ctx = document.getElementById(id).getContext("2d");
+      const labels = Object.keys(dataMap).map(s => s.charAt(0).toUpperCase() + s.slice(1));
+      const values = Object.values(dataMap);
+      new Chart(ctx, {
+        type,
+        data: {
+          labels,
+          datasets: [{
+            label: label,
+            data: values,
+            backgroundColor: [
+              '#ff6384','#36a2eb','#cc65fe','#ffce56','#2ecc71',
+              '#f39c12','#9b59b6','#34495e','#e74c3c','#1abc9c'
+            ],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: true },
+            tooltip: { enabled: true }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                precision: 0
+              }
+            }
+          }
+        }
+      });
     }
 
     Papa.parse("datasets/catalog.csv", {
@@ -138,84 +163,19 @@
       complete: function(results) {
         const data = results.data;
 
-        const countryCount = {};
-        const domainCount = {};
-        const typeCount = {};
-        const licenseCount = {};
-        const freshnessCount = {};
+        const countryCounts = sortByValue(countOccurrences(data, "Country"));
+        const domainCounts = sortByValue(countOccurrences(data, "Domain"));
+        const typeCounts = sortByValue(countOccurrences(data, "Data Type"));
+        const licenseCounts = sortByValue(countOccurrences(data, "License"));
+        const freshnessCounts = sortByValue(countOccurrences(data, "Last Updated"));
 
-        data.forEach(row => {
-          const country = titleCase(row.Country?.trim());
-          const domain = titleCase(normalize(row.Domain));
-          const type = titleCase(normalize(row["Data Type"]));
-          const license = titleCase(row.License?.trim());
-          const freshness = row["Last Updated"]?.trim();
-
-          if (country) countryCount[country] = (countryCount[country] || 0) + 1;
-          if (domain) domainCount[domain] = (domainCount[domain] || 0) + 1;
-          if (type) typeCount[type] = (typeCount[type] || 0) + 1;
-          if (license) licenseCount[license] = (licenseCount[license] || 0) + 1;
-          if (freshness) freshnessCount[freshness] = (freshnessCount[freshness] || 0) + 1;
-        });
-
-        const sortedCountry = sortDataDesc(countryCount);
-        const sortedDomain = sortDataDesc(domainCount);
-        const sortedType = sortDataDesc(typeCount);
-        const sortedLicense = sortDataDesc(licenseCount);
-        const sortedFreshness = sortDataDesc(freshnessCount);
-
-        const createChart = (id, label, dataObj, chartType = 'bar') => {
-          const ctx = document.getElementById(id).getContext('2d');
-          new Chart(ctx, {
-            type: chartType,
-            data: {
-              labels: Object.keys(dataObj),
-              datasets: [{
-                label: label,
-                data: Object.values(dataObj),
-                backgroundColor: Object.keys(dataObj).map((_, i) =>
-                  `hsl(${i * 37 % 360}, 70%, 60%)`
-                ),
-                borderWidth: 1
-              }]
-            },
-            options: {
-              responsive: true,
-              maintainAspectRatio: false,
-              plugins: {
-                legend: {
-                  display: true,
-                  position: 'bottom'
-                },
-                tooltip: {
-                  mode: 'index',
-                  intersect: false
-                }
-              },
-              scales: {
-                x: {
-                  ticks: {
-                    autoSkip: false,
-                    maxRotation: 45,
-                    minRotation: 45
-                  }
-                },
-                y: {
-                  beginAtZero: true
-                }
-              }
-            }
-          });
-        };
-
-        createChart("chartCountry", "Datasets by Country", sortedCountry);
-        createChart("chartDomain", "Datasets by Domain", sortedDomain);
-        createChart("chartType", "Data Types", sortedType);
-        createChart("chartFreshness", "Dataset Freshness", sortedFreshness, 'line');
-        createChart("chartLicense", "License Distribution", sortedLicense, 'doughnut');
+        createChart("chartCountry", "Datasets by Country", countryCounts);
+        createChart("chartDomain", "Datasets by Domain", domainCounts);
+        createChart("chartType", "Data Types", typeCounts);
+        createChart("chartFreshness", "Dataset Freshness", freshnessCounts, "line");
+        createChart("chartLicense", "License Distribution", licenseCounts, "doughnut");
       }
     });
   </script>
-
 </body>
 </html>
