@@ -1,1 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Resources – Open Data Africa</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .resources-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+      padding: 20px 0;
+    }
+
+    .resource-card {
+      background-color: #f9f9f9;
+      border: 1px solid #ccc;
+      border-left: 5px solid #aa0000;
+      width: 300px;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: left;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      text-decoration: none;
+      color: #333;
+    }
+
+    .resource-card:hover {
+      background-color: #ffecec;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .resource-card h3 {
+      margin-top: 0;
+    }
+
+    .resource-card p {
+      font-size: 0.95em;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+
+  <nav aria-label="Main navigation">
+    <ul class="nav-list">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="datasets.html">Datasets</a></li>
+      <li><a href="use-cases.html">Use Cases</a></li>
+      <li><a href="resources.html" aria-current="page">Resources</a></li>
+      <li><a href="contribute.html">Contribute</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <h1>Resources</h1>
+    <p>Select a category to explore curated resources supporting open data accessibility across Africa.</p>
+
+    <div class="resources-container">
+      <a href="resources/publications.html" class="resource-card">
+        <h3>📄 Publications</h3>
+        <p>Research, reports, and policy briefs related to open data and AI in Africa.</p>
+      </a>
+
+      <a href="resources/stakeholders.html" class="resource-card">
+        <h3>🤝 Stakeholders</h3>
+        <p>Institutions, networks, and community partners involved in data accessibility.</p>
+      </a>
+
+      <a href="resources/links.html" class="resource-card">
+        <h3>🔗 Useful Links</h3>
+        <p>External tools, datasets portals, and APIs useful for African innovators.</p>
+      </a>
+    </div>
+  </main>
+
+</body>
+</html>
 
