@@ -1,1 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AI Made in Africa - Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <style>
+    .chart-container {
+      width: 100%;
+      max-width: 800px;
+      margin: 2em auto;
+    }
+    .nav {
+      background: #300000;
+      color: white;
+      padding: 1em;
+      text-align: center;
+    }
+    .nav a {
+      color: white;
+      margin: 0 10px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="nav">
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="datasets.html">Datasets</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="resources.html">Resources</a>
+    <a href="contribute.html">Contribute</a>
+    <a href="contact.html">Contact</a>
+  </div>
+
+  <h1 style="text-align:center;">Open Dataset Insights Dashboard</h1>
+
+  <div class="chart-container">
+    <canvas id="datasetsByCountry"></canvas>
+  </div>
+
+  <div class="chart-container">
+    <canvas id="datasetsByDomain"></canvas>
+  </div>
+
+  <div class="chart-container">
+    <canvas id="datasetsByType"></canvas>
+  </div>
+
+  <div class="chart-container">
+    <canvas id="datasetsByYear"></canvas>
+  </div>
+
+  <div class="chart-container">
+    <canvas id="datasetsByLicense"></canvas>
+  </div>
+
+  <script>
+    Papa.parse("datasets/catalog.csv", {
+      download: true,
+      header: true,
+      complete: function(results) {
+        const data = results.data;
+
+        const byCountry = {}, byDomain = {}, byType = {}, byYear = {}, byLicense = {};
+
+        data.forEach(row => {
+          if (!row.Country || !row.Domain || !row["Data Type"] || !row.License || !row["Last Updated"]) return;
+
+          byCountry[row.Country] = (byCountry[row.Country] || 0) + 1;
+          byDomain[row.Domain] = (byDomain[row.Domain] || 0) + 1;
+          byType[row["Data Type"]] = (byType[row["Data Type"]] || 0) + 1;
+          byLicense[row.License] = (byLicense[row.License] || 0) + 1;
+
+          const year = new Date(row["Last Updated"]).getFullYear();
+          byYear[year] = (byYear[year] || 0) + 1;
+        });
+
+        const createChart = (ctxId, dataMap, label, type = 'bar') => {
+          const ctx = document.getElementById(ctxId);
+          new Chart(ctx, {
+            type: type,
+            data: {
+              labels: Object.keys(dataMap),
+              datasets: [{
+                label: label,
+                data: Object.values(dataMap),
+                backgroundColor: 'rgba(255, 0, 0, 0.5)',
+                borderColor: 'rgba(0, 0, 0, 0.8)',
+                borderWidth: 1
+              }]
+            },
+            options: {
+              responsive: true,
+              plugins: { legend: { display: false } }
+            }
+          });
+        };
+
+        createChart("datasetsByCountry", byCountry, "Datasets by Country", 'bar');
+        createChart("datasetsByDomain", byDomain, "Datasets by Domain", 'doughnut');
+        createChart("datasetsByType", byType, "Data Types", 'pie');
+        createChart("datasetsByYear", byYear, "Datasets by Year", 'line');
+        createChart("datasetsByLicense", byLicense, "Licenses", 'bar');
+      }
+    });
+  </script>
+
+</body>
+</html>
 
