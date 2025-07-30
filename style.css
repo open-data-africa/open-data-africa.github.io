@@ -185,3 +185,13 @@ button:hover {
 .button:hover {
   background-color: #cc0000;
 }
+
+.coming-soon {
+  background-color: #fff4e5;
+  border-left: 6px solid #e67e22;
+  padding: 1.5rem;
+  margin-top: 2rem;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  color: #333;
+}
