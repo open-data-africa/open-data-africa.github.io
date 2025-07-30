@@ -9,7 +9,7 @@
     body {
       font-family: Arial, sans-serif;
       margin: 0;
-      background: #f7f7f7;
+      background: #f9f9f9;
     }
 
     nav {
@@ -38,9 +38,8 @@
 
     .container {
       padding: 2rem;
-      max-width: 1200px;
+      max-width: 1400px;
       margin: auto;
-      overflow-y: auto;
     }
 
     h1 {
@@ -50,17 +49,17 @@
     }
 
     .chart-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 3rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+      gap: 2rem;
     }
 
     .chart-box {
       background: white;
       padding: 1rem;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      height: 500px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      height: 480px;
     }
 
     canvas {
@@ -68,15 +67,9 @@
       height: 100% !important;
     }
 
-    @media (min-width: 768px) {
-      .chart-grid {
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: space-between;
-      }
-
+    @media (max-width: 640px) {
       .chart-box {
-        width: 48%;
+        height: 400px;
       }
     }
   </style>
@@ -159,9 +152,7 @@
           scales: {
             y: {
               beginAtZero: true,
-              ticks: {
-                precision: 0
-              }
+              ticks: { precision: 0 }
             }
           }
         }
