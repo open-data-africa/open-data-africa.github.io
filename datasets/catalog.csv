@@ -1,4 +1,4 @@
-﻿Dataset Name,Domain,Country,Data Type,Access Level,Link,Use Cases,Last Updated,Challenges/Notes
+﻿Dataset Name,Domain,Country,Data Type,License,Link,Use Cases,Last Updated,Challenges/Notes
 Common Voice (African Languages),NLP,Africa-wide,Audio ,Open Access (CC0 – Public Domain),Common Voice,"Speech recognition, voice assistants",2024,Requires cleaning for production use
 KenSwQuAD: Swahili QA Dataset,NLP,Kenya,Text ,Public (Via arXiv) ,arXiv,"Question answering systems, NLP research",2022,Limited to Swahili; dataset size may be small
 FLORES+,NLP,Africa-wide,Text ,Open Access (CC BY-SA 4.0),Facebook AI / Meta,Evaluating multilingual MT systems,2024,Used in Masakhane benchmarking; supports low-resource settings
