@@ -2,83 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Use Cases – Open Data Africa</title>
   <link rel="stylesheet" href="style.css" />
-  <style>
-    /* Container for the cards */
-    .card-deck {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-      justify-content: center;
-      margin-top: 20px;
-    }
-
-    /* Individual card */
-    .use-case-card {
-      background: #e6f0ff;
-      border: 1px solid #004080;
-      border-radius: 10px;
-      width: 300px;
-      padding: 20px;
-      box-sizing: border-box;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      transition: box-shadow 0.3s ease;
-      cursor: pointer;
-      text-decoration: none;
-      color: #003366;
-    }
-
-    .use-case-card:hover,
-    .use-case-card:focus {
-      box-shadow: 0 0 12px #0055aa;
-      outline: none;
-    }
-
-    .use-case-card h3 {
-      margin-top: 0;
-      margin-bottom: 10px;
-    }
-
-    .use-case-card p {
-      flex-grow: 1;
-      margin-bottom: 20px;
-    }
-
-    .btn {
-      align-self: flex-start;
-      background-color: #004080;
-      color: white;
-      padding: 8px 15px;
-      border-radius: 6px;
-      text-decoration: none;
-      font-weight: 600;
-      transition: background-color 0.3s ease;
-    }
-
-    .btn:hover,
-    .btn:focus {
-      background-color: #002f66;
-      outline: none;
-    }
-
-    @media (max-width: 650px) {
-      .card-deck {
-        flex-direction: column;
-        align-items: center;
-      }
-      .use-case-card {
-        width: 90%;
-      }
-    }
-  </style>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 </head>
 <body>
 
-  <nav aria-label="Main navigation">
+  <!-- Navigation -->
+  <nav>
     <ul class="nav-list">
       <li><a href="index.html">Home</a></li>
       <li><a href="about.html">About</a></li>
@@ -90,39 +22,121 @@
     </ul>
   </nav>
 
-  <main>
-    <h1>Use Cases</h1>
-    <p>Explore how African businesses and innovators are applying open datasets to solve real-world problems.</p>
+  <main class="container">
+    <h1>Explore Use Cases</h1>
 
-    <div class="card-deck" role="list">
+    <!-- Filters -->
+    <div class="filters">
+      <input type="text" id="searchInput" placeholder="Search use cases..." />
+      <select id="domainFilter">
+        <option value="">All Domains</option>
+      </select>
+      <select id="countryFilter">
+        <option value="">All Countries</option>
+      </select>
+    </div>
 
-      <a href="https://example.com/use-case/agriculture" class="use-case-card" role="listitem" tabindex="0" aria-label="Use Case: Improving Crop Yields">
-        <h3>Improving Crop Yields</h3>
-        <p>Farmers use open climate and soil datasets to optimize planting schedules and increase productivity.</p>
-        <span class="btn">Learn More</span>
-      </a>
-
-      <a href="https://example.com/use-case/health" class="use-case-card" role="listitem" tabindex="0" aria-label="Use Case: Disease Surveillance">
-        <h3>Disease Surveillance</h3>
-        <p>Health organizations analyze open epidemiological data to track and respond to disease outbreaks.</p>
-        <span class="btn">Learn More</span>
-      </a>
-
-      <a href="https://example.com/use-case/finance" class="use-case-card" role="listitem" tabindex="0" aria-label="Use Case: Financial Inclusion">
-        <h3>Financial Inclusion</h3>
-        <p>Startups leverage economic datasets to develop credit scoring models for unbanked populations.</p>
-        <span class="btn">Learn More</span>
-      </a>
-
-      <a href="https://example.com/use-case/education" class="use-case-card" role="listitem" tabindex="0" aria-label="Use Case: Education Access">
-        <h3>Education Access</h3>
-        <p>NGOs use demographic and infrastructure data to plan digital education rollouts in underserved areas.</p>
-        <span class="btn">Learn More</span>
-      </a>
-
+    <!-- Card Container -->
+    <div id="useCasesContainer" class="card-grid">
+      <!-- Cards will be dynamically inserted here -->
     </div>
   </main>
 
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      Papa.parse("datasets/catalog.csv", {
+        download: true,
+        header: true,
+        complete: function (results) {
+          const data = results.data;
+
+          const domainSet = new Set();
+          const countrySet = new Set();
+
+          // Populate filters
+          data.forEach(row => {
+            if (row.Domain) domainSet.add(row.Domain.trim());
+            if (row.Country) countrySet.add(row.Country.trim());
+          });
+
+          const domainFilter = document.getElementById("domainFilter");
+          const countryFilter = document.getElementById("countryFilter");
+
+          [...domainSet].sort().forEach(domain => {
+            domainFilter.innerHTML += `<option value="${domain}">${domain}</option>`;
+          });
+
+          [...countrySet].sort().forEach(country => {
+            countryFilter.innerHTML += `<option value="${country}">${country}</option>`;
+          });
+
+          function renderCards(filterText = "", domain = "", country = "") {
+            const container = document.getElementById("useCasesContainer");
+            container.innerHTML = "";
+
+            data.forEach(row => {
+              const matchesSearch = row["Use Cases"]?.toLowerCase().includes(filterText.toLowerCase());
+              const matchesDomain = !domain || row.Domain === domain;
+              const matchesCountry = !country || row.Country === country;
+
+              if (matchesSearch && matchesDomain && matchesCountry) {
+                const card = document.createElement("div");
+                card.className = "card";
+                card.innerHTML = `
+                  <h3>${row["Dataset Name"] || "Unnamed Dataset"}</h3>
+                  <p><strong>Use Case:</strong> ${row["Use Cases"] || "N/A"}</p>
+                  <p><strong>Domain:</strong> ${row.Domain || "N/A"}</p>
+                  <p><strong>Country:</strong> ${row.Country || "N/A"}</p>
+                  <p><strong>Data Type:</strong> ${row["Data Type"] || "N/A"}</p>
+                  <p><strong>Access:</strong> ${row["Access Level"] || "N/A"}</p>
+                `;
+                container.appendChild(card);
+              }
+            });
+          }
+
+          renderCards();
+
+          // Event Listeners
+          document.getElementById("searchInput").addEventListener("input", e => {
+            renderCards(e.target.value, domainFilter.value, countryFilter.value);
+          });
+
+          domainFilter.addEventListener("change", () => {
+            renderCards(searchInput.value, domainFilter.value, countryFilter.value);
+          });
+
+          countryFilter.addEventListener("change", () => {
+            renderCards(searchInput.value, domainFilter.value, countryFilter.value);
+          });
+        }
+      });
+    });
+  </script>
+
+  <style>
+    .filters {
+      margin: 1rem 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .filters input, .filters select {
+      padding: 8px;
+      font-size: 1rem;
+    }
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1rem;
+    }
+    .card {
+      background: #f4f4f4;
+      border-radius: 8px;
+      padding: 1rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+  </style>
+
 </body>
 </html>
-
