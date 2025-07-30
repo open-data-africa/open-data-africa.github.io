@@ -126,3 +126,62 @@ button:hover {
   margin-top: 0;
   color: #aa0000;
 }
+
+.hero {
+  background-color: #ffe5e5;
+  padding: 40px 20px;
+  text-align: center;
+  border-bottom: 2px solid #aa0000;
+}
+
+.hero h1 {
+  margin: 0;
+  font-size: 2.5rem;
+  color: #aa0000;
+}
+
+.hero p {
+  font-size: 1.2rem;
+  color: #333;
+  margin-top: 10px;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+  padding: 30px 20px;
+}
+
+.dashboard-card {
+  background-color: white;
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+  transition: transform 0.2s ease;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-4px);
+}
+
+.dashboard-card h2 {
+  margin-top: 0;
+  color: #aa0000;
+}
+
+.button {
+  display: inline-block;
+  margin-top: 15px;
+  padding: 8px 15px;
+  background-color: #aa0000;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+.button:hover {
+  background-color: #cc0000;
+}
