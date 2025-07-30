@@ -3,75 +3,73 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Open Data Africa – Dashboard</title>
+  <title>Open Data Dashboard</title>
   <link rel="stylesheet" href="style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
-  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
       margin: 0;
-      padding: 0;
-      background: #f8f8f8;
+      background: #f9f9f9;
     }
 
     nav {
-      background: linear-gradient(to right, #8B0000, #000000);
-      padding: 10px 0;
+      background-color: #330000;
+      padding: 1em;
     }
 
     .nav-list {
       display: flex;
-      justify-content: center;
-      list-style: none;
+      list-style-type: none;
       margin: 0;
       padding: 0;
+      justify-content: center;
+      flex-wrap: wrap;
     }
 
     .nav-list li {
-      margin: 0 15px;
+      margin: 0 1em;
     }
 
     .nav-list a {
       color: white;
       text-decoration: none;
       font-weight: bold;
-      font-size: 16px;
     }
 
-    .dashboard-container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 20px;
-      padding: 20px;
+    .container {
+      padding: 2rem;
+      max-width: 1400px;
+      margin: auto;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 2rem;
+    }
+
+    .chart-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+      gap: 2rem;
     }
 
     .chart-box {
       background: white;
+      padding: 1rem;
       border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      padding: 20px;
-      flex: 1 1 45%;
-      max-width: 48%;
-      min-width: 300px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      height: 480px;
     }
 
-    .chart-box canvas,
-    #africaMap {
+    canvas {
       width: 100% !important;
-      height: 400px !important;
+      height: 100% !important;
     }
 
-    #africaMap {
-      height: 500px;
-    }
-
-    @media (max-width: 768px) {
+    @media (max-width: 640px) {
       .chart-box {
-        flex: 1 1 100%;
-        max-width: 100%;
+        height: 400px;
       }
     }
   </style>
@@ -88,146 +86,98 @@
       <li><a href="resources.html">Resources</a></li>
       <li><a href="contribute.html">Contribute</a></li>
       <li><a href="contact.html">Contact</a></li>
-      <li><a href="dashboard.html" aria-current="page">Dashboard</a></li>
     </ul>
   </nav>
 
-  <main>
-    <div class="dashboard-container">
-      <!-- African Map Chart -->
-      <div class="chart-box">
-        <h3>Dataset Distribution Across Africa</h3>
-        <div id="africaMap"></div>
-      </div>
-
-      <!-- Domain Chart -->
-      <div class="chart-box">
-        <h3>Most Common Domains</h3>
-        <canvas id="domainChart"></canvas>
-      </div>
-
-      <!-- Data Type Chart -->
-      <div class="chart-box">
-        <h3>Prevalent Data Types</h3>
-        <canvas id="dataTypeChart"></canvas>
-      </div>
-
-      <!-- Dataset Freshness Chart -->
-      <div class="chart-box">
-        <h3>Dataset Freshness (Last Updated)</h3>
-        <canvas id="freshnessChart"></canvas>
-      </div>
-
-      <!-- License Chart -->
-      <div class="chart-box">
-        <h3>Common Licenses</h3>
-        <canvas id="licenseChart"></canvas>
-      </div>
+  <!-- Dashboard Content -->
+  <div class="container">
+    <h1>📊 Open Data Dashboard</h1>
+    <div class="chart-grid">
+      <div class="chart-box"><canvas id="chartCountry"></canvas></div>
+      <div class="chart-box"><canvas id="chartDomain"></canvas></div>
+      <div class="chart-box"><canvas id="chartType"></canvas></div>
+      <div class="chart-box"><canvas id="chartFreshness"></canvas></div>
+      <div class="chart-box"><canvas id="chartLicense"></canvas></div>
     </div>
-  </main>
+  </div>
+
+  <!-- Chart.js and PapaParse -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
   <script>
+    function countOccurrences(data, column) {
+      const counts = {};
+      data.forEach(row => {
+        const value = (row[column] || "").trim();
+        if (value && value !== "") {
+          const clean = value.toLowerCase().replace(/\s+/g, ' ').trim();
+          counts[clean] = (counts[clean] || 0) + 1;
+        }
+      });
+      return counts;
+    }
+
+    function sortByValue(obj) {
+      return Object.fromEntries(
+        Object.entries(obj).sort(([, a], [, b]) => b - a)
+      );
+    }
+
+    function createChart(id, label, dataMap, type = 'bar') {
+      const ctx = document.getElementById(id).getContext("2d");
+      const labels = Object.keys(dataMap).map(s => s.charAt(0).toUpperCase() + s.slice(1));
+      const values = Object.values(dataMap);
+      new Chart(ctx, {
+        type,
+        data: {
+          labels,
+          datasets: [{
+            label: label,
+            data: values,
+            backgroundColor: [
+              '#ff6384','#36a2eb','#cc65fe','#ffce56','#2ecc71',
+              '#f39c12','#9b59b6','#34495e','#e74c3c','#1abc9c'
+            ],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: true },
+            tooltip: { enabled: true }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: { precision: 0 }
+            }
+          }
+        }
+      });
+    }
+
     Papa.parse("datasets/catalog.csv", {
       download: true,
       header: true,
       complete: function(results) {
         const data = results.data;
 
-        // Data holders
-        const domainCount = {};
-        const typeCount = {};
-        const freshness = {};
-        const licenses = {};
-        const countryCount = {};
+        const countryCounts = sortByValue(countOccurrences(data, "Country"));
+        const domainCounts = sortByValue(countOccurrences(data, "Domain"));
+        const typeCounts = sortByValue(countOccurrences(data, "Data Type"));
+        const licenseCounts = sortByValue(countOccurrences(data, "License"));
+        const freshnessCounts = sortByValue(countOccurrences(data, "Last Updated"));
 
-        // Aggregating values
-        data.forEach(row => {
-          const domain = row["Domain"]?.trim();
-          const type = row["Data Type"]?.trim();
-          const updated = row["Last Updated"]?.trim();
-          const license = row["License"]?.trim();
-          const country = row["Country"]?.trim();
-
-          if (domain) domainCount[domain] = (domainCount[domain] || 0) + 1;
-          if (type) typeCount[type] = (typeCount[type] || 0) + 1;
-          if (updated) freshness[updated] = (freshness[updated] || 0) + 1;
-          if (license) licenses[license] = (licenses[license] || 0) + 1;
-          if (country) countryCount[country] = (countryCount[country] || 0) + 1;
-        });
-
-        // Create charts
-        const createChart = (id, labels, values, label, backgroundColors) => {
-          new Chart(document.getElementById(id), {
-            type: "bar",
-            data: {
-              labels: labels,
-              datasets: [{
-                label: label,
-                data: values,
-                backgroundColor: backgroundColors || 'rgba(75, 192, 192, 0.6)',
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 1
-              }]
-            },
-            options: {
-              responsive: true,
-              maintainAspectRatio: false,
-              indexAxis: "y",
-              plugins: {
-                legend: { display: true }
-              },
-              scales: {
-                x: {
-                  beginAtZero: true
-                }
-              }
-            }
-          });
-        };
-
-        // Sort and prepare data
-        const prepareData = obj => {
-          return Object.entries(obj)
-            .sort((a, b) => b[1] - a[1])
-            .reduce((acc, [key, val]) => {
-              acc.labels.push(key);
-              acc.values.push(val);
-              return acc;
-            }, { labels: [], values: [] });
-        };
-
-        const domainData = prepareData(domainCount);
-        const typeData = prepareData(typeCount);
-        const freshnessData = prepareData(freshness);
-        const licenseData = prepareData(licenses);
-
-        createChart("domainChart", domainData.labels, domainData.values, "Domains");
-        createChart("dataTypeChart", typeData.labels, typeData.values, "Data Types");
-        createChart("freshnessChart", freshnessData.labels, freshnessData.values, "Last Updated");
-        createChart("licenseChart", licenseData.labels, licenseData.values, "Licenses");
-
-        // Plotly African map
-        Plotly.newPlot('africaMap', [{
-          type: 'choropleth',
-          locationmode: 'country names',
-          locations: Object.keys(countryCount),
-          z: Object.values(countryCount),
-          colorscale: 'Blues',
-          colorbar: { title: 'Datasets' },
-          text: Object.entries(countryCount).map(([c, v]) => `${c}: ${v}`),
-          hoverinfo: 'text'
-        }], {
-          geo: {
-            scope: 'africa',
-            showframe: false,
-            showcoastlines: true,
-            projection: { type: 'natural earth' }
-          },
-          margin: { t: 0, b: 0 }
-        });
+        createChart("chartCountry", "Datasets by Country", countryCounts);
+        createChart("chartDomain", "Datasets by Domain", domainCounts);
+        createChart("chartType", "Data Types", typeCounts);
+        createChart("chartFreshness", "Dataset Freshness", freshnessCounts, "line");
+        createChart("chartLicense", "License Distribution", licenseCounts, "doughnut");
       }
     });
   </script>
-
 </body>
 </html>
