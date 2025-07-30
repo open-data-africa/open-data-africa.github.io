@@ -53,13 +53,12 @@
       margin-bottom: 1rem;
     }
 
-    /* Make chart grid horizontally scrollable */
+    /* Horizontal scroll container */
     .chart-grid {
       display: flex;
       gap: 2rem;
       overflow-x: auto;
       padding-bottom: 1rem;
-      /* Hide scrollbar for WebKit browsers */
       -webkit-overflow-scrolling: touch;
       scroll-behavior: smooth;
     }
@@ -69,13 +68,13 @@
       padding: 1.5rem;
       border-radius: 10px;
       box-shadow: 0 3px 10px rgba(0,0,0,0.08);
-      min-width: 700px; /* wider width for charts */
+      min-width: 700px; /* wider chart cards */
       flex-shrink: 0; /* prevent shrinking */
     }
 
     canvas {
       width: 100% !important;
-      height: 400px !important; /* taller charts */
+      height: 450px !important; /* bigger height */
     }
   </style>
 </head>
@@ -109,6 +108,17 @@
   </div>
 
   <script>
+    // Helper to sort data descending by count
+    function sortDataDesc(dataObj) {
+      return Object.entries(dataObj)
+        .filter(([key]) => key) // filter out empty keys
+        .sort((a, b) => b[1] - a[1])
+        .reduce((acc, [key, val]) => {
+          acc[key] = val;
+          return acc;
+        }, {});
+    }
+
     Papa.parse("datasets/catalog.csv", {
       download: true,
       header: true,
@@ -128,6 +138,13 @@
           if(row.License) licenseCount[row.License] = (licenseCount[row.License] || 0) + 1;
           if(row["Last Updated"]) freshnessCount[row["Last Updated"]] = (freshnessCount[row["Last Updated"]] || 0) + 1;
         });
+
+        // Sort all data descending
+        const sortedCountry = sortDataDesc(countryCount);
+        const sortedDomain = sortDataDesc(domainCount);
+        const sortedType = sortDataDesc(typeCount);
+        const sortedLicense = sortDataDesc(licenseCount);
+        const sortedFreshness = sortDataDesc(freshnessCount);
 
         const createChart = (id, label, dataObj, chartType = 'bar') => {
           const ctx = document.getElementById(id).getContext('2d');
@@ -150,7 +167,16 @@
               maintainAspectRatio: false,
               plugins: {
                 legend: {
-                  display: false
+                  display: true,
+                  position: 'bottom',
+                  labels: {
+                    boxWidth: 15,
+                    padding: 15
+                  }
+                },
+                tooltip: {
+                  mode: 'nearest',
+                  intersect: false
                 }
               },
               scales: {
@@ -169,11 +195,11 @@
           });
         };
 
-        createChart("chartCountry", "Datasets by Country", countryCount);
-        createChart("chartDomain", "Datasets by Domain", domainCount);
-        createChart("chartType", "Data Types", typeCount);
-        createChart("chartFreshness", "Dataset Freshness", freshnessCount, 'line');
-        createChart("chartLicense", "License Distribution", licenseCount, 'doughnut');
+        createChart("chartCountry", "Datasets by Country", sortedCountry);
+        createChart("chartDomain", "Datasets by Domain", sortedDomain);
+        createChart("chartType", "Data Types", sortedType);
+        createChart("chartFreshness", "Dataset Freshness", sortedFreshness, 'line');
+        createChart("chartLicense", "License Distribution", sortedLicense, 'doughnut');
       }
     });
   </script>
