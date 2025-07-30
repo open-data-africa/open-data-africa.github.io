@@ -1,1 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Use Cases – Open Data Africa</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Container for the cards */
+    .card-deck {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    /* Individual card */
+    .use-case-card {
+      background: #e6f0ff;
+      border: 1px solid #004080;
+      border-radius: 10px;
+      width: 300px;
+      padding: 20px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: box-shadow 0.3s ease;
+      cursor: pointer;
+      text-decoration: none;
+      color: #003366;
+    }
+
+    .use-case-card:hover,
+    .use-case-card:focus {
+      box-shadow: 0 0 12px #0055aa;
+      outline: none;
+    }
+
+    .use-case-card h3 {
+      margin-top: 0;
+      margin-bottom: 10px;
+    }
+
+    .use-case-card p {
+      flex-grow: 1;
+      margin-bottom: 20px;
+    }
+
+    .btn {
+      align-self: flex-start;
+      background-color: #004080;
+      color: white;
+      padding: 8px 15px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn:hover,
+    .btn:focus {
+      background-color: #002f66;
+      outline: none;
+    }
+
+    @media (max-width: 650px) {
+      .card-deck {
+        flex-direction: column;
+        align-items: center;
+      }
+      .use-case-card {
+        width: 90%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <nav aria-label="Main navigation">
+    <ul class="nav-list">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="datasets.html">Datasets</a></li>
+      <li><a href="use-cases.html" aria-current="page">Use Cases</a></li>
+      <li><a href="resources.html">Resources</a></li>
+      <li><a href="contribute.html">Contribute</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <h1>Use Cases</h1>
+    <p>Explore how African businesses and innovators are applying open datasets to solve real-world problems.</p>
+
+    <div class="card-deck" role="list">
+
+      <a href="https://example.com/use-case/agriculture" class="use-case-card" role="listitem" tabindex="0" aria-label="Use Case: Improving Crop Yields">
+        <h3>Improving Crop Yields</h3>
+        <p>Farmers use open climate and soil datasets to optimize planting schedules and increase productivity.</p>
+        <span class="btn">Learn More</span>
+      </a>
+
+      <a href="https://example.com/use-case/health" class="use-case-card" role="listitem" tabindex="0" aria-label="Use Case: Disease Surveillance">
+        <h3>Disease Surveillance</h3>
+        <p>Health organizations analyze open epidemiological data to track and respond to disease outbreaks.</p>
+        <span class="btn">Learn More</span>
+      </a>
+
+      <a href="https://example.com/use-case/finance" class="use-case-card" role="listitem" tabindex="0" aria-label="Use Case: Financial Inclusion">
+        <h3>Financial Inclusion</h3>
+        <p>Startups leverage economic datasets to develop credit scoring models for unbanked populations.</p>
+        <span class="btn">Learn More</span>
+      </a>
+
+      <a href="https://example.com/use-case/education" class="use-case-card" role="listitem" tabindex="0" aria-label="Use Case: Education Access">
+        <h3>Education Access</h3>
+        <p>NGOs use demographic and infrastructure data to plan digital education rollouts in underserved areas.</p>
+        <span class="btn">Learn More</span>
+      </a>
+
+    </div>
+  </main>
+
+</body>
+</html>
 
