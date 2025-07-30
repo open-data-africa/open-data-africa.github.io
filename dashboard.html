@@ -9,13 +9,11 @@
     body {
       font-family: Arial, sans-serif;
       margin: 0;
-      padding: 0;
-      background: #f9f9f9;
+      background: #f7f7f7;
     }
 
     nav {
       background-color: #330000;
-      color: white;
       padding: 1em;
     }
 
@@ -42,31 +40,44 @@
       padding: 2rem;
       max-width: 1200px;
       margin: auto;
+      overflow-y: auto;
     }
 
     h1 {
       text-align: center;
-      margin-bottom: 2rem;
       color: #333;
+      margin-bottom: 2rem;
     }
 
     .chart-grid {
-      display: grid;
-      grid-template-columns: 1fr;
+      display: flex;
+      flex-direction: column;
       gap: 3rem;
     }
 
-    @media (min-width: 800px) {
-      .chart-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-    }
-
-    canvas {
+    .chart-box {
       background: white;
       padding: 1rem;
       border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      height: 500px;
+    }
+
+    canvas {
+      width: 100% !important;
+      height: 100% !important;
+    }
+
+    @media (min-width: 768px) {
+      .chart-grid {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-between;
+      }
+
+      .chart-box {
+        width: 48%;
+      }
     }
   </style>
 </head>
@@ -85,15 +96,15 @@
     </ul>
   </nav>
 
-  <!-- Dashboard -->
+  <!-- Dashboard Content -->
   <div class="container">
     <h1>📊 Open Data Dashboard</h1>
     <div class="chart-grid">
-      <canvas id="chartCountry" height="300"></canvas>
-      <canvas id="chartDomain" height="300"></canvas>
-      <canvas id="chartType" height="300"></canvas>
-      <canvas id="chartFreshness" height="300"></canvas>
-      <canvas id="chartLicense" height="300"></canvas>
+      <div class="chart-box"><canvas id="chartCountry"></canvas></div>
+      <div class="chart-box"><canvas id="chartDomain"></canvas></div>
+      <div class="chart-box"><canvas id="chartType"></canvas></div>
+      <div class="chart-box"><canvas id="chartFreshness"></canvas></div>
+      <div class="chart-box"><canvas id="chartLicense"></canvas></div>
     </div>
   </div>
 
