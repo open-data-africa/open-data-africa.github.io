@@ -28,6 +28,7 @@
       gap: 2rem;
       margin: 0;
       padding: 0;
+      flex-wrap: wrap;
     }
 
     .nav-list li a {
@@ -52,11 +53,15 @@
       margin-bottom: 1rem;
     }
 
+    /* Make chart grid horizontally scrollable */
     .chart-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+      display: flex;
       gap: 2rem;
-      margin-top: 2rem;
+      overflow-x: auto;
+      padding-bottom: 1rem;
+      /* Hide scrollbar for WebKit browsers */
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
     }
 
     .chart-card {
@@ -64,12 +69,13 @@
       padding: 1.5rem;
       border-radius: 10px;
       box-shadow: 0 3px 10px rgba(0,0,0,0.08);
-      overflow-x: auto;
+      min-width: 700px; /* wider width for charts */
+      flex-shrink: 0; /* prevent shrinking */
     }
 
     canvas {
       width: 100% !important;
-      height: 350px !important;
+      height: 400px !important; /* taller charts */
     }
   </style>
 </head>
@@ -116,11 +122,11 @@
         const freshnessCount = {};
 
         data.forEach(row => {
-          countryCount[row.Country] = (countryCount[row.Country] || 0) + 1;
-          domainCount[row.Domain] = (domainCount[row.Domain] || 0) + 1;
-          typeCount[row["Data Type"]] = (typeCount[row["Data Type"]] || 0) + 1;
-          licenseCount[row.License] = (licenseCount[row.License] || 0) + 1;
-          freshnessCount[row["Last Updated"]] = (freshnessCount[row["Last Updated"]] || 0) + 1;
+          if(row.Country) countryCount[row.Country] = (countryCount[row.Country] || 0) + 1;
+          if(row.Domain) domainCount[row.Domain] = (domainCount[row.Domain] || 0) + 1;
+          if(row["Data Type"]) typeCount[row["Data Type"]] = (typeCount[row["Data Type"]] || 0) + 1;
+          if(row.License) licenseCount[row.License] = (licenseCount[row.License] || 0) + 1;
+          if(row["Last Updated"]) freshnessCount[row["Last Updated"]] = (freshnessCount[row["Last Updated"]] || 0) + 1;
         });
 
         const createChart = (id, label, dataObj, chartType = 'bar') => {
