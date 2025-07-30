@@ -2,46 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Open Data Africa – Home</title>
-  <style>
-    /* Navigation styles for horizontal menu */
-    .nav-list {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      display: flex;         /* horizontal layout */
-      gap: 20px;             /* spacing between links */
-      background-color: #004080;
-      border-radius: 8px;
-    }
-    .nav-list a {
-      display: inline-block;
-      padding: 10px 15px;
-      color: white;
-      text-decoration: none;
-      font-weight: 600;
-      border-radius: 5px;
-      transition: background-color 0.3s ease;
-    }
-    .nav-list a:hover,
-    .nav-list a[aria-current="page"] {
-      background-color: #0066cc;
-    }
-    /* Body and layout */
-    body {
-      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      line-height: 1.6;
-      background: #f8f9fa;
-      color: #222;
-      padding: 20px;
-      max-width: 960px;
-      margin: auto;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <nav aria-label="Main navigation">
+
+  <!-- Navigation Bar -->
+  <nav>
     <ul class="nav-list">
       <li><a href="index.html" aria-current="page">Home</a></li>
       <li><a href="about.html">About</a></li>
@@ -53,35 +21,45 @@
     </ul>
   </nav>
 
+  <!-- Dashboard Section -->
+  <header class="hero">
+    <h1>Open Data Africa</h1>
+    <p>Empowering African AI innovators and businesses through accessible, high-quality datasets.</p>
+  </header>
+
   <main>
-    <h1>Welcome to Open Data Africa</h1>
-    <p><strong>Open Data Africa</strong> is a platform developed under the <em>AI Made in Africa</em> initiative. Our goal is to empower African businesses, developers, and AI innovators by providing easy access to open, high-quality datasets relevant to the continent.</p>
+    <section class="dashboard-grid">
+      <div class="dashboard-card">
+        <h2>🔍 Explore Datasets</h2>
+        <p>Browse open datasets across agriculture, health, education, and more.</p>
+        <a href="datasets.html" class="button">View Datasets</a>
+      </div>
 
-    <section>
-      <h2>🚀 Our Focus</h2>
-      <p>We aim to reduce barriers to entry for AI and data-driven innovation in Africa by improving data accessibility. Whether you're building machine learning models, analyzing markets, or developing digital products, our curated datasets can help you get started faster.</p>
-    </section>
+      <div class="dashboard-card">
+        <h2>📊 Use Cases</h2>
+        <p>See how data is used in real-world African AI applications and projects.</p>
+        <a href="use-cases.html" class="button">Explore Use Cases</a>
+      </div>
 
-    <section>
-      <h2>🔎 What You'll Find</h2>
-      <ul>
-        <li>Open datasets in formats like CSV, Excel, and JSON</li>
-        <li>Data relevant to agriculture, health, economy, and demographics</li>
-        <li>Resources for African AI developers and entrepreneurs</li>
-      </ul>
-    </section>
+      <div class="dashboard-card">
+        <h2>📚 Resources</h2>
+        <p>Access publications, policy briefs, and useful links for dataset adoption.</p>
+        <a href="resources.html" class="button">View Resources</a>
+      </div>
 
-    <section>
-      <h2>📂 Explore More</h2>
-      <ul>
-        <li><a href="about.html">About this project</a></li>
-        <li><a href="datasets.html">Browse available datasets</a></li>
-        <li><a href="resources.html">Browse available resources</a></li>
-        <li><a href="contribute.html">Contribute datasets</a></li>
+      <div class="dashboard-card">
+        <h2>🤝 Contribute Data</h2>
+        <p>Submit your own open datasets and be part of Africa’s data ecosystem.</p>
+        <a href="contribute.html" class="button">Share Your Data</a>
+      </div>
 
-
-      </ul>
+      <div class="dashboard-card">
+        <h2>📬 Contact Us</h2>
+        <p>Questions, ideas, or partnerships? We’d love to hear from you.</p>
+        <a href="contact.html" class="button">Get in Touch</a>
+      </div>
     </section>
   </main>
+
 </body>
 </html>
