@@ -14,41 +14,62 @@
 
     nav {
       background-color: #330000;
-      padding: 1em 4rem;
+      padding: 1em;
     }
 
     .nav-list {
       display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 1.5rem;
       list-style-type: none;
       margin: 0;
       padding: 0;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .nav-list li {
+      margin: 0 1em;
     }
 
     .nav-list a {
       color: white;
       text-decoration: none;
       font-weight: bold;
-      font-size: 1rem;
     }
 
     .container {
-      padding: 2rem 4rem;
-      width: 100%;
-      max-width: 100%;
+      padding: 2rem;
+      max-width: 95%;
+      margin: auto;
     }
 
     h1 {
       text-align: center;
       color: #333;
+      margin-bottom: 1.5rem;
+    }
+
+    .summary-cards {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
       margin-bottom: 2rem;
+    }
+
+    .summary-cards .card {
+      background: #fff;
+      padding: 1rem 2rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      font-weight: bold;
+      font-size: 1.1rem;
+      min-width: 160px;
+      text-align: center;
     }
 
     .chart-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
       gap: 2rem;
     }
 
@@ -57,26 +78,17 @@
       padding: 1rem;
       border-radius: 10px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-      height: auto;
+      height: 480px;
     }
 
     canvas {
       width: 100% !important;
-      height: 400px !important;
+      height: 100% !important;
     }
 
-    @media (max-width: 768px) {
-      .container {
-        padding: 1rem;
-      }
-
-      .nav-list {
-        flex-direction: column;
-        align-items: center;
-      }
-
-      canvas {
-        height: 300px !important;
+    @media (max-width: 640px) {
+      .chart-box {
+        height: 400px;
       }
     }
   </style>
@@ -99,6 +111,16 @@
   <!-- Dashboard Content -->
   <div class="container">
     <h1>📊 Open Data Dashboard</h1>
+
+    <!-- Summary Cards -->
+    <div class="summary-cards">
+      <div class="card" id="totalDatasets">Datasets: 0</div>
+      <div class="card" id="totalCountries">Countries: 0</div>
+      <div class="card" id="totalDomains">Domains: 0</div>
+      <div class="card" id="totalTypes">Data Types: 0</div>
+    </div>
+
+    <!-- Charts -->
     <div class="chart-grid">
       <div class="chart-box"><canvas id="chartCountry"></canvas></div>
       <div class="chart-box"><canvas id="chartDomain"></canvas></div>
@@ -117,7 +139,7 @@
       const counts = {};
       data.forEach(row => {
         const value = (row[column] || "").trim();
-        if (value) {
+        if (value && value !== "") {
           const clean = value.toLowerCase().replace(/\s+/g, ' ').trim();
           counts[clean] = (counts[clean] || 0) + 1;
         }
@@ -183,6 +205,12 @@
         createChart("chartType", "Data Types", typeCounts);
         createChart("chartFreshness", "Dataset Freshness", freshnessCounts, "line");
         createChart("chartLicense", "License Distribution", licenseCounts, "doughnut");
+
+        // Summary Stats
+        document.getElementById("totalDatasets").innerText = `Datasets: ${data.length}`;
+        document.getElementById("totalCountries").innerText = `Countries: ${Object.keys(countryCounts).length}`;
+        document.getElementById("totalDomains").innerText = `Domains: ${Object.keys(domainCounts).length}`;
+        document.getElementById("totalTypes").innerText = `Data Types: ${Object.keys(typeCounts).length}`;
       }
     });
   </script>
