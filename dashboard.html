@@ -7,33 +7,58 @@
   <link rel="stylesheet" href="style.css" />
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       margin: 0;
       background: #f9f9f9;
     }
 
-    nav {
-      background-color: #330000;
-      padding: 1em;
-    }
-
-    .nav-list {
+    /* Navigation */
+    header {
+      background-color: #ffffff;
+      border-bottom: 1px solid #eaeaea;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+      padding: 1rem 2rem;
       display: flex;
-      list-style-type: none;
-      margin: 0;
-      padding: 0;
-      justify-content: center;
+      justify-content: space-between;
+      align-items: center;
       flex-wrap: wrap;
     }
 
-    .nav-list li {
-      margin: 0 1em;
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #330000;
     }
 
-    .nav-list a {
-      color: white;
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 1rem;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav ul li a {
       text-decoration: none;
-      font-weight: bold;
+      color: #333;
+      font-weight: 500;
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+
+    nav ul li a:hover,
+    nav ul li a[aria-current="page"] {
+      background-color: #330000;
+      color: #fff;
+    }
+
+    @media (max-width: 768px) {
+      nav ul {
+        flex-direction: column;
+        width: 100%;
+        margin-top: 1rem;
+      }
     }
 
     .container {
@@ -76,18 +101,22 @@
 </head>
 <body>
 
-  <!-- Navigation -->
-  <nav>
-    <ul class="nav-list">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="datasets.html">Datasets</a></li>
-      <li><a href="use-cases.html">Use Cases</a></li>
-      <li><a href="resources.html">Resources</a></li>
-      <li><a href="contribute.html">Contribute</a></li>
-      <li><a href="contact.html">Contact</a></li>
-    </ul>
-  </nav>
+  <!-- Better Navigation -->
+  <header>
+    <div class="logo">📊 Open Data Africa</div>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="datasets.html">Datasets</a></li>
+        <li><a href="use-cases.html">Use Cases</a></li>
+        <li><a href="resources.html">Resources</a></li>
+        <li><a href="contribute.html">Contribute</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="dashboard.html" aria-current="page">Dashboard</a></li>
+      </ul>
+    </nav>
+  </header>
 
   <!-- Dashboard Content -->
   <div class="container">
