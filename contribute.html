@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Contribute – Open Data Africa</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <!-- Navigation Bar -->
-  <nav aria-label="Main navigation">
+  <!-- Navigation -->
+  <nav>
     <ul class="nav-list">
       <li><a href="index.html">Home</a></li>
       <li><a href="about.html">About</a></li>
@@ -21,32 +21,16 @@
     </ul>
   </nav>
 
-  <main>
+  <main class="container">
     <h1>Contribute Open Datasets</h1>
-    <p>We welcome your contribution! If you have an open dataset that could benefit innovators, researchers, or policymakers in Africa, please share it with us. Together, we can grow a vibrant and accessible data ecosystem across the continent.</p>
+    <p>Join the movement for open data in Africa by submitting your dataset. Your contribution will help researchers, developers, and innovators across the continent.</p>
+    <p>Fields collected align with our <a href="datasets.html">catalog</a> structure for easy integration.</p>
 
-    <form action="#" method="post" class="contribute-form">
-      <label for="name">Your Name:</label><br />
-      <input type="text" id="name" name="name" required /><br /><br />
+    <!-- Google Form Embed -->
+    <iframe src="<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSeXNKaOYWIhxQwmHwFoZrjOOz6l5AeShpPtGakyA4fmxTMeVA/viewform?embedded=true" width="640" height="2471" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
 
-      <label for="email">Email Address:</label><br />
-      <input type="email" id="email" name="email" required /><br /><br />
-
-      <label for="title">Dataset Title:</label><br />
-      <input type="text" id="title" name="title" required /><br /><br />
-
-      <label for="description">Short Description:</label><br />
-      <textarea id="description" name="description" rows="5" required></textarea><br /><br />
-
-      <label for="link">Link to Dataset (e.g., GitHub, Drive, Kaggle):</label><br />
-      <input type="url" id="link" name="link" required /><br /><br />
-
-      <button type="submit">Submit Dataset</button>
-    </form>
-
-    <p><em>Note: We manually review each submission before adding it to the platform.</em></p>
+    <p style="margin-top: 20px;">Have questions? <a href="contact.html">Contact us</a>.</p>
   </main>
 
 </body>
 </html>
-
