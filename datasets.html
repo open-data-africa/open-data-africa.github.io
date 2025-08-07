@@ -7,16 +7,19 @@
   <link rel="stylesheet" href="style.css" />
   <style>
     /* Base Styles */
-    * {
-      box-sizing: border-box;
-    }
-
     body, html {
       margin: 0;
       padding: 0;
       font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
+      background-color: #fff;
       color: #222;
+      overflow-x: hidden;
+    }
+
+    .page-layout {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
     }
 
     /* Navigation Bar */
@@ -47,50 +50,39 @@
 
     /* Hero Section */
     header.hero {
-      background: linear-gradient(to right, #330000, #550000);
-      color: #fff;
-      padding: 4rem 2rem;
+      background-color: #f5f5f5;
+      padding: 3rem 1rem;
       text-align: center;
     }
 
     header.hero h1 {
-      font-size: 2.8rem;
+      font-size: 2.5rem;
       margin-bottom: 1rem;
     }
 
     header.hero p {
-      font-size: 1.2rem;
+      font-size: 1.1rem;
+      color: #555;
       max-width: 800px;
       margin: 0 auto;
-      line-height: 1.6;
     }
 
     /* Main Content */
-    main.datasets-section {
-      max-width: 960px;
-      margin: 3rem auto;
-      padding: 2rem;
-      background-color: #fff;
-      border-radius: 12px;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    main.centered-content {
       text-align: center;
-    }
-
-    .datasets-section p {
-      font-size: 1rem;
-      line-height: 1.6;
-      margin-bottom: 1.5rem;
+      padding: 2rem 1rem;
     }
 
     .button,
     .button-outline {
       display: inline-block;
       padding: 0.75rem 1.5rem;
+      margin-top: 1rem;
       font-size: 1rem;
       border-radius: 6px;
       text-decoration: none;
       transition: all 0.3s ease;
-      margin: 1rem 0.5rem 0;
+      cursor: pointer;
     }
 
     .button {
@@ -114,56 +106,47 @@
       color: #fff;
       transform: scale(1.05);
     }
-
-    @media (max-width: 768px) {
-      header.hero h1 {
-        font-size: 2rem;
-      }
-
-      main.datasets-section {
-        margin: 2rem 1rem;
-        padding: 1.5rem;
-      }
-    }
   </style>
 </head>
 <body>
+  <div class="page-layout">
 
-  <!-- Navigation Bar -->
-  <nav>
-    <ul class="nav-list">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="datasets.html" aria-current="page">Datasets</a></li>
-      <li><a href="use-cases.html">Use Cases</a></li>
-      <li><a href="resources.html">Resources</a></li>
-      <li><a href="contribute.html">Contribute</a></li>
-      <li><a href="contact.html">Contact</a></li>
-    </ul>
-  </nav>
+    <!-- Navigation Bar -->
+    <nav>
+      <ul class="nav-list">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="datasets.html" aria-current="page">Datasets</a></li>
+        <li><a href="use-cases.html">Use Cases</a></li>
+        <li><a href="resources.html">Resources</a></li>
+        <li><a href="contribute.html">Contribute</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
 
-  <!-- Hero Section -->
-  <header class="hero">
-    <h1>Our Dataset Catalogue</h1>
-    <p>Explore openly licensed Africa-relevant datasets that support AI innovation in agriculture, health, environment, education, and more.</p>
-  </header>
+    <!-- Hero Section -->
+    <header class="hero">
+      <h1>Our Dataset Catalogue</h1>
+      <p>We collect and catalogue openly licensed Africa-relevant datasets that support the development of African AI solutions. These datasets span agriculture, health, language, education, environment, and more — all with a focus on accessibility and responsible reuse.</p>
+    </header>
 
-  <!-- Main Content -->
-  <main class="datasets-section">
-    <p><strong>Interested in exploring the full catalog?</strong><br>
-      You can request access by sending us an email using the button below.
-    </p>
+    <!-- Main Content -->
+    <main class="centered-content">
+      <p><strong>Interested in exploring the full catalog?</strong><br>
+        You can request access by sending us an email using the button below.
+      </p>
 
-    <a 
-      href="mailto:yonas.gebremichael@giz.de?subject=Request%20for%20Dataset%20Catalogue&body=Hello,%0D%0A%0D%0AI would like to request access to the Open Data Africa dataset catalog. Please share the file or link.%0D%0A%0D%0AThank you." 
-      class="button">
-      📩 Request Dataset Catalogue
-    </a>
+      <a 
+        href="mailto:yonas.gebremichael@giz.de?subject=Request%20for%20Dataset%20Catalogue&body=Hello,%0D%0A%0D%0AI would like to request access to the Open Data Africa dataset catalog. Please share the file or link.%0D%0A%0D%0AThank you." 
+        class="button">
+        📩 Request Dataset Catalogue
+      </a>
 
-    <p style="margin-top: 2rem;">Have a dataset you'd like to contribute to our open data catalogue?</p>
+      <p style="margin-top: 2rem;">Have a dataset you'd like to contribute to our open data catalogue?</p>
 
-    <a href="contribute.html" class="button-outline">🤝 Share Your Dataset</a>
-  </main>
+      <a href="contribute.html" class="button-outline">🤝 Share Your Dataset</a>
+    </main>
 
+  </div>
 </body>
 </html>
