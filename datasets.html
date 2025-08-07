@@ -39,6 +39,12 @@
       text-decoration: underline;
     }
 
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+    }
+
     header.hero {
       background-color: #f5f5f5;
       padding: 4rem 1rem;
@@ -58,10 +64,7 @@
       color: #555;
     }
 
-    main.content {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 3rem 1rem;
+    .centered-box {
       text-align: center;
       animation: fadeInUp 1.5s ease-out;
     }
@@ -134,29 +137,33 @@
 
   <!-- Hero Section -->
   <header class="hero">
-    <h1>Our Dataset Catalogue</h1>
-    <p>
-      We collect and catalogue openly licensed, Africa-relevant datasets that support the development of African AI solutions. These datasets span agriculture, health, language, education, environment, and more — all with a focus on accessibility and responsible reuse.
-    </p>
+    <div class="container">
+      <h1>Our Dataset Catalogue</h1>
+      <p>
+        We collect and catalogue openly licensed, Africa-relevant datasets that support the development of African AI solutions. These datasets span agriculture, health, language, education, environment, and more — all with a focus on accessibility and responsible reuse.
+      </p>
+    </div>
   </header>
 
   <!-- Main Content -->
-  <main class="content">
-    <p><strong>Interested in exploring the full catalog?</strong><br>
-      You can request access by sending us an email using the button below.
-    </p>
+  <main>
+    <div class="container centered-box">
+      <p><strong>Interested in exploring the full catalog?</strong><br>
+        You can request access by sending us an email using the button below.
+      </p>
 
-    <a 
-      href="mailto:yonas.gebremichael@giz.de?subject=Request%20for%20Dataset%20Catalogue&body=Hello,%0D%0A%0D%0AI would like to request access to the Open Data Africa dataset catalog. Please share the file or link.%0D%0A%0D%0AThank you." 
-      class="button">
-      📩 Request Dataset Catalogue
-    </a>
+      <a 
+        href="mailto:yonas.gebremichael@giz.de?subject=Request%20for%20Dataset%20Catalogue&body=Hello,%0D%0A%0D%0AI would like to request access to the Open Data Africa dataset catalog. Please share the file or link.%0D%0A%0D%0AThank you." 
+        class="button">
+        📩 Request Dataset Catalogue
+      </a>
 
-    <p style="margin-top: 2rem;">Have a dataset you'd like to contribute to our open data catalogue?</p>
-    <a href="contribute.html" class="button-outline">🤝 Share Your Dataset</a>
+      <p style="margin-top: 2rem;">Have a dataset you'd like to contribute to our open data commons?</p>
+      <a href="contribute.html" class="button-outline">🤝 Share Your Dataset</a>
+    </div>
   </main>
 
-  <!-- Optional Footer -->
+  <!-- Footer -->
   <footer>
     &copy; 2025 Open Data Africa. All rights reserved.
   </footer>
