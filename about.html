@@ -5,173 +5,59 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>About – Open Data Africa</title>
   <link rel="stylesheet" href="style.css" />
-
- <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f9f9f9;
-      color: #222;
-      margin: 0;
-      padding: 0;
-    }
-
-    nav {
-      background-color: #330000;
-      padding: 1rem 0;
-    }
-
-    nav ul {
-      display: flex;
-      justify-content: center;
-      list-style: none;
-      margin: 0;
-      padding: 0;
-      gap: 2rem;
-      flex-wrap: wrap;
-    }
-
-    nav ul li a {
-      color: white;
-      text-decoration: none;
-      font-weight: bold;
-    }
-
-    nav ul li a[aria-current="page"] {
-      color: #ffcc00;
-      text-decoration: underline;
-    }
-
-    .hero {
-      background: linear-gradient(to bottom, rgba(255,255,255,0.9), rgba(255,255,255,0.95)),
-        url('https://images.unsplash.com/photo-1581091012184-80b0a17b9f06?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
-      padding: 5rem 2rem 3rem;
-      text-align: center;
-    }
-
-    .hero h1 {
-      font-size: 2.8rem;
-      margin-bottom: 1rem;
-      color: #330000;
-    }
-
-    .hero p {
-      font-size: 1.25rem;
-      max-width: 850px;
-      margin: 0 auto;
-      color: #444;
-    }
-
-    .container {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 2rem 1rem 4rem;
-    }
-
-    .container p {
-      font-size: 1.1rem;
-      margin-bottom: 1.5rem;
-      text-align: center;
-    }
-
-    .button,
-    .button-outline {
-      display: inline-block;
-      padding: 0.75rem 1.5rem;
-      border-radius: 6px;
-      font-size: 1rem;
-      text-decoration: none;
-      margin-top: 1rem;
-      transition: all 0.3s ease;
-    }
-
-    .button {
-      background-color: #330000;
-      color: #fff;
-    }
-
-    .button:hover {
-      background-color: #4a0000;
-      transform: translateY(-2px);
-    }
-
-    .button-outline {
-      border: 2px solid #330000;
-      color: #330000;
-      background-color: transparent;
-    }
-
-    .button-outline:hover {
-      background-color: #330000;
-      color: #fff;
-    }
-
-    footer {
-      background-color: #330000;
-      color: #fff;
-      text-align: center;
-      padding: 2rem 1rem;
-    }
-
-    footer a {
-      color: #ffcc00;
-      text-decoration: none;
-    }
-
-    footer a:hover {
-      text-decoration: underline;
-    }
-
-    @media (max-width: 768px) {
-      .hero h1 {
-        font-size: 2rem;
-      }
-
-      .hero p,
-      .container p {
-        font-size: 1rem;
-      }
-
-      nav ul {
-        flex-direction: column;
-        gap: 1rem;
-      }
-    }
-  </style> 
 </head>
 <body>
 
-  <nav>
-    <div class="wrapper">
-      <ul class="nav-list">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="about.html" aria-current="page">About</a></li>
-        <li><a href="datasets.html">Datasets</a></li>
-        <li><a href="use-cases.html">Use Cases</a></li>
-        <li><a href="resources.html">Resources</a></li>
-        <li><a href="contribute.html">Contribute</a></li>
-        <li><a href="contact.html">Contact</a></li>
-        <li><a href="dashboard.html">Dashboard</a></li>
-      </ul>
-    </div>
+  <!-- Optional Flag Bar -->
+  <div class="flag-bar"></div>
+
+  <!-- Navigation -->
+  <nav class="full-width">
+    <ul class="nav-list">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html" aria-current="page">About</a></li>
+      <li><a href="datasets.html">Datasets</a></li>
+      <li><a href="use-cases.html">Use Cases</a></li>
+      <li><a href="resources.html">Resources</a></li>
+      <li><a href="contribute.html">Contribute</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
   </nav>
 
-  <header class="page-header">
+  <!-- Hero Section -->
+  <section class="hero full-width">
     <div class="wrapper">
       <h1>About Open Data Africa</h1>
+      <p>We are building a community-driven platform to support accessible, ethical, and inclusive open data for Africa—especially datasets that can power AI innovation in the region.</p>
     </div>
-  </header>
+  </section>
 
-  <main>
-    <div class="wrapper">
-      <p><strong>Open Data Africa</strong> is a data accessibility initiative under the <em>AI Made in Africa</em> program. Our mission is to empower African businesses, researchers, and AI innovators by making high-quality, openly licensed datasets easily discoverable and usable.</p>
+  <!-- Main Content -->
+  <main class="wrapper">
+     <section>
+    <h2>🚀 Our Mission</h2>
+    <p>
+      <strong>Open Data Africa</strong> is a data accessibility initiative under the <strong>AI Made in Africa</strong> program. 
+      Our mission is to empower African businesses, researchers, and AI innovators by making high-quality, 
+      openly licensed datasets easily discoverable and usable.
+    </p>
+    <p>
+      We believe that access to open and locally relevant data is a foundational step toward accelerating 
+      innovation, inclusive economic development, and responsible AI in Africa. Through this project, 
+      we aim to bridge data gaps and promote responsible data governance across sectors like health, 
+      agriculture, environment, and digital economy.
+    </p>
+    <p><em>Discovering African datasets and use cases for Artificial Intelligence.</em></p>
+  </section>
 
-      <p>We believe that access to open and locally relevant data is a foundational step toward accelerating innovation, inclusive economic development, and responsible AI in Africa. Through this project, we aim to bridge data gaps and promote responsible data governance across sectors like health, agriculture, environment, and digital economy.</p>
-
-      <p>Discovering African datasets and use cases for Artificial Intelligence.</p>
-    </div>
+    <section>
+      <h2>🌐 Contact & Collaboration</h2>
+      <p>We welcome partnerships, data contributions, and feedback. Please <a href="mailto:yonas.gebremichael@giz.de">get in touch</a> or visit our <a href="contribute.html">Contribute</a> page to share your ideas.</p>
+    </section>
   </main>
 
-  <footer>
+  <!-- Footer -->
+  <footer class="full-width">
     <div class="wrapper">
       <p>&copy; 2025 Open Data Africa. All rights reserved.</p>
     </div>
