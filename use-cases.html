@@ -10,24 +10,41 @@
     .filters {
       margin: 1.5rem 0;
       display: flex;
-      flex-wrap: wrap;
+      flex-direction: column;
       gap: 12px;
     }
-    .filters input,
-    .filters select {
+
+    .filters input {
       padding: 10px;
       font-size: 1rem;
       border: 1px solid #ccc;
       border-radius: 6px;
-      flex: 1;
-      min-width: 200px;
+      max-width: 500px;
+      width: 100%;
     }
+
+    .filter-selects {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .filter-selects select {
+      padding: 10px;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      min-width: 200px;
+      flex: 1;
+    }
+
     .card-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
       gap: 1.5rem;
       margin-bottom: 3rem;
     }
+
     .card {
       background: #ffffff;
       border: 1px solid #ddd;
@@ -36,6 +53,7 @@
       padding: 1rem;
       box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     }
+
     .card h3 {
       margin-top: 0;
     }
@@ -71,12 +89,14 @@
     <!-- Filters -->
     <div class="filters">
       <input type="text" id="searchInput" placeholder="Search use cases..." />
-      <select id="domainFilter">
-        <option value="">All Domains</option>
-      </select>
-      <select id="countryFilter">
-        <option value="">All Countries</option>
-      </select>
+      <div class="filter-selects">
+        <select id="domainFilter">
+          <option value="">All Domains</option>
+        </select>
+        <select id="countryFilter">
+          <option value="">All Countries</option>
+        </select>
+      </div>
     </div>
 
     <!-- Cards -->
@@ -100,7 +120,6 @@
           const domainSet = new Set();
           const countrySet = new Set();
 
-          // Populate filter options
           data.forEach(row => {
             if (row.Domain) domainSet.add(row.Domain.trim());
             if (row.Country) countrySet.add(row.Country.trim());
