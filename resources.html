@@ -5,197 +5,55 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Resources – Open Data Africa</title>
   <link rel="stylesheet" href="style.css" />
-  <style>
-    /* Base Styles */
-    body, html {
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-      background-color: #fff;
-      color: #222;
-      overflow-x: hidden;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-
-    nav {
-      background-color: #330000;
-      padding: 1rem 2rem;
-      width: 100%;
-      box-sizing: border-box;
-    }
-
-    .nav-list {
-      list-style: none;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 1.5rem;
-      padding: 0;
-      margin: 0;
-      max-width: 1200px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .nav-list li a {
-      color: white;
-      text-decoration: none;
-      font-weight: bold;
-    }
-
-    .nav-list a[aria-current="page"] {
-      text-decoration: underline;
-    }
-
-    header.hero {
-      background-color: #f5f5f5;
-      padding: 3rem 2rem;
-      text-align: center;
-      width: 100%;
-      box-sizing: border-box;
-    }
-
-    header.hero h1 {
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
-      color: #330000;
-      max-width: 1200px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    header.hero p {
-      font-size: 1.1rem;
-      color: #555;
-      max-width: 800px;
-      margin: 0 auto;
-    }
-
-    main {
-      flex: 1;
-      padding: 2rem;
-      width: 100%;
-      box-sizing: border-box;
-      max-width: 1200px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .resources-container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 2rem;
-    }
-
-    .resource-card {
-      background-color: #f9f9f9;
-      border: 1px solid #ccc;
-      border-left: 5px solid #aa0000;
-      flex: 1 1 300px;
-      padding: 20px;
-      border-radius: 8px;
-      text-align: left;
-      transition: all 0.3s ease;
-      text-decoration: none;
-      color: #333;
-      cursor: pointer;
-      box-sizing: border-box;
-      max-width: 350px;
-    }
-
-    .resource-card:hover {
-      background-color: #ffecec;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      border-left-color: #330000;
-    }
-
-    .resource-card h3 {
-      margin-top: 0;
-      color: #330000;
-    }
-
-    .resource-card p {
-      font-size: 0.95em;
-      color: #555;
-    }
-
-    footer {
-      background-color: #330000;
-      color: white;
-      text-align: center;
-      padding: 2rem 1rem;
-      font-size: 0.9rem;
-      width: 100%;
-      box-sizing: border-box;
-      margin-top: auto;
-    }
-
-    footer a {
-      color: white;
-      text-decoration: underline;
-      margin: 0 0.5rem;
-    }
-
-    /* Responsive */
-    @media (max-width: 600px) {
-      .resource-card {
-        max-width: 100%;
-      }
-    }
-  </style>
 </head>
 <body>
+  <div class="wrapper">
 
-  <!-- Navigation Bar -->
-  <nav aria-label="Main navigation">
-    <ul class="nav-list">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="datasets.html">Datasets</a></li>
-      <li><a href="use-cases.html">Use Cases</a></li>
-      <li><a href="resources.html" aria-current="page">Resources</a></li>
-      <li><a href="contribute.html">Contribute</a></li>
-      <li><a href="contact.html">Contact</a></li>
-    </ul>
-  </nav>
+    <!-- Navigation -->
+    <nav aria-label="Main navigation">
+      <ul class="nav-list">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="datasets.html">Datasets</a></li>
+        <li><a href="use-cases.html">Use Cases</a></li>
+        <li><a href="resources.html" aria-current="page">Resources</a></li>
+        <li><a href="contribute.html">Contribute</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
 
-  <!-- Hero Section -->
-  <header class="hero">
-    <h1>Resources</h1>
-    <p>Select a category to explore curated resources supporting open data accessibility across Africa.</p>
-  </header>
+    <!-- Hero Section -->
+    <header class="hero">
+      <h1>Resources</h1>
+      <p>Select a category to explore curated resources supporting open data accessibility across Africa.</p>
+    </header>
 
-  <!-- Main Content -->
-  <main>
-    <div class="resources-container">
-      <a href="resources/publications.html" class="resource-card" aria-label="Publications">
-        <h3>📄 Publications</h3>
-        <p>Research, reports, and policy briefs related to open data and AI in Africa.</p>
-      </a>
+    <!-- Main Content -->
+    <main>
+      <div class="card-container">
 
-      <a href="resources/stakeholders.html" class="resource-card" aria-label="Stakeholders">
-        <h3>🤝 Stakeholders</h3>
-        <p>Institutions, networks, and community partners involved in data accessibility.</p>
-      </a>
+        <a href="resources/publications.html" class="card" tabindex="0">
+          <h3>📄 Publications</h3>
+          <p>Research, reports, and policy briefs related to open data and AI in Africa.</p>
+        </a>
 
-      <a href="resources/links.html" class="resource-card" aria-label="Useful Links">
-        <h3>🔗 Useful Links</h3>
-        <p>External tools, datasets portals, and APIs useful for African innovators.</p>
-      </a>
-    </div>
-  </main>
+        <a href="resources/stakeholders.html" class="card" tabindex="0">
+          <h3>🤝 Stakeholders</h3>
+          <p>Institutions, networks, and community partners involved in data accessibility.</p>
+        </a>
 
-  <!-- Footer -->
-  <footer>
-    <p>&copy; 2025 Open Data Africa. All rights reserved.</p>
-    <p>
-      <a href="mailto:yonas.gebremichael@giz.de">Contact Us</a> | 
-      <a href="contribute.html">Contribute a Dataset</a>
-    </p>
-  </footer>
+        <a href="resources/links.html" class="card" tabindex="0">
+          <h3>🔗 Useful Links</h3>
+          <p>External tools, datasets portals, and APIs useful for African innovators.</p>
+        </a>
 
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+      <p>&copy; 2025 Open Data Africa. All rights reserved.</p>
+    </footer>
+  </div>
 </body>
 </html>
