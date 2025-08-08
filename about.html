@@ -4,31 +4,123 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>About – Open Data Africa</title>
-  <link rel="stylesheet" href="style.css" />
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body, html {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background: #fff;
+      color: #222;
+    }
+
+    .wrapper {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+
+    nav {
+      background-color: #330000;
+      padding: 1rem 0;
+    }
+
+    .nav-list {
+      list-style: none;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      margin: 0;
+      padding: 0;
+    }
+
+    .nav-list li a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .nav-list a[aria-current="page"] {
+      text-decoration: underline;
+    }
+
+    header.page-header {
+      background-color: #f5f5f5;
+      padding: 3rem 1rem;
+      text-align: center;
+    }
+
+    header.page-header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    main {
+      padding: 2rem 1rem;
+    }
+
+    main p {
+      line-height: 1.6;
+      max-width: 900px;
+      margin: 0 auto 1.5rem auto;
+      font-size: 1.1rem;
+    }
+
+    footer {
+      background-color: #330000;
+      color: white;
+      text-align: center;
+      padding: 1.5rem 1rem;
+      margin-top: 3rem;
+    }
+
+    footer p {
+      margin: 0;
+    }
+  </style>
 </head>
 <body>
 
-  <nav aria-label="Main navigation">
-    <ul class="nav-list">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="about.html" aria-current="page">About</a></li>
-      <li><a href="datasets.html">Datasets</a></li>
-      <li><a href="use-cases.html">Use Cases</a></li>
-      <li><a href="resources.html">Resources</a></li>
-      <li><a href="contribute.html">Contribute</a></li>
-      <li><a href="contact.html">Contact</a></li>
-    </ul>
+  <nav>
+    <div class="wrapper">
+      <ul class="nav-list">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html" aria-current="page">About</a></li>
+        <li><a href="datasets.html">Datasets</a></li>
+        <li><a href="use-cases.html">Use Cases</a></li>
+        <li><a href="resources.html">Resources</a></li>
+        <li><a href="contribute.html">Contribute</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="dashboard.html">Dashboard</a></li>
+      </ul>
+    </div>
   </nav>
 
+  <header class="page-header">
+    <div class="wrapper">
+      <h1>About Open Data Africa</h1>
+    </div>
+  </header>
+
   <main>
-    <h1>About Open Data Africa</h1>
+    <div class="wrapper">
+      <p><strong>Open Data Africa</strong> is a data accessibility initiative under the <em>AI Made in Africa</em> program. Our mission is to empower African businesses, researchers, and AI innovators by making high-quality, openly licensed datasets easily discoverable and usable.</p>
 
-    <p><strong>Open Data Africa</strong> is a data accessibility initiative under the <em>AI Made in Africa</em> program. Our mission is to empower African businesses, researchers, and AI innovators by making high-quality, openly licensed datasets easily discoverable and usable.</p>
+      <p>We believe that access to open and locally relevant data is a foundational step toward accelerating innovation, inclusive economic development, and responsible AI in Africa. Through this project, we aim to bridge data gaps and promote responsible data governance across sectors like health, agriculture, environment, and digital economy.</p>
 
-    <p>We believe that access to open and locally relevant data is a foundational step toward accelerating innovation, inclusive economic development, and responsible AI in Africa. Through this project, we aim to bridge data gaps and promote responsible data governance across sectors like health, agriculture, environment, and digital economy.</p>
-
-    <p>Discovering African datasets and use cases for Artificial Intelligence</p>
+      <p>Discovering African datasets and use cases for Artificial Intelligence.</p>
+    </div>
   </main>
+
+  <footer>
+    <div class="wrapper">
+      <p>&copy; 2025 Open Data Africa. All rights reserved.</p>
+    </div>
+  </footer>
 
 </body>
 </html>
