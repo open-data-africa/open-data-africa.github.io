@@ -5,95 +5,240 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Open Data Africa – Home</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    /* General Styles */
+    body, html {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: #fff;
+      color: #222;
+      min-height: 100vh;
+    }
+
+    .wrapper {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem;
+    }
+
+    nav {
+      background-color: #330000;
+      padding: 1rem 0;
+    }
+
+    .nav-list {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      list-style: none;
+      gap: 1.5rem;
+      padding: 0;
+      margin: 0;
+    }
+
+    .nav-list li a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    header.hero {
+      background-color: #f2f2f2;
+      padding: 4rem 1rem;
+      text-align: center;
+    }
+
+    header.hero h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    header.hero p {
+      font-size: 1.2rem;
+      color: #555;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    /* Dashboard Cards */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      margin: 3rem 0;
+    }
+
+    .dashboard-card {
+      background: #fafafa;
+      border: 1px solid #ddd;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      text-align: center;
+      transition: transform 0.2s ease;
+    }
+
+    .dashboard-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+    }
+
+    .dashboard-card h2 {
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .button {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.6rem 1.2rem;
+      background-color: #330000;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 5px;
+    }
+
+    /* Team Section */
+    .team-section {
+      margin-top: 3rem;
+      text-align: center;
+    }
+
+    .team-section h2 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .team-section p {
+      color: #555;
+      margin-bottom: 2rem;
+    }
+
+    .team-scroll {
+      display: flex;
+      overflow-x: auto;
+      gap: 1rem;
+      padding-bottom: 1rem;
+      scroll-snap-type: x mandatory;
+    }
+
+    .team-member {
+      flex: 0 0 auto;
+      scroll-snap-align: start;
+      background: #f7f7f7;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 1.2rem;
+      min-width: 220px;
+      text-align: center;
+      font-weight: bold;
+      transition: background 0.3s ease;
+    }
+
+    .team-member:hover {
+      background: #e0e0e0;
+    }
+
+    /* Footer */
+    footer {
+      background-color: #330000;
+      color: white;
+      text-align: center;
+      padding: 2rem 1rem;
+      margin-top: 4rem;
+    }
+
+    @media (max-width: 600px) {
+      header.hero h1 {
+        font-size: 2rem;
+      }
+    }
+  </style>
 </head>
 <body>
 
-  <!-- Navigation Bar -->
-  <nav>
-    <ul class="nav-list">
-      <li><a href="index.html" aria-current="page">Home</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="datasets.html">Datasets</a></li>
-      <li><a href="use-cases.html">Use Cases</a></li>
-      <li><a href="resources.html">Resources</a></li>
-      <li><a href="contribute.html">Contribute</a></li>
-      <li><a href="contact.html">Contact</a></li>
-      <li><a href="dashboard.html">Dashboard</a></li>
-    </ul>
-  </nav>
+  <div class="wrapper">
+    <!-- Navigation Bar -->
+    <nav>
+      <ul class="nav-list">
+        <li><a href="index.html" aria-current="page">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="datasets.html">Datasets</a></li>
+        <li><a href="use-cases.html">Use Cases</a></li>
+        <li><a href="resources.html">Resources</a></li>
+        <li><a href="contribute.html">Contribute</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="dashboard.html">Dashboard</a></li>
+      </ul>
+    </nav>
 
-  <!-- Hero Section -->
-  <header class="hero">
-    <h1>Open Data Africa</h1>
-    <p>Empowering African AI innovators and businesses through accessible, high-quality datasets.</p>
-  </header>
+    <!-- Hero Section -->
+    <header class="hero">
+      <h1>Open Data Africa</h1>
+      <p>Empowering African AI innovators and businesses through accessible, high-quality datasets.</p>
+    </header>
 
-  <!-- Main Dashboard Grid -->
-  <main>
-    <section class="dashboard-grid">
-      <div class="dashboard-card">
-        <h2>🔍 Explore Datasets</h2>
-        <p>Browse open datasets across agriculture, health, language, climage and more.</p>
-        <a href="datasets.html" class="button">View Datasets</a>
-      </div>
+    <!-- Dashboard Grid -->
+    <main>
+      <section class="dashboard-grid">
+        <div class="dashboard-card">
+          <h2>🔍 Explore Datasets</h2>
+          <p>Browse open datasets across agriculture, health, language, climate and more.</p>
+          <a href="datasets.html" class="button">View Datasets</a>
+        </div>
 
-      <div class="dashboard-card">
-        <h2>📊 Interactive Dashboard</h2>
-        <p>Visualize trends, data domains, freshness, and licensing across Africa.</p>
-        <a href="dashboard.html" class="button">Open Dashboard</a>
-      </div>
+        <div class="dashboard-card">
+          <h2>📊 Interactive Dashboard</h2>
+          <p>Visualize trends, data domains, freshness, and licensing across Africa.</p>
+          <a href="dashboard.html" class="button">Open Dashboard</a>
+        </div>
 
-      <div class="dashboard-card">
-        <h2>📄 Use Cases</h2>
-        <p>See how data is used in real-world African AI applications and projects.</p>
-        <a href="use-cases.html" class="button">Explore Use Cases</a>
-      </div>
+        <div class="dashboard-card">
+          <h2>📄 Use Cases</h2>
+          <p>See how data is used in real-world African AI applications and projects.</p>
+          <a href="use-cases.html" class="button">Explore Use Cases</a>
+        </div>
 
-      <div class="dashboard-card">
-        <h2>📚 Resources</h2>
-        <p>Access publications, policy briefs, and useful links.</p>
-        <a href="resources.html" class="button">View Resources</a>
-      </div>
+        <div class="dashboard-card">
+          <h2>📚 Resources</h2>
+          <p>Access publications, policy briefs, and useful links.</p>
+          <a href="resources.html" class="button">View Resources</a>
+        </div>
 
-      <div class="dashboard-card">
-        <h2>🤝 Contribute</h2>
-        <p>Submit your own open datasets and be part of Africa’s data ecosystem.</p>
-        <a href="contribute.html" class="button">Share Your Data</a>
-      </div>
+        <div class="dashboard-card">
+          <h2>🤝 Contribute</h2>
+          <p>Submit your own open datasets and be part of Africa’s data ecosystem.</p>
+          <a href="contribute.html" class="button">Share Your Data</a>
+        </div>
 
-      <div class="dashboard-card">
-        <h2>📬 Contact Us</h2>
-        <p>Questions, ideas, or partnerships? We’d love to hear from you.</p>
-        <a href="contact.html" class="button">Get in Touch</a>
-      </div>
-    </section>
-<section class="team-section">
-  <h2>👥 Meet the Team</h2>
-  <p>We are making African datasets accessible and impactful.</p>
+        <div class="dashboard-card">
+          <h2>📬 Contact Us</h2>
+          <p>Questions, ideas, or partnerships? We’d love to hear from you.</p>
+          <a href="contact.html" class="button">Get in Touch</a>
+        </div>
+      </section>
 
-  <div class="team-grid">
-     <div class="team-card">
-      <img src="images/member2.jpg" alt="Kuuku Sam">
-      <h3>Kuuku Sam</h3>
-      <p> Project Lead - AI Made in Africa</p>
-    </div>
-    <div class="team-card">
-      <img src="images/member1.jpg" alt="Yonas Gebremichael">
-      <h3>Yonas Gebremichael</h3>
-      <p>Advisor – AI for Economic Development</p>
-    </div>
-    <div class="team-card">
-      <img src="images/member2.jpg" alt="Saba Tiku">
-      <h3>Saba Tiku</h3>
-      <p>Junior Advisor - AI for Economic Development</p>
-    </div>
+      <!-- Team Section -->
+      <section class="team-section">
+        <h2>👥 Meet the Team</h2>
+        <p>We are making African datasets accessible.</p>
+
+        <div class="team-scroll">
+          <div class="team-member">Kuuku Sam – Project Lead</div>
+          <div class="team-member">Yonas Gebremichael – AI Advisor</div>
+          <div class="team-member">Saba Tiku – Junior AI Advisor</div>
+
+ 
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+      &copy; 2025 Open Data Africa. All rights reserved.
+    </footer>
   </div>
-</section>
 
-    
-  </main>
-
-
-  
 </body>
 </html>
