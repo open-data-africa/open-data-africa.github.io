@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Resources – Open Data Africa</title>
   <link rel="stylesheet" href="style.css" />
   <style>
@@ -54,7 +54,7 @@
       color: #ffcc00;
     }
 
-    header.hero {
+    .hero {
       background: linear-gradient(to bottom, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 1)),
         url('https://images.unsplash.com/photo-1581091012184-80b0a17b9f06?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
       text-align: center;
@@ -74,44 +74,21 @@
       color: #333;
     }
 
-    main {
-      padding: 2rem 0;
+    main h2 {
+      margin-top: 2rem;
+      color: #330000;
     }
 
-    .resources-container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 30px;
-      padding: 20px 0;
-    }
-
-    .resource-card {
-      background-color: #f9f9f9;
-      border: 1px solid #ccc;
-      border-left: 5px solid #aa0000;
-      width: 300px;
-      padding: 20px;
-      border-radius: 8px;
+    main ul {
+      list-style: disc inside;
+      margin: 1rem auto 2rem;
+      max-width: 800px;
       text-align: left;
-      transition: all 0.3s ease;
-      cursor: pointer;
-      text-decoration: none;
-      color: #333;
     }
 
-    .resource-card:hover {
-      background-color: #ffecec;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-
-    .resource-card h3 {
-      margin-top: 0;
-    }
-
-    .resource-card p {
-      font-size: 0.95em;
-      color: #555;
+    main a {
+      color: #0066cc;
+      text-decoration: underline;
     }
 
     footer {
@@ -140,15 +117,16 @@
         gap: 1rem;
       }
 
-      .resource-card {
-        width: 90%;
+      main ul {
+        padding-left: 1rem;
       }
     }
   </style>
 </head>
 <body>
 
-  <nav class="full-width" aria-label="Main navigation">
+  <!-- Navigation -->
+  <nav class="full-width">
     <ul class="nav-list">
       <li><a href="index.html">Home</a></li>
       <li><a href="about.html">About</a></li>
@@ -160,32 +138,34 @@
     </ul>
   </nav>
 
-  <header class="hero full-width">
+  <!-- Hero Section -->
+  <section class="hero full-width">
     <div class="wrapper">
       <h1>Resources</h1>
-      <p>Select a category to explore curated resources supporting open data accessibility across Africa.</p>
+      <p>Explore tools, guidelines, and references that support data sharing, AI development, and responsible innovation in Africa.</p>
     </div>
-  </header>
+  </section>
 
+  <!-- Main Content -->
   <main class="wrapper">
-    <div class="resources-container">
-      <a href="resources/publications.html" class="resource-card">
-        <h3>📄 Publications</h3>
-        <p>Research, reports, and policy briefs related to open data and AI in Africa.</p>
-      </a>
+    <h2>Open Data & AI Resources</h2>
+    <ul>
+      <li><a href="https://africaopendata.org/" target="_blank">Africa Open Data Network</a> – A platform promoting open data across African countries.</li>
+      <li><a href="https://www.data.gov/" target="_blank">data.gov</a> – The U.S. government's open data portal.</li>
+      <li><a href="https://datasetsearch.research.google.com/" target="_blank">Google Dataset Search</a> – A search engine for datasets across the web.</li>
+      <li><a href="https://fair-forward.ai" target="_blank">FAIR Forward – GIZ</a> – Enabling responsible and inclusive AI in Africa and Asia.</li>
+      <li><a href="https://www.who.int/data/gho" target="_blank">WHO Global Health Observatory</a> – Health indicators and datasets globally.</li>
+    </ul>
 
-      <a href="resources/stakeholders.html" class="resource-card">
-        <h3>🤝 Stakeholders</h3>
-        <p>Institutions, networks, and community partners involved in data accessibility.</p>
-      </a>
-
-      <a href="resources/links.html" class="resource-card">
-        <h3>🔗 Useful Links</h3>
-        <p>External tools, datasets portals, and APIs useful for African innovators.</p>
-      </a>
-    </div>
+    <h2>Guidelines for Sharing Data</h2>
+    <ul>
+      <li><a href="https://opendefinition.org/" target="_blank">Open Definition</a> – What it means for data to be open.</li>
+      <li><a href="https://theodi.org" target="_blank">Open Data Institute</a> – Training, standards, and policies around open data.</li>
+      <li><a href="https://www.go-fair.org/fair-principles/" target="_blank">FAIR Principles</a> – Making data Findable, Accessible, Interoperable, and Reusable.</li>
+    </ul>
   </main>
 
+  <!-- Footer -->
   <footer class="full-width">
     <div class="wrapper">
       <p>&copy; 2025 Open Data Africa. All rights reserved.</p>
