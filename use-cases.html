@@ -7,26 +7,50 @@
   <link rel="stylesheet" href="style.css" />
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   <style>
+    .hero {
+      background-color: #f4f4f4;
+      padding: 3rem 1rem;
+      text-align: center;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .hero h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .hero p {
+      font-size: 1.1rem;
+      max-width: 700px;
+      margin: 0 auto;
+      color: #555;
+    }
+
     .filters {
-      margin: 1.5rem 0;
+      margin: 2rem auto;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 16px;
+      align-items: center;
+      max-width: 800px;
+      padding: 0 1rem;
     }
 
     .filters input {
-      padding: 10px;
+      padding: 12px;
       font-size: 1rem;
       border: 1px solid #ccc;
       border-radius: 6px;
-      max-width: 500px;
       width: 100%;
+      max-width: 600px;
     }
 
     .filter-selects {
       display: flex;
       gap: 12px;
       flex-wrap: wrap;
+      justify-content: center;
+      width: 100%;
     }
 
     .filter-selects select {
@@ -36,6 +60,7 @@
       border-radius: 6px;
       min-width: 200px;
       flex: 1;
+      max-width: 300px;
     }
 
     .card-grid {
@@ -43,6 +68,7 @@
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
       gap: 1.5rem;
       margin-bottom: 3rem;
+      padding: 0 1rem;
     }
 
     .card {
@@ -83,12 +109,19 @@
     </ul>
   </nav>
 
+<!-- Hero Section -->
+<section class="hero">
+  <h1>Explore Use Cases</h1>
+  <p>
+    Dive into a comprehensive collection of real-world examples showcasing how open data is transforming domains and communities across Africa. From boosting agricultural productivity and enhancing healthcare delivery to fostering smart city initiatives and advancing artificial intelligence research, these use cases illustrate the powerful impact of data transparency and accessibility. Use the search function or apply filters by domain or country to quickly find case studies that inspire innovation and demonstrate the practical benefits of open data in your area of interest.
+  </p>
+</section>
+
   <main class="wrapper">
-    <h1>Explore Use Cases</h1>
 
     <!-- Filters -->
     <div class="filters">
-      <input type="text" id="searchInput" placeholder="Search use cases..." />
+      <input type="text" id="searchInput" placeholder="🔍 Search use cases by keywords..." />
       <div class="filter-selects">
         <select id="domainFilter">
           <option value="">All Domains</option>
