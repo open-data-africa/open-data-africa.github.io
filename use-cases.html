@@ -6,6 +6,49 @@
   <title>Use Cases – Open Data Africa</title>
   <link rel="stylesheet" href="style.css" />
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <style>
+    .filters {
+      margin: 1.5rem 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .filters input,
+    .filters select {
+      padding: 10px;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      flex: 1;
+      min-width: 200px;
+    }
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+    .card {
+      background: #ffffff;
+      border: 1px solid #ddd;
+      border-left: 5px solid #aa0000;
+      border-radius: 8px;
+      padding: 1rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .card h3 {
+      margin-top: 0;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1.5rem 0;
+      border-top: 1px solid #ddd;
+      font-size: 0.9rem;
+      color: #666;
+      background-color: #f9f9f9;
+    }
+  </style>
 </head>
 <body>
 
@@ -22,7 +65,7 @@
     </ul>
   </nav>
 
-  <main class="container">
+  <main class="wrapper">
     <h1>Explore Use Cases</h1>
 
     <!-- Filters -->
@@ -36,11 +79,15 @@
       </select>
     </div>
 
-    <!-- Card Container -->
+    <!-- Cards -->
     <div id="useCasesContainer" class="card-grid">
       <!-- Cards will be dynamically inserted here -->
     </div>
   </main>
+
+  <footer>
+    &copy; 2025 Open Data Africa. All rights reserved.
+  </footer>
 
   <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -53,7 +100,7 @@
           const domainSet = new Set();
           const countrySet = new Set();
 
-          // Populate filters
+          // Populate filter options
           data.forEach(row => {
             if (row.Domain) domainSet.add(row.Domain.trim());
             if (row.Country) countrySet.add(row.Country.trim());
@@ -97,7 +144,6 @@
 
           renderCards();
 
-          // Event Listeners
           document.getElementById("searchInput").addEventListener("input", e => {
             renderCards(e.target.value, domainFilter.value, countryFilter.value);
           });
@@ -113,30 +159,6 @@
       });
     });
   </script>
-
-  <style>
-    .filters {
-      margin: 1rem 0;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-    .filters input, .filters select {
-      padding: 8px;
-      font-size: 1rem;
-    }
-    .card-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 1rem;
-    }
-    .card {
-      background: #f4f4f4;
-      border-radius: 8px;
-      padding: 1rem;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-  </style>
 
 </body>
 </html>
