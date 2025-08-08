@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Datasets – Open Data Africa</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Open Data Africa – Datasets</title>
   <link rel="stylesheet" href="style.css" />
   <style>
+    /* Base Reset */
     * {
       margin: 0;
       padding: 0;
@@ -13,74 +14,82 @@
     }
 
     body {
-      font-family: Arial, sans-serif;
-      background-color: #fdfdfd;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f8f9fa;
       color: #222;
+      line-height: 1.6;
     }
 
     .wrapper {
-      max-width: 960px;
+      max-width: 1080px;
       margin: 0 auto;
-      padding: 2rem 1rem;
+      padding: 1rem;
     }
 
-    /* Navigation */
+    /* Navigation Bar */
     nav {
-      background-color: #222;
+      background-color: #330000;
       padding: 1rem 0;
-      border-bottom: 4px solid #330000;
     }
 
-    .nav-list {
-      list-style: none;
+    nav ul {
       display: flex;
       justify-content: center;
+      list-style: none;
       gap: 1.5rem;
-      padding: 0;
-      margin: 0;
+      flex-wrap: wrap;
     }
 
-    .nav-list li a {
+    nav ul li a {
       color: #fff;
       text-decoration: none;
       font-weight: bold;
     }
 
-    .nav-list a[aria-current="page"] {
+    nav ul li a[aria-current="page"] {
       text-decoration: underline;
       color: #ffcc00;
     }
 
-    /* Hero Banner */
-    .hero-banner {
-      background: linear-gradient(to bottom, rgba(255, 255, 255, 0.7), rgba(219, 106, 108, 0.7)),
-        url('https://images.unsplash.com/photo-1581091012184-80b0a17b9f06?auto=format&fit=crop&w=1600&q=80') no-repeat center center/cover;
-      color: #330000;
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(to bottom, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.95)),
+        url('https://images.unsplash.com/photo-1581091012184-80b0a17b9f06?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
       text-align: center;
-      padding: 5rem 2rem;
+      padding: 6rem 2rem 4rem;
     }
 
-    .hero-banner h1 {
-      font-size: 2.5rem;
+    .hero h1 {
+      font-size: 2.8rem;
+      color: #330000;
       margin-bottom: 1rem;
     }
 
-    .hero-banner p {
+    .hero p {
       font-size: 1.2rem;
-      max-width: 800px;
+      max-width: 720px;
       margin: 0 auto;
-      line-height: 1.6;
+      color: #333;
     }
 
-    /* Buttons */
-    .button, .button-outline {
+    /* Content Section */
+    .dataset-content {
+      text-align: center;
+      padding: 3rem 1rem;
+    }
+
+    .dataset-content p {
+      margin-bottom: 1.5rem;
+    }
+
+    .button,
+    .button-outline {
       display: inline-block;
       padding: 0.75rem 1.5rem;
-      font-size: 1rem;
       border-radius: 6px;
+      font-size: 1rem;
       text-decoration: none;
       transition: all 0.3s ease;
-      cursor: pointer;
       margin-top: 1rem;
     }
 
@@ -91,33 +100,50 @@
 
     .button:hover {
       background-color: #4a0000;
-      transform: scale(1.05);
+      transform: translateY(-2px);
     }
 
     .button-outline {
-      background-color: transparent;
-      color: #330000;
       border: 2px solid #330000;
+      color: #330000;
+      background: transparent;
     }
 
     .button-outline:hover {
       background-color: #330000;
-      color: #fff;
-      transform: scale(1.05);
+      color: white;
+      transform: translateY(-2px);
     }
 
-    /* Footer */
+    .link-footer {
+      margin-top: 3rem;
+    }
+
     footer {
       background-color: #330000;
       color: white;
       text-align: center;
       padding: 2rem 1rem;
-      margin-top: 3rem;
     }
 
     footer a {
-      color: white;
+      color: #fff;
       text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 2rem;
+      }
+
+      .hero p {
+        font-size: 1rem;
+      }
+
+      nav ul {
+        flex-direction: column;
+        gap: 1rem;
+      }
     }
   </style>
 </head>
@@ -136,14 +162,16 @@
     </ul>
   </nav>
 
-  <!-- Hero Section -->
-  <section class="hero-banner">
-    <h1>Access Our Dataset Catalogue</h1>
-    <p>We collect and catalogue openly licensed datasets relevant to Africa that support the development of AI solutions across the continent. These datasets cover agriculture, health, language, climate, environment, and more, all focused on accessibility and responsible reuse.</p>
+  <!-- Hero Banner -->
+  <section class="hero">
+    <div class="wrapper">
+      <h1>Access Our Dataset Catalogue</h1>
+      <p>We collect and catalogue openly licensed datasets relevant to Africa that support the development of AI solutions across the continent. These datasets cover agriculture, health, language, climate, environment, and more, all focused on accessibility and responsible reuse.</p>
+    </div>
   </section>
 
   <!-- Main Content -->
-  <main class="wrapper">
+  <main class="dataset-content wrapper">
     <p><strong>Interested in exploring the full catalog?</strong><br>
     You can request access by sending us an email using the button below.</p>
 
@@ -153,7 +181,7 @@
       📩 Request Dataset Catalogue
     </a>
 
-    <div style="margin-top: 2rem;">
+    <div class="link-footer">
       <p>Have a dataset you'd like to contribute to our open data catalogue?</p>
       <a href="contribute.html" class="button-outline">🤝 Share Your Dataset</a>
     </div>
@@ -162,10 +190,7 @@
   <!-- Footer -->
   <footer>
     <p>&copy; 2025 Open Data Africa. All rights reserved.</p>
-    <p>
-      <a href="mailto:yonas.gebremichael@giz.de">Contact Us</a> |
-      <a href="contribute.html">Contribute a Dataset</a>
-    </p>
+ 
   </footer>
 
 </body>
