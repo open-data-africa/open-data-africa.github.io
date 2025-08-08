@@ -2,131 +2,50 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Resources – Open Data Africa</title>
   <link rel="stylesheet" href="style.css" />
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f8f9fa;
-      color: #222;
-      line-height: 1.6;
-    }
-
-    .full-width {
-      width: 100%;
-    }
-
-    .wrapper {
-      width: 100%;
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 2rem 1rem;
-    }
-
-    nav {
-      background-color: #330000;
-      padding: 1rem 0;
-    }
-
-    nav ul {
+    .resources-container {
       display: flex;
-      justify-content: center;
-      list-style: none;
-      gap: 1.5rem;
       flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+      padding: 20px 0;
     }
 
-    nav ul li a {
-      color: #fff;
+    .resource-card {
+      background-color: #f9f9f9;
+      border: 1px solid #ccc;
+      border-left: 5px solid #aa0000;
+      width: 300px;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: left;
+      transition: all 0.3s ease;
+      cursor: pointer;
       text-decoration: none;
-      font-weight: bold;
-    }
-
-    nav ul li a[aria-current="page"] {
-      text-decoration: underline;
-      color: #ffcc00;
-    }
-
-    .hero {
-      background: linear-gradient(to bottom, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 1)),
-        url('https://images.unsplash.com/photo-1581091012184-80b0a17b9f06?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
-      text-align: center;
-      padding: 6rem 2rem 4rem;
-    }
-
-    .hero h1 {
-      font-size: 2.8rem;
-      color: #330000;
-      margin-bottom: 1rem;
-    }
-
-    .hero p {
-      font-size: 1.2rem;
-      max-width: 900px;
-      margin: 0 auto;
       color: #333;
     }
 
-    main h2 {
-      margin-top: 2rem;
-      color: #330000;
+    .resource-card:hover {
+      background-color: #ffecec;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
 
-    main ul {
-      list-style: disc inside;
-      margin: 1rem auto 2rem;
-      max-width: 800px;
-      text-align: left;
+    .resource-card h3 {
+      margin-top: 0;
     }
 
-    main a {
-      color: #0066cc;
-      text-decoration: underline;
-    }
-
-    footer {
-      background-color: #330000;
-      color: white;
-      text-align: center;
-      padding: 2rem 1rem;
-    }
-
-    footer a {
-      color: #fff;
-      text-decoration: underline;
-    }
-
-    @media (max-width: 768px) {
-      .hero h1 {
-        font-size: 2rem;
-      }
-
-      .hero p {
-        font-size: 1rem;
-      }
-
-      nav ul {
-        flex-direction: column;
-        gap: 1rem;
-      }
-
-      main ul {
-        padding-left: 1rem;
-      }
+    .resource-card p {
+      font-size: 0.95em;
+      color: #555;
     }
   </style>
 </head>
 <body>
 
-  <!-- Navigation -->
-  <nav class="full-width">
+  <nav aria-label="Main navigation">
     <ul class="nav-list">
       <li><a href="index.html">Home</a></li>
       <li><a href="about.html">About</a></li>
@@ -138,43 +57,27 @@
     </ul>
   </nav>
 
-  <!-- Hero Section -->
-  <section class="hero full-width">
-    <div class="wrapper">
-      <h1>Resources</h1>
-      <p>Explore tools, guidelines, and references that support data sharing, AI development, and responsible innovation in Africa.</p>
+  <main>
+    <h1>Resources</h1>
+    <p>Select a category to explore curated resources supporting open data accessibility across Africa.</p>
+
+    <div class="resources-container">
+      <a href="resources/publications.html" class="resource-card">
+        <h3>📄 Publications</h3>
+        <p>Research, reports, and policy briefs related to open data and AI in Africa.</p>
+      </a>
+
+      <a href="resources/stakeholders.html" class="resource-card">
+        <h3>🤝 Stakeholders</h3>
+        <p>Institutions, networks, and community partners involved in data accessibility.</p>
+      </a>
+
+      <a href="resources/links.html" class="resource-card">
+        <h3>🔗 Useful Links</h3>
+        <p>External tools, datasets portals, and APIs useful for African innovators.</p>
+      </a>
     </div>
-  </section>
-
-  <!-- Main Content -->
-  <main class="wrapper">
-    <h2>Open Data & AI Resources</h2>
-    <ul>
-      <li><a href="https://africaopendata.org/" target="_blank">Africa Open Data Network</a> – A platform promoting open data across African countries.</li>
-      <li><a href="https://www.data.gov/" target="_blank">data.gov</a> – The U.S. government's open data portal.</li>
-      <li><a href="https://datasetsearch.research.google.com/" target="_blank">Google Dataset Search</a> – A search engine for datasets across the web.</li>
-      <li><a href="https://fair-forward.ai" target="_blank">FAIR Forward – GIZ</a> – Enabling responsible and inclusive AI in Africa and Asia.</li>
-      <li><a href="https://www.who.int/data/gho" target="_blank">WHO Global Health Observatory</a> – Health indicators and datasets globally.</li>
-    </ul>
-
-    <h2>Guidelines for Sharing Data</h2>
-    <ul>
-      <li><a href="https://opendefinition.org/" target="_blank">Open Definition</a> – What it means for data to be open.</li>
-      <li><a href="https://theodi.org" target="_blank">Open Data Institute</a> – Training, standards, and policies around open data.</li>
-      <li><a href="https://www.go-fair.org/fair-principles/" target="_blank">FAIR Principles</a> – Making data Findable, Accessible, Interoperable, and Reusable.</li>
-    </ul>
   </main>
-
-  <!-- Footer -->
-  <footer class="full-width">
-    <div class="wrapper">
-      <p>&copy; 2025 Open Data Africa. All rights reserved.</p>
-      <p>
-        <a href="mailto:yonas.gebremichael@giz.de">Contact Us</a> |
-        <a href="contribute.html">Contribute a Dataset</a>
-      </p>
-    </div>
-  </footer>
 
 </body>
 </html>
