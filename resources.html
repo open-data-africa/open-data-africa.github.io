@@ -5,11 +5,137 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Resources – Open Data Africa</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Base reset and layout */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body, html {
+      font-family: Arial, sans-serif;
+      background-color: #fff;
+      color: #222;
+      overflow-x: hidden;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .wrapper {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem;
+      flex: 1 0 auto;
+      width: 100%;
+    }
+    nav {
+      background-color: #330000;
+      padding: 1rem 0;
+    }
+    .nav-list {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1.5rem;
+    }
+    .nav-list li a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1rem;
+      padding: 0.25rem 0.5rem;
+      display: inline-block;
+      transition: color 0.3s ease;
+    }
+    .nav-list li a:hover,
+    .nav-list a[aria-current="page"] {
+      color: #ffcc00;
+      text-decoration: underline;
+    }
+
+    main h1 {
+      text-align: center;
+      margin-bottom: 1rem;
+      font-size: 2.5rem;
+      color: #330000;
+    }
+    main p.intro {
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto 2rem;
+      font-size: 1.1rem;
+      color: #555;
+    }
+
+    /* Card container and cards */
+    .card-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .card {
+      background-color: #f9f9f9;
+      border-left: 5px solid #aa0000;
+      border-radius: 8px;
+      padding: 1.5rem;
+      max-width: 320px;
+      flex: 1 1 280px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      color: #222;
+      text-decoration: none;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+      text-align: left;
+    }
+    .card:hover {
+      background-color: #ffecec;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+    }
+    .card h3 {
+      margin-bottom: 0.75rem;
+      color: #330000;
+      font-size: 1.3rem;
+    }
+    .card p {
+      font-size: 1rem;
+      color: #444;
+      line-height: 1.4;
+    }
+
+    /* Footer */
+    footer {
+      background-color: #330000;
+      color: white;
+      text-align: center;
+      padding: 1.5rem 1rem;
+      margin-top: auto;
+      font-size: 0.9rem;
+    }
+    footer a {
+      color: #ffcc00;
+      text-decoration: underline;
+      margin: 0 0.5rem;
+      transition: color 0.3s ease;
+    }
+    footer a:hover {
+      color: #fff;
+    }
+
+    /* Responsive tweaks */
+    @media (max-width: 480px) {
+      .card {
+        max-width: 100%;
+      }
+    }
+  </style>
 </head>
 <body>
   <div class="wrapper">
 
-    <!-- Navigation -->
+    <!-- Navigation Bar -->
     <nav aria-label="Main navigation">
       <ul class="nav-list">
         <li><a href="index.html">Home</a></li>
@@ -22,38 +148,33 @@
       </ul>
     </nav>
 
-    <!-- Hero Section -->
-    <header class="hero">
-      <h1>Resources</h1>
-      <p>Select a category to explore curated resources supporting open data accessibility across Africa.</p>
-    </header>
-
     <!-- Main Content -->
     <main>
-      <div class="card-container">
+      <h1>Resources</h1>
+      <p class="intro">Select a category to explore curated resources supporting open data accessibility across Africa.</p>
 
-        <a href="resources/publications.html" class="card" tabindex="0">
+      <div class="card-container">
+        <a href="resources/publications.html" class="card" aria-label="Publications Resources">
           <h3>📄 Publications</h3>
           <p>Research, reports, and policy briefs related to open data and AI in Africa.</p>
         </a>
 
-        <a href="resources/stakeholders.html" class="card" tabindex="0">
+        <a href="resources/stakeholders.html" class="card" aria-label="Stakeholders Resources">
           <h3>🤝 Stakeholders</h3>
           <p>Institutions, networks, and community partners involved in data accessibility.</p>
         </a>
 
-        <a href="resources/links.html" class="card" tabindex="0">
+        <a href="resources/links.html" class="card" aria-label="Useful Links Resources">
           <h3>🔗 Useful Links</h3>
           <p>External tools, datasets portals, and APIs useful for African innovators.</p>
         </a>
-
       </div>
     </main>
 
-    <!-- Footer -->
-    <footer>
-      <p>&copy; 2025 Open Data Africa. All rights reserved.</p>
-    </footer>
   </div>
+
+  <footer>
+    <p>&copy; 2025 Open Data Africa. All rights reserved.</p>
+  </footer>
 </body>
 </html>
