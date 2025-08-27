@@ -2,112 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Datasets – Open Data Africa</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Open Data Africa – Datasets</title>
   <link rel="stylesheet" href="style.css" />
-  <style>
-    /* Quick styles for datasets page enhancements */
-    .hero {
-      background: linear-gradient(135deg, #000 40%, #ffce00 70%);
-      color: #fff;
-      padding: 80px 20px;
-      text-align: center;
-    }
-    .hero h1 {
-      font-size: 2.8rem;
-      margin-bottom: 15px;
-    }
-    .hero p {
-      font-size: 1.2rem;
-      max-width: 800px;
-      margin: auto;
-    }
-    .stats {
-      display: flex;
-      justify-content: center;
-      gap: 30px;
-      margin: 40px auto;
-      flex-wrap: wrap;
-    }
-    .stat-box {
-      background: #fff;
-      border: 2px solid #ffce00;
-      border-radius: 8px;
-      padding: 20px;
-      text-align: center;
-      width: 180px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.08);
-    }
-    .stat-box h2 {
-      font-size: 2rem;
-      color: #d00;
-      margin: 0;
-    }
-    .categories {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
-      margin: 40px 0;
-    }
-    .category-card {
-      background: #fff;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      padding: 20px;
-      text-align: center;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-      transition: transform 0.2s;
-    }
-    .category-card:hover {
-      transform: translateY(-5px);
-    }
-    .category-card h3 {
-      margin-bottom: 10px;
-      font-size: 1.2rem;
-    }
-    .download-section {
-      text-align: center;
-      margin: 50px 0;
-    }
-    .download-btn {
-      display: inline-block;
-      background: #d00;
-      color: #fff;
-      padding: 12px 25px;
-      border-radius: 6px;
-      text-decoration: none;
-      font-weight: bold;
-      transition: background 0.3s;
-    }
-    .download-btn:hover {
-      background: #000;
-    }
-    .contribute-banner {
-      background: #ffce00;
-      padding: 40px 20px;
-      text-align: center;
-      border-radius: 8px;
-      margin: 40px 0;
-    }
-    .contribute-banner h2 {
-      margin-bottom: 10px;
-    }
-    .contribute-banner a {
-      display: inline-block;
-      margin-top: 10px;
-      background: #000;
-      color: #fff;
-      padding: 12px 20px;
-      border-radius: 6px;
-      text-decoration: none;
-    }
-    .contribute-banner a:hover {
-      background: #d00;
-    }
-  </style>
 </head>
 <body>
-  <!-- Navigation Bar -->
+
+  <!-- Navigation -->
   <nav>
     <ul class="nav-list">
       <li><a href="index.html">Home</a></li>
@@ -122,68 +23,31 @@
 
   <!-- Hero Section -->
   <section class="hero">
-    <h1>📂 Access Our Dataset Catalogue</h1>
-    <p>
-      We collect and catalogue openly licensed datasets relevant to Africa that support the development of AI solutions across the continent.  
-      These datasets cover agriculture, health, language, climate, environment, and more — all focused on accessibility and responsible reuse.
-    </p>
+    <h1>Access Our Dataset Catalogue</h1>
+    <p>We collect and catalogue openly licensed datasets relevant to Africa that support the development of AI solutions across the continent. These datasets cover agriculture, health, language, climate, environment, and more, all focused on accessibility and responsible reuse.</p>
   </section>
 
-  <!-- Quick Stats -->
-  <section class="stats">
-    <div class="stat-box">
-      <h2>120+</h2>
-      <p>Datasets</p>
-    </div>
-    <div class="stat-box">
-      <h2>20+</h2>
-      <p>Countries</p>
-    </div>
-    <div class="stat-box">
-      <h2>15+</h2>
-      <p>Sectors</p>
-    </div>
-  </section>
+  <!-- Main Content -->
+  <main class="container">
+    <p><strong>Interested in exploring the full catalog?</strong><br>
+    You can download the dataset catalogue directly below.</p>
 
-  <!-- Dataset Categories -->
-  <section class="page-container">
-    <h2>🌍 Explore by Category</h2>
-    <div class="categories">
-      <div class="category-card">
-        <h3>🌾 Agriculture & Food</h3>
-        <p>Crop yields, soil data, livestock health, and food security datasets.</p>
-      </div>
-      <div class="category-card">
-        <h3>🏥 Health & Biotechnology</h3>
-        <p>Public health, genomics, disease management, and healthcare systems.</p>
-      </div>
-      <div class="category-card">
-        <h3>☀️ Climate & Environment</h3>
-        <p>Weather, climate change, water resources, and biodiversity datasets.</p>
-      </div>
-      <div class="category-card">
-        <h3>🗣️ Language & Culture</h3>
-        <p>African languages, cultural heritage, and local knowledge bases.</p>
-      </div>
+    <div style="text-align: center; margin: 2rem 0;">
+      <a href="datasets/Open%20Datasets%20Africa.xlsx" class="button" download>
+        📥 Download Dataset Catalogue (Excel)
+      </a>
     </div>
-  </section>
 
-  <!-- Download Catalogue -->
-  <section class="download-section">
-    <h2>📥 Download the Full Catalogue</h2>
-    <p>Access all datasets in one place for research, innovation, and development.</p>
-    <a class="download-btn" 
-       href="https://github.com/open-data-africa/open-data-africa.github.io/raw/main/datasets/Open%20Datasets%20Africa.xlsx" 
-       download>
-       Download Dataset Catalogue (Excel)
-    </a>
-  </section>
+    <p>Have a dataset you'd like to contribute to our open data catalogue?</p>
+    <div style="text-align: center; margin-top: 1rem;">
+      <a href="contribute.html" class="button-outline">🤝 Share Your Dataset</a>
+    </div>
+  </main>
 
-  <!-- Contribute Banner -->
-  <section class="contribute-banner">
-    <h2>💡 Contribute a Dataset</h2>
-    <p>Know an open dataset that could empower African AI innovation? Share it with us!</p>
-    <a href="contribute.html">Contribute Now</a>
-  </section>
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 Open Data Africa. All rights reserved.</p>
+  </footer>
+
 </body>
 </html>
