@@ -3,32 +3,31 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Dashboard | Open Data Africa</title>
+  <title>Open Data Dashboard</title>
   <link rel="stylesheet" href="style.css" />
   <style>
     body {
-      font-family: "Segoe UI", Arial, sans-serif;
+      font-family: Arial, sans-serif;
       margin: 0;
-      background-color: #f9f9f9;
-      color: #333;
+      background: #f9f9f9;
     }
 
     nav {
       background-color: #330000;
-      padding: 1rem;
+      padding: 1em;
     }
 
     .nav-list {
       display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      list-style: none;
+      list-style-type: none;
       margin: 0;
       padding: 0;
+      justify-content: center;
+      flex-wrap: wrap;
     }
 
     .nav-list li {
-      margin: 0 1rem;
+      margin: 0 1em;
     }
 
     .nav-list a {
@@ -37,29 +36,39 @@
       font-weight: bold;
     }
 
-    .nav-list a[aria-current="page"] {
-      color: #ffcc00;
-      text-decoration: underline;
-    }
-
     .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 2rem 1rem 4rem;
+      padding: 2rem;
+      max-width: 95%;
+      margin: auto;
     }
 
     h1 {
       text-align: center;
-      color: #330000;
-      margin-bottom: 2rem;
+      color: #333;
+      margin-bottom: 1.5rem;
+    }
+
+    .filters {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .filters select {
+      margin: 0.5rem;
+      padding: 0.5rem 1rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
     }
 
     .summary-wrapper {
-      background: #fff;
-      border-radius: 10px;
+      border: 2px solid #ddd;
+      border-radius: 12px;
+      padding: 1rem;
+      margin-bottom: 2rem;
+      background: #ffffff;
       box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-      padding: 1.5rem;
-      margin-bottom: 3rem;
     }
 
     .summary-cards {
@@ -70,34 +79,36 @@
     }
 
     .summary-cards .card {
-      background: #fff6f6;
-      border: 1px solid #e0e0e0;
+      background: #fafafa;
       padding: 1.5rem 2rem;
       border-radius: 10px;
-      text-align: center;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+      border: 1px solid #e0e0e0;
       font-weight: bold;
-      color: #330000;
+      font-size: 1.2rem;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
       min-width: 160px;
-      transition: all 0.2s ease;
+      text-align: center;
+      color: #333;
     }
 
     .summary-cards .card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 6px 14px rgba(0,0,0,0.1);
-      background-color: #fffaf5;
+      transform: translateY(-5px);
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
+      background: #fefefe;
     }
 
     .chart-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(550px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
       gap: 2rem;
     }
 
     .chart-box {
       background: white;
-      padding: 1rem 1.5rem;
+      padding: 1rem;
       border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
       height: 480px;
     }
 
@@ -106,37 +117,20 @@
       height: 100% !important;
     }
 
-    @media (max-width: 600px) {
+    @media (max-width: 640px) {
       .chart-box {
         height: 400px;
       }
     }
-
-    footer {
-      background-color: #330000;
-      color: #fff;
-      text-align: center;
-      padding: 2rem 1rem;
-      margin-top: 3rem;
-    }
-
-    footer a {
-      color: #ffcc00;
-      text-decoration: none;
-    }
-
-    footer a:hover {
-      text-decoration: underline;
-    }
   </style>
 </head>
-
 <body>
+
   <!-- Navigation -->
   <nav>
     <ul class="nav-list">
       <li><a href="index.html">Home</a></li>
-      <li><a href="dashboard.html" aria-current="page">Dashboard</a></li>
+      <li><a href="about.html">About</a></li>
       <li><a href="datasets.html">Datasets</a></li>
       <li><a href="use-cases.html">Use Cases</a></li>
       <li><a href="resources.html">Resources</a></li>
@@ -145,11 +139,24 @@
     </ul>
   </nav>
 
-  <!-- Main Container -->
+  <!-- Dashboard Content -->
   <div class="container">
-    <h1>📊 Open Data Africa Dashboard</h1>
+    <h1>📊 Open Data Dashboard</h1>
 
-    <!-- Summary Section -->
+    <!-- Filter Dropdowns -->
+    <div class="filters">
+      <label for="countryFilter">Filter by Country:</label>
+      <select id="countryFilter">
+        <option value="">All Countries</option>
+      </select>
+
+      <label for="domainFilter">Filter by Domain:</label>
+      <select id="domainFilter">
+        <option value="">All Domains</option>
+      </select>
+    </div>
+
+    <!-- Summary Cards -->
     <div class="summary-wrapper">
       <div class="summary-cards">
         <div class="card" id="totalDatasets">Datasets: 0</div>
@@ -159,65 +166,49 @@
       </div>
     </div>
 
-    <!-- Charts Section -->
+    <!-- Charts -->
     <div class="chart-grid">
       <div class="chart-box"><canvas id="chartCountry"></canvas></div>
       <div class="chart-box"><canvas id="chartDomain"></canvas></div>
       <div class="chart-box"><canvas id="chartType"></canvas></div>
-      <div class="chart-box"><canvas id="chartFreshness"></canvas></div>
       <div class="chart-box"><canvas id="chartLicense"></canvas></div>
     </div>
   </div>
 
-  <!-- Footer -->
-  <footer>
-    <p>&copy; 2025 Open Data Africa. All rights reserved.</p>
-    <p>
-      <a href="mailto:yonas.gebremichael@giz.de">Contact Us</a> |
-      <a href="contribute.html">Contribute a Dataset</a>
-    </p>
-  </footer>
-
-  <!-- Chart.js & PapaParse -->
+  <!-- Chart.js and PapaParse -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
   <script>
-    // Utility: count occurrences
+    let allData = [];
+    let charts = [];
+
     function countOccurrences(data, column) {
       const counts = {};
       data.forEach(row => {
         const value = (row[column] || "").trim();
-        if (value) {
-          const clean = value.toLowerCase().replace(/\s+/g, " ").trim();
-          counts[clean] = (counts[clean] || 0) + 1;
-        }
+        if (value) counts[value] = (counts[value] || 0) + 1;
       });
       return counts;
     }
 
-    // Sort by count descending
     function sortByValue(obj) {
       return Object.fromEntries(Object.entries(obj).sort(([,a],[,b]) => b - a));
     }
 
-    // Chart builder
-    function createChart(id, label, dataMap, type = "bar") {
+    function createChart(id, label, dataMap, type = 'bar') {
       const ctx = document.getElementById(id).getContext("2d");
-      const labels = Object.keys(dataMap).map(v => v.charAt(0).toUpperCase() + v.slice(1));
+      const labels = Object.keys(dataMap);
       const values = Object.values(dataMap);
-
-      new Chart(ctx, {
+      const chart = new Chart(ctx, {
         type,
         data: {
           labels,
           datasets: [{
-            label,
+            label: label,
             data: values,
-            backgroundColor: [
-              "#ff6384","#36a2eb","#cc65fe","#ffce56","#2ecc71",
-              "#f39c12","#9b59b6","#34495e","#e74c3c","#1abc9c"
-            ],
+            backgroundColor: '#cc0000aa',
+            borderColor: '#cc0000',
             borderWidth: 1
           }]
         },
@@ -226,43 +217,92 @@
           maintainAspectRatio: false,
           plugins: {
             legend: { display: true },
-            tooltip: { enabled: true }
           },
           scales: {
-            y: { beginAtZero: true, ticks: { precision: 0 } }
+            y: { beginAtZero: true }
           }
         }
       });
+      charts.push(chart);
     }
 
-    // Load and visualize catalog.csv
+    function updateDashboard(filtered) {
+      charts.forEach(c => c.destroy());
+      charts = [];
+
+      const countryCounts = sortByValue(countOccurrences(filtered, "Country"));
+      const domainCounts = sortByValue(countOccurrences(filtered, "Domain"));
+      const typeCounts = sortByValue(countOccurrences(filtered, "Data Type"));
+      const licenseCounts = sortByValue(countOccurrences(filtered, "License"));
+
+      createChart("chartCountry", "Datasets by Country", countryCounts);
+      createChart("chartDomain", "Datasets by Domain", domainCounts);
+      createChart("chartType", "Data Types", typeCounts);
+      createChart("chartLicense", "License Distribution", licenseCounts, "doughnut");
+
+      document.getElementById("totalDatasets").textContent = `Datasets: ${filtered.length}`;
+      document.getElementById("totalCountries").textContent = `Countries: ${Object.keys(countryCounts).length}`;
+      document.getElementById("totalDomains").textContent = `Domains: ${Object.keys(domainCounts).length}`;
+      document.getElementById("totalTypes").textContent = `Data Types: ${Object.keys(typeCounts).length}`;
+    }
+
+    function populateFilters(data) {
+      const countries = [...new Set(data.map(d => d.Country).filter(Boolean))].sort();
+      const domains = [...new Set(data.map(d => d.Domain).filter(Boolean))].sort();
+
+      const countrySelect = document.getElementById("countryFilter");
+      const domainSelect = document.getElementById("domainFilter");
+
+      countries.forEach(c => {
+        const opt = document.createElement("option");
+        opt.value = c;
+        opt.textContent = c;
+        countrySelect.appendChild(opt);
+      });
+
+      domains.forEach(d => {
+        const opt = document.createElement("option");
+        opt.value = d;
+        opt.textContent = d;
+        domainSelect.appendChild(opt);
+      });
+    }
+
+    function applyFilters() {
+      const country = document.getElementById("countryFilter").value;
+      const domain = document.getElementById("domainFilter").value;
+
+      let filtered = allData;
+      if (country) filtered = filtered.filter(d => d.Country === country);
+      if (domain) filtered = filtered.filter(d => d.Domain === domain);
+
+      updateDashboard(filtered);
+    }
+
     Papa.parse("datasets/catalog.csv", {
       download: true,
       header: true,
       complete: function(results) {
-        const data = results.data;
-
-        // Count occurrences
-        const countryCounts = sortByValue(countOccurrences(data, "Country"));
-        const domainCounts = sortByValue(countOccurrences(data, "Domain"));
-        const typeCounts = sortByValue(countOccurrences(data, "Data Type"));
-        const licenseCounts = sortByValue(countOccurrences(data, "License"));
-        const freshnessCounts = sortByValue(countOccurrences(data, "Last Updated"));
-
-        // Draw charts
-        createChart("chartCountry", "Datasets by Country", countryCounts);
-        createChart("chartDomain", "Datasets by Domain", domainCounts);
-        createChart("chartType", "Data Types", typeCounts);
-        createChart("chartFreshness", "Dataset Freshness", freshnessCounts, "line");
-        createChart("chartLicense", "License Distribution", licenseCounts, "doughnut");
-
-        // Update summary cards
-        document.getElementById("totalDatasets").textContent = `Datasets: ${data.length}`;
-        document.getElementById("totalCountries").textContent = `Countries: ${Object.keys(countryCounts).length}`;
-        document.getElementById("totalDomains").textContent = `Domains: ${Object.keys(domainCounts).length}`;
-        document.getElementById("totalTypes").textContent = `Data Types: ${Object.keys(typeCounts).length}`;
+        allData = results.data.filter(r => Object.values(r).some(v => v !== ""));
+        populateFilters(allData);
+        updateDashboard(allData);
       }
     });
+
+    document.getElementById("countryFilter").addEventListener("change", applyFilters);
+    document.getElementById("domainFilter").addEventListener("change", applyFilters);
+
+    // Auto-refresh every 10 minutes
+    setInterval(() => {
+      Papa.parse("datasets/catalog.csv", {
+        download: true,
+        header: true,
+        complete: function(results) {
+          allData = results.data.filter(r => Object.values(r).some(v => v !== ""));
+          applyFilters();
+        }
+      });
+    }, 600000);
   </script>
 </body>
 </html>
