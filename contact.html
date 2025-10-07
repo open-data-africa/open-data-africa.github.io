@@ -57,17 +57,6 @@
       line-height: 1.6;
     }
 
-    .email {
-      font-size: 1.2rem;
-      margin: 1.5rem 0;
-    }
-
-    .email a {
-      text-decoration: none;
-      color: #0077cc;
-      font-weight: bold;
-    }
-
     .social-links {
       margin-top: 2rem;
       display: flex;
@@ -78,22 +67,25 @@
 
     .social-links a {
       text-decoration: none;
-      color: #333;
       font-weight: bold;
-      transition: color 0.3s ease;
       display: flex;
       align-items: center;
       gap: 0.5rem;
+      transition: transform 0.2s ease;
     }
 
     .social-links a:hover {
-      color: #0077cc;
+      transform: translateY(-3px);
     }
 
-    .social-links img {
+    .social-links svg {
       width: 28px;
       height: 28px;
     }
+
+    /* Brand colors */
+    .linkedin svg { fill: #0077b5; }
+    .instagram svg { fill: #E1306C; }
 
     .map-container {
       margin-top: 2rem;
@@ -139,15 +131,13 @@
     <h1>Contact Us</h1>
     <p>We’d love to hear from you. Reach out for collaborations, partnerships, or to contribute datasets.</p>
 
-    <p class="email">📧 <a href="mailto:info@opendataafrica.org">info@opendataafrica.org</a></p>
-
     <div class="social-links">
-      <a href="https://www.linkedin.com/company/giz-african-union/posts/?feedView=all" target="_blank">
-        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v10/icons/linkedin.svg" alt="LinkedIn">
+      <a href="https://www.linkedin.com/company/giz-african-union/posts/?feedView=all" target="_blank" class="linkedin">
+        <svg viewBox="0 0 24 24"><path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM0 8h5v16H0V8zm7.5 0h4.8v2.2h.1c.7-1.3 2.4-2.6 4.9-2.6 5.2 0 6.2 3.4 6.2 7.8V24h-5v-7c0-1.7 0-3.9-2.4-3.9-2.4 0-2.8 1.9-2.8 3.8V24h-5V8z"/></svg>
         LinkedIn
       </a>
-      <a href="https://www.instagram.com/gizafricanunion/" target="_blank">
-        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v10/icons/instagram.svg" alt="Instagram">
+      <a href="https://www.instagram.com/gizafricanunion/" target="_blank" class="instagram">
+        <svg viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.9.1 1.2.1 1.9.3 2.3.5.6.3 1 .6 1.5 1.1.5.5.8.9 1.1 1.5.2.4.4 1 .5 2.3.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c-.1 1.2-.3 1.9-.5 2.3-.3.6-.6 1-1.1 1.5-.5.5-.9.8-1.5 1.1-.4.2-1 .4-2.3.5-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-1.2-.1-1.9-.3-2.3-.5-.6-.3-1-.6-1.5-1.1-.5-.5-.8-.9-1.1-1.5-.2-.4-.4-1-.5-2.3C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.9c.1-1.2.3-1.9.5-2.3.3-.6.6-1 1.1-1.5.5-.5.9-.8 1.5-1.1.4-.2 1-.4 2.3-.5C8.4 2.2 8.8 2.2 12 2.2zm0-2.2C8.7 0 8.3 0 7 .1 5.7.2 4.6.5 3.8.9c-.8.4-1.5.9-2.2 1.6-.7.7-1.2 1.4-1.6 2.2-.4.8-.7 1.9-.8 3.2C0 8.3 0 8.7 0 12c0 3.3 0 3.7.1 5 .1 1.3.4 2.4.8 3.2.4.8.9 1.5 1.6 2.2.7.7 1.4 1.2 2.2 1.6.8.4 1.9.7 3.2.8 1.3.1 1.7.1 5 .1s3.7 0 5-.1c1.3-.1 2.4-.4 3.2-.8.8-.4 1.5-.9 2.2-1.6.7-.7 1.2-1.4 1.6-2.2.4-.8.7-1.9.8-3.2.1-1.3.1-1.7.1-5s0-3.7-.1-5c-.1-1.3-.4-2.4-.8-3.2-.4-.8-.9-1.5-1.6-2.2-.7-.7-1.4-1.2-2.2-1.6-.8-.4-1.9-.7-3.2-.8C15.7 0 15.3 0 12 0zM12 5.8a6.2 6.2 0 1 0 0 12.4 6.2 6.2 0 0 0 0-12.4zm0 10.2a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.4-11.8a1.44 1.44 0 1 0 0-2.88 1.44 1.44 0 0 0 0 2.88z"/></svg>
         Instagram
       </a>
     </div>
@@ -163,7 +153,7 @@
   </main>
 
   <footer>
-    <p>&copy; 2025 Open Data Africa – Powered by AI Made in Africa | Hosted by GIZ African Union</p>
+    <p>&copy; 2025 Open Data Africa – Powered by AI Made in Africa </p>
   </footer>
 
 </body>
