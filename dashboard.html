@@ -3,31 +3,32 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Open Data Dashboard</title>
+  <title>Dashboard | Open Data Africa</title>
   <link rel="stylesheet" href="style.css" />
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: "Segoe UI", Arial, sans-serif;
       margin: 0;
-      background: #f9f9f9;
+      background-color: #f9f9f9;
+      color: #333;
     }
 
     nav {
       background-color: #330000;
-      padding: 1em;
+      padding: 1rem;
     }
 
     .nav-list {
       display: flex;
-      list-style-type: none;
-      margin: 0;
-      padding: 0;
       justify-content: center;
       flex-wrap: wrap;
+      list-style: none;
+      margin: 0;
+      padding: 0;
     }
 
     .nav-list li {
-      margin: 0 1em;
+      margin: 0 1rem;
     }
 
     .nav-list a {
@@ -36,25 +37,29 @@
       font-weight: bold;
     }
 
+    .nav-list a[aria-current="page"] {
+      color: #ffcc00;
+      text-decoration: underline;
+    }
+
     .container {
-      padding: 2rem;
-      max-width: 95%;
-      margin: auto;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1rem 4rem;
     }
 
     h1 {
       text-align: center;
-      color: #333;
+      color: #330000;
       margin-bottom: 2rem;
     }
 
     .summary-wrapper {
-      border: 2px solid #ddd;
-      border-radius: 12px;
-      padding: 1rem;
-      margin-bottom: 2rem;
-      background: #ffffff;
+      background: #fff;
+      border-radius: 10px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      padding: 1.5rem;
+      margin-bottom: 3rem;
     }
 
     .summary-cards {
@@ -65,36 +70,34 @@
     }
 
     .summary-cards .card {
-      background: #fafafa;
+      background: #fff6f6;
+      border: 1px solid #e0e0e0;
       padding: 1.5rem 2rem;
       border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-      border: 1px solid #e0e0e0;
-      font-weight: bold;
-      font-size: 1.2rem;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-      min-width: 160px;
       text-align: center;
-      color: #333;
+      font-weight: bold;
+      color: #330000;
+      min-width: 160px;
+      transition: all 0.2s ease;
     }
 
     .summary-cards .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
-      background: #fefefe;
+      transform: translateY(-4px);
+      box-shadow: 0 6px 14px rgba(0,0,0,0.1);
+      background-color: #fffaf5;
     }
 
     .chart-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(550px, 1fr));
       gap: 2rem;
     }
 
     .chart-box {
       background: white;
-      padding: 1rem;
+      padding: 1rem 1.5rem;
       border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
       height: 480px;
     }
 
@@ -103,20 +106,37 @@
       height: 100% !important;
     }
 
-    @media (max-width: 640px) {
+    @media (max-width: 600px) {
       .chart-box {
         height: 400px;
       }
     }
+
+    footer {
+      background-color: #330000;
+      color: #fff;
+      text-align: center;
+      padding: 2rem 1rem;
+      margin-top: 3rem;
+    }
+
+    footer a {
+      color: #ffcc00;
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
-<body>
 
+<body>
   <!-- Navigation -->
   <nav>
     <ul class="nav-list">
       <li><a href="index.html">Home</a></li>
-      <li><a href="about.html">About</a></li>
+      <li><a href="dashboard.html" aria-current="page">Dashboard</a></li>
       <li><a href="datasets.html">Datasets</a></li>
       <li><a href="use-cases.html">Use Cases</a></li>
       <li><a href="resources.html">Resources</a></li>
@@ -125,11 +145,11 @@
     </ul>
   </nav>
 
-  <!-- Dashboard Content -->
+  <!-- Main Container -->
   <div class="container">
-    <h1>📊 Open Data Dashboard</h1>
+    <h1>📊 Open Data Africa Dashboard</h1>
 
-    <!-- Summary Cards -->
+    <!-- Summary Section -->
     <div class="summary-wrapper">
       <div class="summary-cards">
         <div class="card" id="totalDatasets">Datasets: 0</div>
@@ -139,7 +159,7 @@
       </div>
     </div>
 
-    <!-- Charts -->
+    <!-- Charts Section -->
     <div class="chart-grid">
       <div class="chart-box"><canvas id="chartCountry"></canvas></div>
       <div class="chart-box"><canvas id="chartDomain"></canvas></div>
@@ -149,43 +169,54 @@
     </div>
   </div>
 
-  <!-- Chart.js and PapaParse -->
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 Open Data Africa. All rights reserved.</p>
+    <p>
+      <a href="mailto:yonas.gebremichael@giz.de">Contact Us</a> |
+      <a href="contribute.html">Contribute a Dataset</a>
+    </p>
+  </footer>
+
+  <!-- Chart.js & PapaParse -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
   <script>
+    // Utility: count occurrences
     function countOccurrences(data, column) {
       const counts = {};
       data.forEach(row => {
         const value = (row[column] || "").trim();
-        if (value && value !== "") {
-          const clean = value.toLowerCase().replace(/\s+/g, ' ').trim();
+        if (value) {
+          const clean = value.toLowerCase().replace(/\s+/g, " ").trim();
           counts[clean] = (counts[clean] || 0) + 1;
         }
       });
       return counts;
     }
 
+    // Sort by count descending
     function sortByValue(obj) {
-      return Object.fromEntries(
-        Object.entries(obj).sort(([, a], [, b]) => b - a)
-      );
+      return Object.fromEntries(Object.entries(obj).sort(([,a],[,b]) => b - a));
     }
 
-    function createChart(id, label, dataMap, type = 'bar') {
+    // Chart builder
+    function createChart(id, label, dataMap, type = "bar") {
       const ctx = document.getElementById(id).getContext("2d");
-      const labels = Object.keys(dataMap).map(s => s.charAt(0).toUpperCase() + s.slice(1));
+      const labels = Object.keys(dataMap).map(v => v.charAt(0).toUpperCase() + v.slice(1));
       const values = Object.values(dataMap);
+
       new Chart(ctx, {
         type,
         data: {
           labels,
           datasets: [{
-            label: label,
+            label,
             data: values,
             backgroundColor: [
-              '#ff6384','#36a2eb','#cc65fe','#ffce56','#2ecc71',
-              '#f39c12','#9b59b6','#34495e','#e74c3c','#1abc9c'
+              "#ff6384","#36a2eb","#cc65fe","#ffce56","#2ecc71",
+              "#f39c12","#9b59b6","#34495e","#e74c3c","#1abc9c"
             ],
             borderWidth: 1
           }]
@@ -198,27 +229,27 @@
             tooltip: { enabled: true }
           },
           scales: {
-            y: {
-              beginAtZero: true,
-              ticks: { precision: 0 }
-            }
+            y: { beginAtZero: true, ticks: { precision: 0 } }
           }
         }
       });
     }
 
+    // Load and visualize catalog.csv
     Papa.parse("datasets/catalog.csv", {
       download: true,
       header: true,
       complete: function(results) {
         const data = results.data;
 
+        // Count occurrences
         const countryCounts = sortByValue(countOccurrences(data, "Country"));
         const domainCounts = sortByValue(countOccurrences(data, "Domain"));
         const typeCounts = sortByValue(countOccurrences(data, "Data Type"));
         const licenseCounts = sortByValue(countOccurrences(data, "License"));
         const freshnessCounts = sortByValue(countOccurrences(data, "Last Updated"));
 
+        // Draw charts
         createChart("chartCountry", "Datasets by Country", countryCounts);
         createChart("chartDomain", "Datasets by Domain", domainCounts);
         createChart("chartType", "Data Types", typeCounts);
