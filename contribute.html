@@ -2,64 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Contribute – Open Data Africa</title>
   <link rel="stylesheet" href="style.css" />
-  <style>
-    .hero {
-      background-color: #f4f4f4;
-      padding: 3rem 1rem;
-      text-align: center;
-      border-bottom: 1px solid #ddd;
-    }
-
-    .hero h1 {
-      font-size: 2.5rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .hero p {
-      font-size: 1.1rem;
-      max-width: 700px;
-      margin: 0 auto;
-      color: #555;
-    }
-
-    .container {
-      max-width: 900px;
-      margin: 3rem auto;
-      padding: 0 1rem;
-    }
-
-    .form-wrapper {
-      background: #fff;
-      border: 1px solid #ddd;
-      padding: 2rem;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-    }
-
-    .responsive-iframe {
-      width: 100%;
-      height: 2450px;
-      border: none;
-    }
-
-    footer {
-      text-align: center;
-      padding: 1.5rem 0;
-      border-top: 1px solid #ddd;
-      font-size: 0.9rem;
-      color: #666;
-      background-color: #f9f9f9;
-      margin-top: 4rem;
-    }
-  </style>
 </head>
 <body>
 
   <!-- Navigation -->
-  <nav>
+  <nav class="full-width">
     <ul class="nav-list">
       <li><a href="index.html">Home</a></li>
       <li><a href="about.html">About</a></li>
@@ -71,27 +21,71 @@
     </ul>
   </nav>
 
-  <!-- Hero -->
-  <section class="hero">
-    <h1>Contribute Open Datasets</h1>
-    <p>Join the movement for open data in Africa by submitting your dataset. Your contribution helps researchers, developers, and innovators across the continent.</p>
+  <!-- Hero Section -->
+  <section class="hero full-width">
+    <div class="wrapper">
+      <h1>🤝 Contribute a Dataset</h1>
+      <p>Join our effort to make high-quality, openly licensed datasets from Africa accessible for AI and innovation.</p>
+    </div>
   </section>
 
   <!-- Main Content -->
-  <main class="container">
-    <div class="form-wrapper">
-      <p>Fields collected align with our <a href="datasets.html">catalog structure</a> for easy integration and visibility.</p>
-      
-      <!-- Embedded Google Form -->
-      <iframe class="responsive-iframe" src="https://docs.google.com/forms/d/e/1FAIpQLSeXNKaOYWIhxQwmHwFoZrjOOz6l5AeShpPtGakyA4fmxTMeVA/viewform?embedded=true">Loading…</iframe>
+  <main class="wrapper">
+    <section>
+      <h2>How You Can Contribute</h2>
+      <p>
+        We welcome contributions from researchers, organizations, and individuals working with data relevant to Africa. 
+        If you have a dataset that can help drive innovation, improve decision-making, or support open AI development, 
+        we’d love to hear from you.
+      </p>
 
-      <p style="margin-top: 20px;">Have questions? <a href="contact.html">Contact us</a>.</p>
-    </div>
+      <ul>
+        <li>🌍 Datasets from agriculture, health, environment, or digital economy sectors</li>
+        <li>📊 Data that supports AI research, modeling, or applications</li>
+        <li>🔓 Openly licensed or publicly shareable datasets</li>
+      </ul>
+    </section>
+
+    <section class="highlight-section">
+      <h2>Submit Your Dataset</h2>
+      <p>
+        To contribute a dataset, please send us an email with the following details:
+      </p>
+      <ul>
+        <li>📌 Dataset name and short description</li>
+        <li>📅 Date collected or last updated</li>
+        <li>🏢 Source or organization</li>
+        <li>🔗 Link to dataset (if already hosted)</li>
+        <li>📄 License or access terms</li>
+      </ul>
+
+      <div style="text-align: center; margin-top: 2rem;">
+        <a href="mailto:yonas.gebremichael@giz.de?subject=Dataset%20Contribution%20to%20Open%20Data%20Africa&body=Hello%20Open%20Data%20Africa%20Team,%0D%0A%0D%0AI'd%20like%20to%20contribute%20a%20dataset%20to%20the%20catalog.%0D%0A%0D%0AHere%20are%20the%20details:%0D%0A-%20Dataset%20Name:%0D%0A-%20Description:%0D%0A-%20Date%20Collected/Updated:%0D%0A-%20Source/Organization:%0D%0A-%20License:%0D%0A-%20Link%20(if%20available):%0D%0A%0D%0AThank%20you!%0D%0A" 
+           class="button">
+          📤 Send Dataset via Email
+        </a>
+      </div>
+    </section>
+
+    <section>
+      <h2>Why Contribute?</h2>
+      <p>
+        By sharing your dataset, you help strengthen Africa’s data ecosystem and support local innovation. 
+        Every contribution adds value to researchers, startups, and policymakers working to build inclusive, data-driven solutions.
+      </p>
+      <p><strong>Together, we can make AI truly “Made in Africa.”</strong></p>
+    </section>
   </main>
 
   <!-- Footer -->
-  <footer>
-    &copy; 2025 Open Data Africa. All rights reserved.
+  <footer class="full-width">
+    <div class="wrapper">
+      <p>&copy; 2025 Open Data Africa. All rights reserved.</p>
+      <p>
+        <a href="mailto:yonas.gebremichael@giz.de">Contact Us</a> |
+        <a href="datasets.html">Explore Datasets</a>
+      </p>
+    </div>
   </footer>
 
 </body>
