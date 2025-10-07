@@ -13,6 +13,31 @@
       background: #f9f9f9;
     }
 
+    nav {
+      background-color: #fff;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+
+    .nav-list {
+      display: flex;
+      justify-content: center;
+      list-style: none;
+      padding: 1rem 0;
+      margin: 0;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .nav-list li a {
+      text-decoration: none;
+      color: #333;
+      font-weight: bold;
+    }
+
+    .nav-list li a[aria-current="page"] {
+      color: #0077cc;
+    }
+
     main {
       max-width: 800px;
       margin: 0 auto;
@@ -23,22 +48,51 @@
     h1 {
       font-size: 2rem;
       margin-bottom: 0.5rem;
+      color: #222;
     }
 
     p {
       font-size: 1.1rem;
       color: #333;
+      line-height: 1.6;
     }
 
     .email {
       font-size: 1.2rem;
       margin: 1.5rem 0;
-      color: #0077cc;
     }
 
     .email a {
       text-decoration: none;
       color: #0077cc;
+      font-weight: bold;
+    }
+
+    .social-links {
+      margin-top: 2rem;
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .social-links a {
+      text-decoration: none;
+      color: #333;
+      font-weight: bold;
+      transition: color 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .social-links a:hover {
+      color: #0077cc;
+    }
+
+    .social-links img {
+      width: 28px;
+      height: 28px;
     }
 
     .map-container {
@@ -54,28 +108,14 @@
       border: none;
     }
 
-    nav {
-      background-color: #fff;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-    }
-
-    .nav-list {
-      display: flex;
-      justify-content: center;
-      list-style: none;
-      padding: 1rem 0;
-      margin: 0;
-      gap: 1.5rem;
-    }
-
-    .nav-list li a {
-      text-decoration: none;
-      color: #333;
-      font-weight: bold;
-    }
-
-    .nav-list li a[aria-current="page"] {
-      color: #0077cc;
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      margin-top: 3rem;
+      background: #fff;
+      color: #666;
+      font-size: 0.9rem;
+      border-top: 1px solid #eee;
     }
   </style>
 </head>
@@ -94,22 +134,37 @@
     </ul>
   </nav>
 
+  <!-- Main Content -->
   <main>
     <h1>Contact Us</h1>
-    <p>We’d love to hear from you. Reach out with questions, suggestions, or partnerships.</p>
+    <p>We’d love to hear from you. Reach out for collaborations, partnerships, or to contribute datasets.</p>
 
-   <!-- <p class="email">📧 <a href="mailto:yonas.gebremichael@giz.de">yonas.gebremichael@giz.de</a></p>   -->
+    <p class="email">📧 <a href="mailto:info@opendataafrica.org">info@opendataafrica.org</a></p>
+
+    <div class="social-links">
+      <a href="https://www.linkedin.com/company/giz-african-union/posts/?feedView=all" target="_blank">
+        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v10/icons/linkedin.svg" alt="LinkedIn">
+        LinkedIn
+      </a>
+      <a href="https://www.instagram.com/gizafricanunion/" target="_blank">
+        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v10/icons/instagram.svg" alt="Instagram">
+        Instagram
+      </a>
+    </div>
 
     <div class="map-container">
       <iframe 
         src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2827.1842270196253!2d38.760862073143706!3d9.00775718932492!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x164b858a298f5da7%3A0x5c55ef38f1e42596!2sGIZ%20African%20Union!5e1!3m2!1sen!2set!4v1753948918126!5m2!1sen!2set" 
-        allowfullscreen="" 
+        allowfullscreen 
         loading="lazy" 
         referrerpolicy="no-referrer-when-downgrade">
       </iframe>
     </div>
   </main>
 
+  <footer>
+    <p>&copy; 2025 Open Data Africa – Powered by AI Made in Africa | Hosted by GIZ African Union</p>
+  </footer>
+
 </body>
 </html>
-
