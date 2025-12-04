@@ -2,163 +2,259 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Africa Dataset Map</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<!-- Leaflet CSS -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"/>
+<title>Africa Data Map – Open Data Africa</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <style>
-  body { margin: 0; font-family: Arial, sans-serif; background:#f7f7f7; }
-  #map { width: 100%; height: 95vh; }
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background: #fafafa;
+    }
 
-  .leaflet-popup-content {
-    font-size: 14px;
-    line-height: 1.4rem;
-  }
-  .dataset-title { font-weight: bold; margin-bottom: 4px; }
+    h1 {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    #map {
+        height: 480px;
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .container {
+        width: 90%;
+        margin: auto;
+    }
+
+    input[type="text"] {
+        width: 100%;
+        padding: 10px;
+        border: 2px solid #444;
+        border-radius: 4px;
+        margin-bottom: 15px;
+        font-size: 16px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 40px;
+        background: white;
+    }
+
+    th, td {
+        padding: 10px;
+        border: 1px solid #ddd;
+    }
+
+    th {
+        background: #333;
+        color: white;
+    }
+
+    a {
+        color: #0066cc;
+        text-decoration: none;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+
+    .popup-title {
+        font-weight: bold;
+        margin-bottom: 5px;
+        display: block;
+    }
 </style>
 </head>
 
 <body>
 
-<h2 style="text-align:center; padding: 1rem; color:#8f0c24; font-weight:700;">
-  🌍 Africa Datasets – Click a Country Dot
-</h2>
+<h1>Interactive Africa Data Map</h1>
 
 <div id="map"></div>
 
-<!-- Leaflet -->
-<script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+<div class="container">
+    <input type="text" id="searchInput" placeholder="Search datasets or countries..." />
 
-<!-- PapaParse -->
-<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+    <table id="datasetTable">
+        <thead>
+            <tr>
+                <th>Dataset Name</th>
+                <th>Country</th>
+                <th>Domain</th>
+                <th>Link</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
 
 <script>
-/* --------------------------------------------------------------
-   1. Coordinates for all African countries
-   (covers every possible entry from your catalog.csv)
--------------------------------------------------------------- */
-const africaCoords = {
-  "algeria": [28.0, 1.6],
-  "angola": [-11.2, 17.8],
-  "benin": [9.5, 2.3],
-  "botswana": [-22.3, 24.7],
-  "burkina faso": [12.3, -1.6],
-  "burundi": [-3.4, 29.9],
-  "cabo verde": [16.0, -24.0],
-  "cameroon": [5.9, 12.7],
-  "central african republic": [6.6, 20.9],
-  "chad": [15.3, 18.7],
-  "comoros": [-11.6, 43.3],
-  "congo": [-0.2, 15.3],
-  "democratic republic of the congo": [-2.9, 23.7],
-  "djibouti": [11.8, 42.6],
-  "egypt": [26.8, 30.8],
-  "equatorial guinea": [1.6, 10.5],
-  "eritrea": [15.1, 39.8],
-  "eswatini": [-26.4, 31.5],
-  "ethiopia": [9.1, 40.5],
-  "gabon": [-0.8, 11.6],
-  "gambia": [13.5, -15.3],
-  "ghana": [7.9, -1.0],
-  "guinea": [10.4, -10.9],
-  "guinea-bissau": [11.8, -15.2],
-  "ivory coast": [7.6, -5.5],
-  "kenya": [-0.1, 37.9],
-  "lesotho": [-29.6, 28.2],
-  "liberia": [6.4, -9.3],
-  "libya": [27.0, 18.0],
-  "madagascar": [-18.8, 46.8],
-  "malawi": [-13.3, 34.3],
-  "mali": [17.5, -3.9],
-  "mauritania": [20.2, -10.3],
-  "mauritius": [-20.3, 57.5],
-  "morocco": [31.8, -7.1],
-  "mozambique": [-18.1, 35.5],
-  "namibia": [-22.6, 17.1],
-  "niger": [17.6, 8.1],
-  "nigeria": [9.1, 8.7],
-  "rwanda": [-1.9, 30.1],
-  "sao tome and principe": [0.3, 6.6],
-  "senegal": [14.5, -14.5],
-  "seychelles": [-4.6, 55.4],
-  "sierra leone": [8.5, -11.8],
-  "somalia": [5.1, 46.2],
-  "south africa": [-30.6, 22.9],
-  "south sudan": [7.3, 30.4],
-  "sudan": [15.6, 30.2],
-  "tanzania": [-6.3, 34.8],
-  "togo": [8.6, 1.0],
-  "tunisia": [34.0, 9.5],
-  "uganda": [1.3, 32.3],
-  "zambia": [-13.1, 27.8],
-  "zimbabwe": [-19.0, 29.2]
-};
+// -------------------------------
+// Leaflet Map Setup
+// -------------------------------
+const map = L.map('map').setView([0.5, 20], 3);
 
-/* --------------------------------------------------------------
-   2. Initialize Map
--------------------------------------------------------------- */
-const map = L.map("map").setView([5, 20], 3.8);
-
-L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-  maxZoom: 7
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 6
 }).addTo(map);
 
-/* --------------------------------------------------------------
-   3. Load catalog.csv and place dots
--------------------------------------------------------------- */
-Papa.parse("datasets/catalog.csv", {
-  download: true,
-  header: true,
-  complete: function (results) {
-    const data = results.data;
+let markers = [];
+let datasetRows = [];
+let catalogData = [];
 
-    // Get unique countries
-    let uniqueCountries = new Set();
-    data.forEach(row => {
-      if (row.Country && row.Country.trim() !== "") {
-        uniqueCountries.add(row.Country.trim().toLowerCase());
-      }
+
+// -------------------------------
+// Load catalog.csv
+// -------------------------------
+fetch("datasets/catalog.csv")
+    .then(response => response.text())
+    .then(csv => parseCSV(csv))
+    .then(data => {
+        catalogData = data;
+        placeCountryMarkers(data);
+        populateTable(data);
     });
 
-    uniqueCountries.forEach(country => {
-      if (!africaCoords[country]) return; // Skip unknown
 
-      let [lat, lon] = africaCoords[country];
+// -------------------------------
+// CSV Parser
+// -------------------------------
+function parseCSV(text) {
+    const rows = text.trim().split("\n");
+    const headers = rows[0].split(",").map(h => h.trim());
+    const data = [];
 
-      // Filter datasets for this country
-      const datasets = data.filter(r =>
-        (r.Country || "").trim().toLowerCase() === country
-      );
+    for (let i = 1; i < rows.length; i++) {
+        const cols = rows[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+        const entry = {};
 
-      // Popup Content
-      let html = `<h3 style='margin:0 0 5px; color:#8f0c24;'>${country.toUpperCase()}</h3>`;
-
-      if (datasets.length === 0) {
-        html += `<p>No datasets available.</p>`;
-      } else {
-        html += `<p><strong>${datasets.length}</strong> datasets:</p>`;
-        datasets.forEach(ds => {
-          html += `
-            <div class="dataset-title">${ds["Dataset Name"] || "Unnamed Dataset"}</div>
-            <small>${ds["Domain"] || ""}</small><br><br>
-          `;
+        headers.forEach((h, index) => {
+            entry[h] = cols[index] ? cols[index].replace(/"/g, "").trim() : "";
         });
-      }
 
-      // Add dot marker
-      L.circleMarker([lat, lon], {
-        radius: 8,
-        fillColor: "#8f0c24",
-        color: "#8f0c24",
-        fillOpacity: 0.9,
-        weight: 1
-      })
-      .bindPopup(html)
-      .addTo(map);
+        data.push(entry);
+    }
+
+    return data;
+}
+
+
+// -------------------------------
+// Add dot markers for all countries
+// -------------------------------
+function placeCountryMarkers(data) {
+
+    // Lookup table for country centroids (simple)
+    const countryCoords = {
+        "Ethiopia": [9.145, 40.489],
+        "Kenya": [-0.0236, 37.9062],
+        "Nigeria": [9.082, 8.6753],
+        "Ghana": [7.9465, -1.0232],
+        "Uganda": [1.3733, 32.2903],
+        "Tanzania": [-6.3690, 34.8888],
+        "South Africa": [-30.5595, 22.9375],
+        "Rwanda": [-1.9403, 29.8739],
+        "Senegal": [14.4974, -14.4524],
+        "Egypt": [26.8206, 30.8025],
+        "Morocco": [31.7917, -7.0926],
+        "Zimbabwe": [-19.0154, 29.1549],
+        "Botswana": [-22.3285, 24.6849],
+        "Zambia": [-13.1339, 27.8493],
+        "Cameroon": [7.3697, 12.3547]
+    };
+
+    // Group datasets by country
+    const grouped = {};
+    data.forEach(d => {
+        if (!grouped[d.Country]) grouped[d.Country] = [];
+        grouped[d.Country].push(d);
     });
-  }
+
+    Object.keys(grouped).forEach(country => {
+        if (!countryCoords[country]) return; // skip unmapped countries
+
+        const marker = L.circleMarker(countryCoords[country], {
+            radius: 7,
+            color: "#d33",
+            fillColor: "#d33",
+            fillOpacity: 0.8
+        }).addTo(map);
+
+        const popupHtml = `
+            <span class="popup-title">${country}</span>
+            <ul>
+                ${grouped[country].map(ds => `
+                    <li><a href="${ds.Link}" target="_blank">${ds.Dataset}</a></li>
+                `).join("")}
+            </ul>
+        `;
+
+        marker.bindPopup(popupHtml);
+        marker.country = country;
+
+        markers.push(marker);
+    });
+}
+
+
+// -------------------------------
+// Populate the table
+// -------------------------------
+function populateTable(data) {
+    const tbody = document.querySelector("#datasetTable tbody");
+    tbody.innerHTML = "";
+
+    data.forEach(d => {
+        const row = document.createElement("tr");
+        row.dataset.country = d.Country.toLowerCase();
+
+        row.innerHTML = `
+            <td>${d.Dataset}</td>
+            <td>${d.Country}</td>
+            <td>${d.Domain}</td>
+            <td><a href="${d.Link}" target="_blank">Open</a></td>
+        `;
+
+        tbody.appendChild(row);
+        datasetRows.push(row);
+    });
+}
+
+
+// -------------------------------
+// Live Search Filter → Table + Map
+// -------------------------------
+document.getElementById("searchInput").addEventListener("input", function () {
+    const text = this.value.toLowerCase();
+
+    // filter table rows
+    datasetRows.forEach(row => {
+        row.style.display = row.innerText.toLowerCase().includes(text) ? "" : "none";
+    });
+
+    // detect visible countries based on table
+    const visibleCountries = new Set(
+        datasetRows
+            .filter(row => row.style.display !== "none")
+            .map(row => row.dataset.country)
+    );
+
+    // update map markers
+    markers.forEach(m => {
+        m.setStyle({
+            opacity: visibleCountries.size === 0 || visibleCountries.has(m.country.toLowerCase())
+                ? 1 : 0.2,
+            fillOpacity: visibleCountries.size === 0 || visibleCountries.has(m.country.toLowerCase())
+                ? 0.9 : 0.1
+        });
+    });
 });
 </script>
 
