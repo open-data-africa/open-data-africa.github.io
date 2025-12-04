@@ -50,11 +50,21 @@
     z-index:10;
   }
 
+  /* Domain Colors */
+  .domain-NLP { background:#9b59b6; }
   .domain-Agriculture { background:#2ecc71; }
-  .domain-Health { background:#e74c3c; }
+  .domain-Healthcare { background:#e74c3c; }
   .domain-Environment { background:#3498db; }
-  .domain-Education { background:#f39c12; }
-  .domain-Technology { background:#9b59b6; }
+  .domain-EnergyClimateGeospatial { background:#f39c12; }
+  .domain-Socioeconomic { background:#1abc9c; }
+  .domain-Genomics { background:#8e44ad; }
+  .domain-PublicOpinion { background:#d35400; }
+  .domain-PeaceSecurity { background:#c0392b; }
+  .domain-Mobility { background:#16a085; }
+  .domain-Education { background:#f1c40f; }
+  .domain-Demographics { background:#7f8c8d; }
+  .domain-Multiple { background:#34495e; }
+  .domain-DigitalInfrastructure { background:#e67e22; }
   .domain-Other { background:#7f8c8d; }
 
   /* Footer */
@@ -184,14 +194,19 @@
     });
 
     usecaseGrid.innerHTML = filtered.map(u => {
-      const domainClass = u.Domain ? `domain-${u.Domain.trim().replace(/\s+/g,'')}` : 'domain-Other';
-      const domainName = u.Domain ? u.Domain.trim() : 'Other';
+      let domainName = u.Domain ? u.Domain.trim() : 'Other';
+
+      // Normalize for CSS class
+      let domainClass = domainName.replace(/[, &]/g,'').replace(/\s+/g,'');
+      const validDomains = ["NLP","Agriculture","Healthcare","Environment","EnergyClimateGeospatial","Socioeconomic","Genomics","PublicOpinion","PeaceSecurity","Mobility","Education","Demographics","Multiple","DigitalInfrastructure"];
+      if(!validDomains.includes(domainClass)) domainClass = 'Other';
+
       const tooltipText = `Domain: ${domainName}`;
       return `
         <div class="usecase-card fade-in">
           <h3>${u["Dataset Name"]}</h3>
           <p><strong>Country:</strong> ${u.Country}</p>
-          <p><strong>Domain:</strong> <span class="domain-label ${domainClass}" data-tooltip="${tooltipText}">${domainName}</span></p>
+          <p><strong>Domain:</strong> <span class="domain-label ${'domain-'+domainClass}" data-tooltip="${tooltipText}">${domainName}</span></p>
           <p><strong>Data Type:</strong> ${u["Data Type"]}</p>
           <p><strong>License:</strong> ${u.License}</p>
           <p><strong>Use Case:</strong> ${u["Use Cases"] || 'N/A'}</p>
