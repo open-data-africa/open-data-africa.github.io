@@ -2,164 +2,205 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Africa Dataset Map</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Africa Data Map – Master Detail Dashboard</title>
 
-<!-- Leaflet CSS -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <style>
-  body { margin: 0; font-family: Arial, sans-serif; background:#f7f7f7; }
-  #map { width: 100%; height: 95vh; }
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #fafafa;
+    }
 
-  .leaflet-popup-content {
-    font-size: 14px;
-    line-height: 1.4rem;
-  }
-  .dataset-title { font-weight: bold; margin-bottom: 4px; }
+    #container {
+        display: flex;
+        height: 100vh;
+    }
+
+    /* LEFT PANEL MAP */
+    #map {
+        flex: 2;
+        height: 100%;
+    }
+
+    /* RIGHT PANEL DETAILS */
+    #details {
+        flex: 1;
+        background: white;
+        padding: 20px;
+        overflow-y: auto;
+        border-left: 2px solid #ddd;
+    }
+
+    h2 {
+        margin-top: 0;
+    }
+
+    .dataset-item {
+        margin-bottom: 10px;
+    }
+
+    a {
+        color: #0077cc;
+        text-decoration: none;
+    }
 </style>
-</head>
 
+</head>
 <body>
 
-<h2 style="text-align:center; padding: 1rem; color:#8f0c24; font-weight:700;">
-  🌍 Africa Datasets – Click a Country Dot
-</h2>
+<div id="container">
+    <div id="map"></div>
 
-<div id="map"></div>
-
-<!-- Leaflet -->
-<script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
-
-<!-- PapaParse -->
-<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+    <div id="details">
+        <h2>Click a country</h2>
+        <p>Select a country on the map to view available datasets.</p>
+    </div>
+</div>
 
 <script>
-/* --------------------------------------------------------------
-   1. Coordinates for all African countries
-   (covers every possible entry from your catalog.csv)
--------------------------------------------------------------- */
-const africaCoords = {
-  "algeria": [28.0, 1.6],
-  "angola": [-11.2, 17.8],
-  "benin": [9.5, 2.3],
-  "botswana": [-22.3, 24.7],
-  "burkina faso": [12.3, -1.6],
-  "burundi": [-3.4, 29.9],
-  "cabo verde": [16.0, -24.0],
-  "cameroon": [5.9, 12.7],
-  "central african republic": [6.6, 20.9],
-  "chad": [15.3, 18.7],
-  "comoros": [-11.6, 43.3],
-  "congo": [-0.2, 15.3],
-  "democratic republic of the congo": [-2.9, 23.7],
-  "djibouti": [11.8, 42.6],
-  "egypt": [26.8, 30.8],
-  "equatorial guinea": [1.6, 10.5],
-  "eritrea": [15.1, 39.8],
-  "eswatini": [-26.4, 31.5],
-  "ethiopia": [9.1, 40.5],
-  "gabon": [-0.8, 11.6],
-  "gambia": [13.5, -15.3],
-  "ghana": [7.9, -1.0],
-  "guinea": [10.4, -10.9],
-  "guinea-bissau": [11.8, -15.2],
-  "ivory coast": [7.6, -5.5],
-  "kenya": [-0.1, 37.9],
-  "lesotho": [-29.6, 28.2],
-  "liberia": [6.4, -9.3],
-  "libya": [27.0, 18.0],
-  "madagascar": [-18.8, 46.8],
-  "malawi": [-13.3, 34.3],
-  "mali": [17.5, -3.9],
-  "mauritania": [20.2, -10.3],
-  "mauritius": [-20.3, 57.5],
-  "morocco": [31.8, -7.1],
-  "mozambique": [-18.1, 35.5],
-  "namibia": [-22.6, 17.1],
-  "niger": [17.6, 8.1],
-  "nigeria": [9.1, 8.7],
-  "rwanda": [-1.9, 30.1],
-  "sao tome and principe": [0.3, 6.6],
-  "senegal": [14.5, -14.5],
-  "seychelles": [-4.6, 55.4],
-  "sierra leone": [8.5, -11.8],
-  "somalia": [5.1, 46.2],
-  "south africa": [-30.6, 22.9],
-  "south sudan": [7.3, 30.4],
-  "sudan": [15.6, 30.2],
-  "tanzania": [-6.3, 34.8],
-  "togo": [8.6, 1.0],
-  "tunisia": [34.0, 9.5],
-  "uganda": [1.3, 32.3],
-  "zambia": [-13.1, 27.8],
-  "zimbabwe": [-19.0, 29.2]
-};
+// ----------------------------------------
+// GLOBAL VARIABLES
+// ----------------------------------------
+let catalogData = [];
+let countryDatasetCounts = {};
+let map;
+let geojsonLayer;
 
-/* --------------------------------------------------------------
-   2. Initialize Map
--------------------------------------------------------------- */
-const map = L.map("map").setView([5, 20], 3.8);
-
-L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-  maxZoom: 7
-}).addTo(map);
-
-/* --------------------------------------------------------------
-   3. Load catalog.csv and place dots
--------------------------------------------------------------- */
-Papa.parse("datasets/catalog.csv", {
-  download: true,
-  header: true,
-  complete: function (results) {
-    const data = results.data;
-
-    // Get unique countries
-    let uniqueCountries = new Set();
-    data.forEach(row => {
-      if (row.Country && row.Country.trim() !== "") {
-        uniqueCountries.add(row.Country.trim().toLowerCase());
-      }
+// ----------------------------------------
+// LOAD CSV FIRST
+// ----------------------------------------
+fetch("datasets/catalog.csv")
+    .then(res => res.text())
+    .then(csv => parseCSV(csv))
+    .then(data => {
+        catalogData = data;
+        countDatasetsByCountry();
+        initMap();
     });
 
-    uniqueCountries.forEach(country => {
-      if (!africaCoords[country]) return; // Skip unknown
+// ----------------------------------------
+// CSV PARSER
+// ----------------------------------------
+function parseCSV(text) {
+    const rows = text.trim().split("\n");
+    const headers = rows[0].split(",").map(h => h.trim());
+    const data = [];
 
-      let [lat, lon] = africaCoords[country];
-
-      // Filter datasets for this country
-      const datasets = data.filter(r =>
-        (r.Country || "").trim().toLowerCase() === country
-      );
-
-      // Popup Content
-      let html = `<h3 style='margin:0 0 5px; color:#8f0c24;'>${country.toUpperCase()}</h3>`;
-
-      if (datasets.length === 0) {
-        html += `<p>No datasets available.</p>`;
-      } else {
-        html += `<p><strong>${datasets.length}</strong> datasets:</p>`;
-        datasets.forEach(ds => {
-          html += `
-            <div class="dataset-title">${ds["Dataset Name"] || "Unnamed Dataset"}</div>
-            <small>${ds["Domain"] || ""}</small><br><br>
-          `;
+    for (let i = 1; i < rows.length; i++) {
+        const cols = rows[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+        const obj = {};
+        headers.forEach((h, idx) => {
+            obj[h] = cols[idx] ? cols[idx].replace(/"/g, "").trim() : "";
         });
-      }
+        data.push(obj);
+    }
+    return data;
+}
 
-      // Add dot marker
-      L.circleMarker([lat, lon], {
-        radius: 8,
-        fillColor: "#8f0c24",
-        color: "#8f0c24",
-        fillOpacity: 0.9,
-        weight: 1
-      })
-      .bindPopup(html)
-      .addTo(map);
+// ----------------------------------------
+// COUNT DATASETS PER COUNTRY
+// ----------------------------------------
+function countDatasetsByCountry() {
+    catalogData.forEach(d => {
+        const c = d.Country.trim();
+        if (!countryDatasetCounts[c]) countryDatasetCounts[c] = 0;
+        countryDatasetCounts[c]++;
     });
-  }
-});
+}
+
+// ----------------------------------------
+// COLOR SCALE FOR CHOROPLETH
+// ----------------------------------------
+function getColor(count) {
+    return count > 30 ? '#800026' :
+           count > 20 ? '#BD0026' :
+           count > 10 ? '#E31A1C' :
+           count > 5  ? '#FC4E2A' :
+           count > 2  ? '#FD8D3C' :
+           count > 0  ? '#FED976' :
+                        '#ccc';      // no datasets
+}
+
+// ----------------------------------------
+// STYLE COUNTRY SHAPE
+// ----------------------------------------
+function style(feature) {
+    let name = feature.properties.ADMIN;
+    let count = countryDatasetCounts[name] || 0;
+
+    return {
+        fillColor: getColor(count),
+        weight: 1,
+        opacity: 1,
+        color: '#555',
+        fillOpacity: 0.8
+    };
+}
+
+// ----------------------------------------
+// COUNTRY CLICK HANDLER
+// ----------------------------------------
+function countryClick(e) {
+    const layer = e.target;
+    const country = layer.feature.properties.ADMIN;
+
+    const datasets = catalogData.filter(d => d.Country === country);
+
+    let html = `<h2>${country}</h2>`;
+    html += `<p><strong>${datasets.length}</strong> datasets available.</p>`;
+
+    if (datasets.length === 0) {
+        html += "<p>No datasets available for this country.</p>";
+    } else {
+        datasets.forEach(ds => {
+            html += `
+                <div class="dataset-item">
+                    <strong>${ds.Dataset}</strong><br>
+                    <a href="${ds.Link}" target="_blank">Open dataset</a>
+                </div>
+            `;
+        });
+    }
+
+    document.getElementById("details").innerHTML = html;
+}
+
+// ----------------------------------------
+// HOVER TOOLTIP
+// ----------------------------------------
+function onEachFeature(feature, layer) {
+    const name = feature.properties.ADMIN;
+    const count = countryDatasetCounts[name] || 0;
+
+    layer.bindTooltip(`${name}: ${count} dataset(s)`);
+
+    layer.on({
+        click: countryClick
+    });
+}
+
+// ----------------------------------------
+// INITIALIZE MAP
+// ----------------------------------------
+function initMap() {
+    map = L.map("map").setView([7, 20], 3);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 6
+    }).addTo(map);
+
+    fetch("geojson/africa.geojson")
+        .then(res => res.json())
+        .then(json => {
+            geojsonLayer = L.geoJSON(json, {
+                style: style,
+                onEachFeature: onEachFeature
+            }).addTo(map);
+        });
+}
 </script>
 
 </body>
