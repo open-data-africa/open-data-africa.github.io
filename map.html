@@ -15,12 +15,19 @@
 
     h2 {
       text-align: center;
+      margin-top: 1rem;
+    }
+
+    #dashboard {
+      display: flex;
+      max-width: 1200px;
+      margin: 2rem auto;
+      gap: 2rem;
+      flex-wrap: wrap;
     }
 
     #mapContainer {
-      max-width: 900px;
-      margin: 2rem auto;
-      text-align: center;
+      flex: 1 1 600px;
       position: relative;
     }
 
@@ -29,28 +36,6 @@
       height: 700px;
     }
 
-    #datasetLinks {
-      max-width: 900px;
-      margin: 1rem auto;
-      padding: 1rem;
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-      text-align: left;
-    }
-
-    .dataset-link {
-      display: block;
-      margin-bottom: 0.3rem;
-      color: #0066cc;
-      text-decoration: none;
-    }
-
-    .dataset-link:hover {
-      text-decoration: underline;
-    }
-
-    /* Tooltip */
     .tooltip {
       position: absolute;
       pointer-events: none;
@@ -62,38 +47,87 @@
       display: none;
     }
 
-    /* Legend */
-    .legend {
+    #legendContainer {
       display: flex;
       justify-content: center;
       align-items: center;
       margin-top: 10px;
       font-size: 0.9rem;
-      font-family: Arial, sans-serif;
       gap: 5px;
+      flex-wrap: wrap;
     }
 
-    .legend span {
+    .legend-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 0.8rem;
+      margin-right: 8px;
+    }
+
+    .legend-color {
       width: 30px;
       height: 15px;
-      display: inline-block;
       border: 1px solid #ccc;
+      margin-bottom: 2px;
     }
+
+    #detailPanel {
+      flex: 1 1 400px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      padding: 1rem 1.5rem;
+      max-height: 700px;
+      overflow-y: auto;
+    }
+
+    #detailPanel h3 {
+      margin-top: 0;
+    }
+
+    .dataset-item {
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .dataset-item:last-child {
+      border-bottom: none;
+    }
+
+    .dataset-item a {
+      color: #0066cc;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .dataset-item a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 1024px) {
+      #dashboard {
+        flex-direction: column;
+      }
+    }
+
   </style>
 </head>
 <body>
 
   <h2>Africa Open Data Map</h2>
-  <div id="mapContainer">
-    <svg id="africaMap"></svg>
-    <div id="tooltip" class="tooltip"></div>
-  </div>
 
-  <div class="legend" id="legendContainer"></div>
+  <div id="dashboard">
+    <div id="mapContainer">
+      <svg id="africaMap"></svg>
+      <div id="tooltip" class="tooltip"></div>
+      <div id="legendContainer"></div>
+    </div>
 
-  <div id="datasetLinks">
-    <h3 id="countryName">Click a country to see its datasets</h3>
-    <div id="linksContainer"></div>
+    <div id="detailPanel">
+      <h3 id="countryName">Click a country to see its datasets</h3>
+      <div id="linksContainer"></div>
+    </div>
   </div>
 
   <script>
@@ -109,17 +143,26 @@
     }
 
     function showCountryLinks(country, datasets) {
-      document.getElementById("countryName").textContent = country + " – " + datasets.length + " datasets";
+      document.getElementById("countryName").textContent = country + " – " + datasets.length + " dataset" + (datasets.length!==1?'s':'');
       const container = document.getElementById("linksContainer");
       container.innerHTML = "";
       datasets.forEach(d => {
         if(d.Link) {
+          const div = document.createElement("div");
+          div.className = "dataset-item";
           const a = document.createElement("a");
           a.href = d.Link;
           a.target = "_blank";
-          a.className = "dataset-link";
           a.textContent = d["Dataset Name"];
-          container.appendChild(a);
+          div.appendChild(a);
+          if(d.Domain) {
+            const span = document.createElement("div");
+            span.style.fontSize = "0.8rem";
+            span.style.color = "#555";
+            span.textContent = "Domain: " + d.Domain;
+            div.appendChild(span);
+          }
+          container.appendChild(div);
         }
       });
       if(datasets.length === 0){
@@ -196,16 +239,21 @@
             tooltip.style("display", "none");
           });
 
-        // Add legend
+        // Add dynamic legend
         const legendContainer = d3.select("#legendContainer");
-        const legendSteps = 6;
-        for(let i=0; i<=legendSteps; i++){
-          const value = Math.round(maxCount * i / legendSteps);
-          legendContainer.append("span")
-            .style("background-color", color(value))
-            .attr("title", value);
+        const stepCount = Math.min(maxCount, 6);
+        const stepValues = [];
+        for(let i=0; i<=stepCount; i++){
+          stepValues.push(Math.round(i*maxCount/stepCount));
         }
-        legendContainer.append("span").text("More datasets →");
+
+        stepValues.forEach(val => {
+          const item = legendContainer.append("div").attr("class","legend-item");
+          item.append("div")
+            .attr("class","legend-color")
+            .style("background-color", color(val));
+          item.append("div").text(val);
+        });
       });
     }
   </script>
