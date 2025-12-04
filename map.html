@@ -20,20 +20,20 @@
 
     #dashboard {
       display: flex;
-      max-width: 1200px;
+      max-width: 1400px;
       margin: 2rem auto;
       gap: 2rem;
       flex-wrap: wrap;
     }
 
     #mapContainer {
-      flex: 1 1 600px;
+      flex: 3 1 800px;
       position: relative;
     }
 
     svg {
       width: 100%;
-      height: 700px;
+      height: 800px;
     }
 
     .tooltip {
@@ -53,7 +53,7 @@
       align-items: center;
       margin-top: 10px;
       font-size: 0.9rem;
-      gap: 5px;
+      gap: 10px;
       flex-wrap: wrap;
     }
 
@@ -62,7 +62,6 @@
       flex-direction: column;
       align-items: center;
       font-size: 0.8rem;
-      margin-right: 8px;
     }
 
     .legend-color {
@@ -78,12 +77,14 @@
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.05);
       padding: 1rem 1.5rem;
-      max-height: 700px;
+      max-height: 800px;
       overflow-y: auto;
     }
 
     #detailPanel h3 {
       margin-top: 0;
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
     }
 
     .dataset-item {
@@ -105,9 +106,30 @@
       text-decoration: underline;
     }
 
+    .badge {
+      background: #ff6b6b;
+      color: white;
+      padding: 2px 6px;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      margin-left: 5px;
+    }
+
+    #topCountries {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+    }
+
+    #topCountries h4 {
+      margin: 0.5rem 0;
+    }
+
     @media (max-width: 1024px) {
       #dashboard {
         flex-direction: column;
+      }
+      #mapContainer, #detailPanel {
+        flex: 1 1 100%;
       }
     }
 
@@ -127,6 +149,7 @@
     <div id="detailPanel">
       <h3 id="countryName">Click a country to see its datasets</h3>
       <div id="linksContainer"></div>
+      <div id="topCountries"></div>
     </div>
   </div>
 
@@ -170,6 +193,17 @@
       }
     }
 
+    function showTopCountries(counts) {
+      const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,5);
+      const container = document.getElementById("topCountries");
+      container.innerHTML = "<h4>Top 5 Countries with Most Datasets</h4>";
+      sorted.forEach(([country,num])=>{
+        const div = document.createElement("div");
+        div.textContent = `${country}: ${num} datasets`;
+        container.appendChild(div);
+      });
+    }
+
     Papa.parse("datasets/catalog.csv", {
       download: true,
       header: true,
@@ -181,7 +215,7 @@
 
     function drawMap() {
       const width = 900;
-      const height = 700;
+      const height = 800;
 
       const svg = d3.select("#africaMap");
       const projection = d3.geoMercator().scale(500).center([20, 0]).translate([width/2, height/2]);
@@ -201,7 +235,8 @@
       const color = d3.scaleSequential().domain([0, maxCount])
         .interpolator(d3.interpolateYlOrRd);
 
-      // Load Africa GeoJSON
+      showTopCountries(counts);
+
       d3.json("datasets/africa.geojson").then(function(geojson) {
         svg.selectAll("path")
           .data(geojson.features)
@@ -221,10 +256,22 @@
               if(countryNameMap[rowCountry]) rowCountry = normalizeName(countryNameMap[rowCountry]);
               return rowCountry === geoName;
             });
+
+            // Animate fill
+            svg.selectAll("path")
+              .transition()
+              .duration(300)
+              .attr("fill", d => {
+                const key = normalizeName(d.properties.name);
+                return counts[key] ? color(counts[key]) : "#eee";
+              });
+
             showCountryLinks(d.properties.name, datasets);
           })
           .on("mouseover", (event, d) => {
-            d3.select(event.currentTarget).attr("stroke-width", 2);
+            d3.select(event.currentTarget)
+              .transition().duration(150)
+              .attr("stroke-width", 2);
             const key = normalizeName(d.properties.name);
             const count = counts[key] || 0;
             tooltip.style("display", "block")
@@ -235,19 +282,16 @@
                    .style("top", (event.pageY + 10) + "px");
           })
           .on("mouseout", (event) => {
-            d3.select(event.currentTarget).attr("stroke-width", 1);
+            d3.select(event.currentTarget)
+              .transition().duration(150)
+              .attr("stroke-width", 1);
             tooltip.style("display", "none");
           });
 
-        // Add dynamic legend
+        // Dynamic Legend
         const legendContainer = d3.select("#legendContainer");
-        const stepCount = Math.min(maxCount, 6);
-        const stepValues = [];
-        for(let i=0; i<=stepCount; i++){
-          stepValues.push(Math.round(i*maxCount/stepCount));
-        }
-
-        stepValues.forEach(val => {
+        const uniqueCounts = [...new Set(Object.values(counts).sort((a,b)=>a-b))];
+        uniqueCounts.forEach(val => {
           const item = legendContainer.append("div").attr("class","legend-item");
           item.append("div")
             .attr("class","legend-color")
