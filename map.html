@@ -8,7 +8,6 @@
   <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 
-  <!-- Styles -->
   <style>
     body {
       margin: 0;
@@ -59,6 +58,18 @@
       box-shadow: 0 4px 10px rgba(0,0,0,0.08);
     }
 
+    h2 {
+      color: #004B4B;
+    }
+
+    .search-box {
+      width: 300px;
+      padding: 10px;
+      border: 2px solid #004B4B;
+      border-radius: 5px;
+      margin-top: 10px;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
@@ -76,12 +87,15 @@
       text-align: left;
     }
 
-    .search-box {
-      width: 300px;
-      padding: 10px;
-      margin-top: 10px;
-      border: 2px solid #004B4B;
+    #resetBtn {
+      margin-top: 12px;
+      background: #004B4B;
+      color: white;
+      border: none;
+      padding: 8px 14px;
       border-radius: 5px;
+      cursor: pointer;
+      display: none;
     }
 
     footer {
@@ -92,7 +106,6 @@
     }
   </style>
 
-  <!-- Libraries -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 </head>
@@ -117,8 +130,11 @@
   <div id="map"></div>
 
   <div class="table-container">
-    <h2>📄 Dataset List by Country</h2>
-    <input type="text" id="search" class="search-box" placeholder="Search by country or dataset…" />
+    <h2 id="tableTitle">📄 All African Datasets</h2>
+
+    <button id="resetBtn">Show All Countries</button>
+
+    <input type="text" id="search" class="search-box" placeholder="Search by country or dataset…"/>
 
     <table id="datasetTable">
       <thead>
@@ -138,14 +154,16 @@
   </footer>
 
   <script>
-    // Initialize Leaflet Map
+    let fullData = [];
+
+    // Initialize Map
     const map = L.map('map').setView([9.1, 21.3], 3.7);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 6,
+      maxZoom: 6
     }).addTo(map);
 
-    // Load Africa GeoJSON
+    // Load GeoJSON + CSV
     fetch("https://raw.githubusercontent.com/datasets/geo-boundaries-world-110m/master/countries.geojson")
       .then(res => res.json())
       .then(geoData => {
@@ -153,67 +171,97 @@
           download: true,
           header: true,
           complete: function(results) {
-            const data = results.data;
+            fullData = results.data;
 
-            // Count datasets per country
+            // Count datasets for each country
             const countryCounts = {};
-            data.forEach(row => {
+            fullData.forEach(row => {
               const c = row.Country?.trim();
               if (!c) return;
               countryCounts[c] = (countryCounts[c] || 0) + 1;
             });
 
-            // Style countries
+            // Styling
             function styleFeature(feature) {
               const name = feature.properties.ADMIN;
               const count = countryCounts[name] || 0;
+
               return {
                 fillColor: count > 0 ? "#2ecc71" : "#d9d9d9",
-                weight: 1,
                 color: "#555",
+                weight: 1,
                 fillOpacity: count > 0 ? 0.8 : 0.3
               };
             }
 
-            // Add interactive country layer
+            // Country Layer
             L.geoJSON(geoData, {
               style: styleFeature,
               onEachFeature: function(feature, layer) {
-                const name = feature.properties.ADMIN;
-                const count = countryCounts[name] || 0;
+                const country = feature.properties.ADMIN;
+                const count = countryCounts[country] || 0;
 
-                layer.bindPopup(`<strong>${name}</strong><br/>Datasets: ${count}`);
+                layer.bindPopup(`<strong>${country}</strong><br/>Datasets: ${count}`);
 
-                layer.on("mouseover", () => layer.setStyle({ weight: 3 }));
-                layer.on("mouseout", () => layer.setStyle({ weight: 1 }));
+                // Click → Filter Table
+                layer.on("click", () => {
+                  filterByCountry(country);
+                });
               }
             }).addTo(map);
 
-            // Populate dataset table
-            const tbody = document.querySelector("#datasetTable tbody");
-            data.forEach(row => {
-              if (!row.Country) return;
-              const tr = document.createElement("tr");
-              tr.innerHTML = `
-                <td>${row["Dataset Name"] || ""}</td>
-                <td>${row.Country}</td>
-                <td>${row.Domain || ""}</td>
-                <td>${row.Source || ""}</td>
-              `;
-              tbody.appendChild(tr);
-            });
-
-            // Search filter
-            document.getElementById("search").addEventListener("keyup", function() {
-              const term = this.value.toLowerCase();
-              document.querySelectorAll("#datasetTable tbody tr").forEach(row => {
-                row.style.display = row.innerText.toLowerCase().includes(term) ? "" : "none";
-              });
-            });
-
+            // Fill Table Initially
+            populateTable(fullData);
           }
         });
       });
+
+    // Populate table
+    function populateTable(data) {
+      const tbody = document.querySelector("#datasetTable tbody");
+      tbody.innerHTML = "";
+
+      data.forEach(row => {
+        if (!row.Country) return;
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${row["Dataset Name"] || ""}</td>
+          <td>${row.Country}</td>
+          <td>${row.Domain || ""}</td>
+          <td>${row.Source || ""}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Filter Table
+    function filterByCountry(country) {
+      const filtered = fullData.filter(row => row.Country?.trim() === country);
+
+      populateTable(filtered);
+
+      document.getElementById("tableTitle").innerHTML =
+        `📍 Datasets in <strong>${country}</strong>`;
+
+      document.getElementById("resetBtn").style.display = "inline-block";
+
+      window.scrollTo({ top: document.querySelector(".table-container").offsetTop, behavior: "smooth" });
+    }
+
+    // Reset Filter
+    document.getElementById("resetBtn").onclick = () => {
+      populateTable(fullData);
+      document.getElementById("tableTitle").textContent = "📄 All African Datasets";
+      document.getElementById("resetBtn").style.display = "none";
+    };
+
+    // Search Filter
+    document.getElementById("search").addEventListener("keyup", function() {
+      const term = this.value.toLowerCase();
+      document.querySelectorAll("#datasetTable tbody tr").forEach(row => {
+        row.style.display = row.innerText.toLowerCase().includes(term) ? "" : "none";
+      });
+    });
   </script>
 
 </body>
