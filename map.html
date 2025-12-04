@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Africa Dataset Map – Open Data Africa</title>
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+
+  <!-- Styles -->
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f8f8f8;
+    }
+
+    nav {
+      background: #004B4B;
+      padding: 1rem;
+    }
+
+    .nav-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+    }
+
+    .nav-list a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    h1 {
+      text-align: center;
+      margin-top: 1rem;
+      color: #004B4B;
+    }
+
+    #map {
+      height: 520px;
+      width: 90%;
+      margin: 1rem auto;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .table-container {
+      max-width: 95%;
+      margin: auto;
+      background: white;
+      padding: 1rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    th, td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #eee;
+    }
+
+    th {
+      background: #004B4B;
+      color: white;
+      text-align: left;
+    }
+
+    .search-box {
+      width: 300px;
+      padding: 10px;
+      margin-top: 10px;
+      border: 2px solid #004B4B;
+      border-radius: 5px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      color: #555;
+      margin-top: 2rem;
+    }
+  </style>
+
+  <!-- Libraries -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+</head>
+
+<body>
+
+  <!-- Navigation -->
+  <nav>
+    <ul class="nav-list">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="datasets.html">Datasets</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="map.html" aria-current="page">Map</a></li>
+      <li><a href="resources.html">Resources</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </nav>
+
+  <h1>🌍 Africa Dataset Map</h1>
+
+  <div id="map"></div>
+
+  <div class="table-container">
+    <h2>📄 Dataset List by Country</h2>
+    <input type="text" id="search" class="search-box" placeholder="Search by country or dataset…" />
+
+    <table id="datasetTable">
+      <thead>
+        <tr>
+          <th>Dataset Name</th>
+          <th>Country</th>
+          <th>Domain</th>
+          <th>Source</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <footer>
+    © 2025 Open Data Africa – Powered by AI Made in Africa
+  </footer>
+
+  <script>
+    // Initialize Leaflet Map
+    const map = L.map('map').setView([9.1, 21.3], 3.7);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 6,
+    }).addTo(map);
+
+    // Load Africa GeoJSON
+    fetch("https://raw.githubusercontent.com/datasets/geo-boundaries-world-110m/master/countries.geojson")
+      .then(res => res.json())
+      .then(geoData => {
+        Papa.parse("datasets/catalog.csv", {
+          download: true,
+          header: true,
+          complete: function(results) {
+            const data = results.data;
+
+            // Count datasets per country
+            const countryCounts = {};
+            data.forEach(row => {
+              const c = row.Country?.trim();
+              if (!c) return;
+              countryCounts[c] = (countryCounts[c] || 0) + 1;
+            });
+
+            // Style countries
+            function styleFeature(feature) {
+              const name = feature.properties.ADMIN;
+              const count = countryCounts[name] || 0;
+              return {
+                fillColor: count > 0 ? "#2ecc71" : "#d9d9d9",
+                weight: 1,
+                color: "#555",
+                fillOpacity: count > 0 ? 0.8 : 0.3
+              };
+            }
+
+            // Add interactive country layer
+            L.geoJSON(geoData, {
+              style: styleFeature,
+              onEachFeature: function(feature, layer) {
+                const name = feature.properties.ADMIN;
+                const count = countryCounts[name] || 0;
+
+                layer.bindPopup(`<strong>${name}</strong><br/>Datasets: ${count}`);
+
+                layer.on("mouseover", () => layer.setStyle({ weight: 3 }));
+                layer.on("mouseout", () => layer.setStyle({ weight: 1 }));
+              }
+            }).addTo(map);
+
+            // Populate dataset table
+            const tbody = document.querySelector("#datasetTable tbody");
+            data.forEach(row => {
+              if (!row.Country) return;
+              const tr = document.createElement("tr");
+              tr.innerHTML = `
+                <td>${row["Dataset Name"] || ""}</td>
+                <td>${row.Country}</td>
+                <td>${row.Domain || ""}</td>
+                <td>${row.Source || ""}</td>
+              `;
+              tbody.appendChild(tr);
+            });
+
+            // Search filter
+            document.getElementById("search").addEventListener("keyup", function() {
+              const term = this.value.toLowerCase();
+              document.querySelectorAll("#datasetTable tbody tr").forEach(row => {
+                row.style.display = row.innerText.toLowerCase().includes(term) ? "" : "none";
+              });
+            });
+
+          }
+        });
+      });
+  </script>
+
+</body>
+</html>
