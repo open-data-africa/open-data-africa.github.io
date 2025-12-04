@@ -20,14 +20,14 @@
 
     #dashboard {
       display: flex;
-      max-width: 1400px;
+      max-width: 1500px;
       margin: 2rem auto;
       gap: 2rem;
       flex-wrap: wrap;
     }
 
     #mapContainer {
-      flex: 3 1 800px;
+      flex: 3 1 900px;
       position: relative;
     }
 
@@ -87,41 +87,38 @@
       margin-bottom: 0.5rem;
     }
 
-    .dataset-item {
-      padding: 0.5rem 0;
-      border-bottom: 1px solid #eee;
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0.5rem;
     }
 
-    .dataset-item:last-child {
-      border-bottom: none;
-    }
-
-    .dataset-item a {
-      color: #0066cc;
-      text-decoration: none;
-      font-weight: bold;
-    }
-
-    .dataset-item a:hover {
-      text-decoration: underline;
-    }
-
-    .badge {
-      background: #ff6b6b;
-      color: white;
-      padding: 2px 6px;
-      border-radius: 8px;
-      font-size: 0.75rem;
-      margin-left: 5px;
-    }
-
-    #topCountries {
-      margin-top: 1rem;
+    th, td {
+      border: 1px solid #eee;
+      padding: 6px 8px;
+      text-align: left;
       font-size: 0.9rem;
     }
 
-    #topCountries h4 {
-      margin: 0.5rem 0;
+    th {
+      background-color: #f4f4f4;
+    }
+
+    tr:nth-child(even) {
+      background: #fafafa;
+    }
+
+    tr:hover {
+      background: #f0f8ff;
+    }
+
+    a.dataset-link {
+      color: #0066cc;
+      text-decoration: none;
+    }
+
+    a.dataset-link:hover {
+      text-decoration: underline;
     }
 
     @media (max-width: 1024px) {
@@ -148,8 +145,16 @@
 
     <div id="detailPanel">
       <h3 id="countryName">Click a country to see its datasets</h3>
-      <div id="linksContainer"></div>
-      <div id="topCountries"></div>
+      <table id="datasetTable">
+        <thead>
+          <tr>
+            <th>Dataset Name</th>
+            <th>Domain</th>
+            <th>Link</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
     </div>
   </div>
 
@@ -167,41 +172,20 @@
 
     function showCountryLinks(country, datasets) {
       document.getElementById("countryName").textContent = country + " – " + datasets.length + " dataset" + (datasets.length!==1?'s':'');
-      const container = document.getElementById("linksContainer");
-      container.innerHTML = "";
+      const tbody = document.querySelector("#datasetTable tbody");
+      tbody.innerHTML = "";
       datasets.forEach(d => {
-        if(d.Link) {
-          const div = document.createElement("div");
-          div.className = "dataset-item";
-          const a = document.createElement("a");
-          a.href = d.Link;
-          a.target = "_blank";
-          a.textContent = d["Dataset Name"];
-          div.appendChild(a);
-          if(d.Domain) {
-            const span = document.createElement("div");
-            span.style.fontSize = "0.8rem";
-            span.style.color = "#555";
-            span.textContent = "Domain: " + d.Domain;
-            div.appendChild(span);
-          }
-          container.appendChild(div);
-        }
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${d["Dataset Name"]}</td>
+          <td>${d.Domain || ""}</td>
+          <td>${d.Link ? `<a href="${d.Link}" target="_blank" class="dataset-link">View</a>` : ""}</td>
+        `;
+        tbody.appendChild(tr);
       });
       if(datasets.length === 0){
-        container.textContent = "No datasets available for this country.";
+        tbody.innerHTML = `<tr><td colspan="3">No datasets available for this country.</td></tr>`;
       }
-    }
-
-    function showTopCountries(counts) {
-      const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,5);
-      const container = document.getElementById("topCountries");
-      container.innerHTML = "<h4>Top 5 Countries with Most Datasets</h4>";
-      sorted.forEach(([country,num])=>{
-        const div = document.createElement("div");
-        div.textContent = `${country}: ${num} datasets`;
-        container.appendChild(div);
-      });
     }
 
     Papa.parse("datasets/catalog.csv", {
@@ -232,10 +216,7 @@
       });
 
       const maxCount = d3.max(Object.values(counts)) || 1;
-      const color = d3.scaleSequential().domain([0, maxCount])
-        .interpolator(d3.interpolateYlOrRd);
-
-      showTopCountries(counts);
+      const color = d3.scaleSequential().domain([0, maxCount]).interpolator(d3.interpolateYlOrRd);
 
       d3.json("datasets/africa.geojson").then(function(geojson) {
         svg.selectAll("path")
@@ -245,7 +226,13 @@
           .attr("d", path)
           .attr("fill", d => {
             const key = normalizeName(d.properties.name);
-            return counts[key] ? color(counts[key]) : "#eee";
+            const value = counts[key] || 0;
+            // Approximate legend by ranges
+            if(value === 0) return "#eee";
+            else if(value <= 2) return "#fff2cc";
+            else if(value <= 5) return "#ffd966";
+            else if(value <= 10) return "#f6b26b";
+            else return "#cc0000";
           })
           .attr("stroke", "#555")
           .attr("stroke-width", 1)
@@ -257,21 +244,10 @@
               return rowCountry === geoName;
             });
 
-            // Animate fill
-            svg.selectAll("path")
-              .transition()
-              .duration(300)
-              .attr("fill", d => {
-                const key = normalizeName(d.properties.name);
-                return counts[key] ? color(counts[key]) : "#eee";
-              });
-
             showCountryLinks(d.properties.name, datasets);
           })
           .on("mouseover", (event, d) => {
-            d3.select(event.currentTarget)
-              .transition().duration(150)
-              .attr("stroke-width", 2);
+            d3.select(event.currentTarget).transition().duration(150).attr("stroke-width", 2);
             const key = normalizeName(d.properties.name);
             const count = counts[key] || 0;
             tooltip.style("display", "block")
@@ -282,21 +258,19 @@
                    .style("top", (event.pageY + 10) + "px");
           })
           .on("mouseout", (event) => {
-            d3.select(event.currentTarget)
-              .transition().duration(150)
-              .attr("stroke-width", 1);
+            d3.select(event.currentTarget).transition().duration(150).attr("stroke-width", 1);
             tooltip.style("display", "none");
           });
 
-        // Dynamic Legend
+        // Legend
+        const legendColors = ["#fff2cc","#ffd966","#f6b26b","#cc0000"];
+        const legendRanges = ["1-2","3-5","6-10","10+"];
         const legendContainer = d3.select("#legendContainer");
-        const uniqueCounts = [...new Set(Object.values(counts).sort((a,b)=>a-b))];
-        uniqueCounts.forEach(val => {
+        legendContainer.selectAll("*").remove();
+        legendColors.forEach((c,i)=>{
           const item = legendContainer.append("div").attr("class","legend-item");
-          item.append("div")
-            .attr("class","legend-color")
-            .style("background-color", color(val));
-          item.append("div").text(val);
+          item.append("div").attr("class","legend-color").style("background-color", c);
+          item.append("div").text(legendRanges[i]);
         });
       });
     }
