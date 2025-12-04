@@ -61,6 +61,24 @@
       font-size: 0.9rem;
       display: none;
     }
+
+    /* Legend */
+    .legend {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 10px;
+      font-size: 0.9rem;
+      font-family: Arial, sans-serif;
+      gap: 5px;
+    }
+
+    .legend span {
+      width: 30px;
+      height: 15px;
+      display: inline-block;
+      border: 1px solid #ccc;
+    }
   </style>
 </head>
 <body>
@@ -70,6 +88,8 @@
     <svg id="africaMap"></svg>
     <div id="tooltip" class="tooltip"></div>
   </div>
+
+  <div class="legend" id="legendContainer"></div>
 
   <div id="datasetLinks">
     <h3 id="countryName">Click a country to see its datasets</h3>
@@ -134,7 +154,8 @@
         counts[country] = (counts[country] || 0) + 1;
       });
 
-      const color = d3.scaleSequential().domain([0, d3.max(Object.values(counts)) || 1])
+      const maxCount = d3.max(Object.values(counts)) || 1;
+      const color = d3.scaleSequential().domain([0, maxCount])
         .interpolator(d3.interpolateYlOrRd);
 
       // Load Africa GeoJSON
@@ -174,6 +195,17 @@
             d3.select(event.currentTarget).attr("stroke-width", 1);
             tooltip.style("display", "none");
           });
+
+        // Add legend
+        const legendContainer = d3.select("#legendContainer");
+        const legendSteps = 6;
+        for(let i=0; i<=legendSteps; i++){
+          const value = Math.round(maxCount * i / legendSteps);
+          legendContainer.append("span")
+            .style("background-color", color(value))
+            .attr("title", value);
+        }
+        legendContainer.append("span").text("More datasets →");
       });
     }
   </script>
