@@ -6,40 +6,46 @@
 <title>Use Case Explorer – Open Data Africa</title>
 <link rel="stylesheet" href="style.css" />
 <style>
-  body { font-family: Arial, sans-serif; margin: 0; background: #f9f9f9; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; margin:0; background: #f4f4f9; }
   nav { background-color: #330000; padding: 1em; }
-  .nav-list { display: flex; justify-content: center; list-style: none; margin: 0; padding: 0; flex-wrap: wrap; gap: 1rem; }
-  .nav-list li a { color: white; text-decoration: none; font-weight: bold; }
-  .nav-list li a[aria-current="page"] { color: #ffcc00; }
+  .nav-list { display:flex; justify-content:center; list-style:none; margin:0; padding:0; flex-wrap:wrap; gap:1rem; }
+  .nav-list li a { color:white; text-decoration:none; font-weight:bold; padding:0.3rem 0.6rem; border-radius:4px; }
+  .nav-list li a[aria-current="page"] { color:#ffcc00; background:rgba(255,255,255,0.1); }
 
-  main { max-width: 1200px; margin: 0 auto; padding: 2rem 1rem; }
-  h1 { text-align: center; color: #333; margin-bottom: 0.5rem; }
-  p.intro { text-align:center; max-width: 900px; margin: 0 auto 2rem; color:#555; }
+  main { max-width: 1300px; margin:0 auto; padding:2rem 1rem; }
+  h1 { text-align:center; color:#330000; margin-bottom:0.5rem; font-size:2.2rem; }
+  p.intro { text-align:center; max-width:900px; margin:0 auto 2rem; color:#555; font-size:1.05rem; }
 
   /* Summary cards */
-  .summary-wrapper { display: flex; justify-content: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem; }
-  .summary-card { background:#fff; padding:1rem 1.5rem; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.05); font-weight:bold; text-align:center; min-width:150px; }
+  .summary-wrapper { display:flex; justify-content:center; flex-wrap:wrap; gap:1rem; margin-bottom:2rem; }
+  .summary-card { background:#fff; padding:1.2rem 1.5rem; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.08); font-weight:bold; text-align:center; min-width:160px; font-size:1.1rem; transition: transform 0.2s ease; }
+  .summary-card:hover { transform:translateY(-3px); }
 
   /* Filters */
-  .filters { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; margin-bottom: 2rem; }
-  .filters input, .filters select { padding: 0.5rem; font-size: 1rem; border-radius: 6px; border: 1px solid #ccc; }
+  .filters { display:flex; flex-wrap:wrap; gap:1rem; justify-content:center; margin-bottom:2rem; }
+  .filters input, .filters select { padding:0.6rem 0.8rem; font-size:1rem; border-radius:6px; border:1px solid #ccc; transition: border-color 0.2s; }
+  .filters input:focus, .filters select:focus { border-color:#330000; outline:none; }
 
-  /* Cards */
-  .usecase-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
-  .usecase-card { background: #fff; border-left: 5px solid #aa0000; padding: 1rem 1.5rem; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); transition: transform 0.2s; }
-  .usecase-card:hover { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-  .usecase-card h3 { margin-top: 0; font-size: 1.2rem; color: #330000; }
-  .usecase-card p { font-size: 0.95rem; color: #555; margin: 0.25rem 0; }
-  .dataset-link { display: block; margin-top: 0.5rem; color: #0066cc; text-decoration: none; }
-  .dataset-link:hover { text-decoration: underline; }
+  /* Cards Grid */
+  .usecase-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(300px,1fr)); gap:1.5rem; }
+  .usecase-card { background:#fff; border-left:6px solid #aa0000; padding:1rem 1.5rem; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.06); transition: transform 0.2s ease, box-shadow 0.2s ease; }
+  .usecase-card:hover { transform:translateY(-4px); box-shadow:0 8px 20px rgba(0,0,0,0.1); }
+  .usecase-card h3 { margin-top:0; font-size:1.25rem; color:#330000; }
+  .usecase-card p { font-size:0.95rem; color:#555; margin:0.25rem 0; }
+  .dataset-link { display:inline-block; margin-top:0.5rem; color:#0066cc; font-weight:600; text-decoration:none; transition: color 0.2s; }
+  .dataset-link:hover { text-decoration:underline; color:#003366; }
 
   /* Domain label colors */
-  .domain-label { display:inline-block; padding:0.2rem 0.5rem; border-radius:4px; color:#fff; font-size:0.8rem; margin-right:0.3rem; }
+  .domain-label { display:inline-block; padding:0.25rem 0.5rem; border-radius:4px; color:#fff; font-size:0.8rem; margin-right:0.3rem; }
   .domain-Agriculture { background:#2ecc71; }
   .domain-Health { background:#e74c3c; }
   .domain-Environment { background:#3498db; }
   .domain-Education { background:#f39c12; }
   .domain-Technology { background:#9b59b6; }
+  .domain-Other { background:#7f8c8d; }
+
+  /* Footer */
+  footer { text-align:center; padding:1.5rem 0; border-top:1px solid #ddd; font-size:0.9rem; color:#666; background:#f9f9f9; margin-top:3rem; }
 </style>
 </head>
 <body>
@@ -82,6 +88,10 @@
   <!-- Use Case Cards -->
   <div class="usecase-grid" id="usecaseGrid"></div>
 </main>
+
+<footer>
+  &copy; 2025 Open Data Africa – Powered by AI Made in Africa
+</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <script>
@@ -141,18 +151,20 @@
     });
 
     usecaseGrid.innerHTML = filtered.map(u => {
-      const domainClass = u.Domain ? `domain-${u.Domain.replace(/\s+/g,'')}` : '';
+      const domainClass = u.Domain ? `domain-${u.Domain.trim().replace(/\s+/g,'')}` : 'domain-Other';
+      const domainName = u.Domain ? u.Domain.trim() : 'Other';
       return `
         <div class="usecase-card">
           <h3>${u["Dataset Name"]}</h3>
           <p><strong>Country:</strong> ${u.Country}</p>
-          <p><strong>Domain:</strong> <span class="domain-label ${domainClass}">${u.Domain}</span></p>
+          <p><strong>Domain:</strong> <span class="domain-label ${domainClass}">${domainName}</span></p>
           <p><strong>Data Type:</strong> ${u["Data Type"]}</p>
           <p><strong>License:</strong> ${u.License}</p>
+          <p><strong>Use Case:</strong> ${u["Use Cases"] || 'N/A'}</p>
           ${u.Link ? `<a href="${u.Link}" target="_blank" class="dataset-link">View Dataset</a>` : ""}
         </div>
       `;
-    }).join("") || `<p style="text-align:center; color:#777;">No use cases found.</p>`;
+    }).join("") || `<p style="text-align:center; color:#777; font-size:1.05rem;">No use cases found.</p>`;
   }
 
   searchInput.addEventListener("input", renderUsecases);
