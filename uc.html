@@ -11,20 +11,35 @@
   .nav-list { display: flex; justify-content: center; list-style: none; margin: 0; padding: 0; flex-wrap: wrap; gap: 1rem; }
   .nav-list li a { color: white; text-decoration: none; font-weight: bold; }
   .nav-list li a[aria-current="page"] { color: #ffcc00; }
-  
-  main { max-width: 1200px; margin: 0 auto; padding: 2rem 1rem; }
-  h1 { text-align: center; color: #333; margin-bottom: 2rem; }
 
+  main { max-width: 1200px; margin: 0 auto; padding: 2rem 1rem; }
+  h1 { text-align: center; color: #333; margin-bottom: 0.5rem; }
+  p.intro { text-align:center; max-width: 900px; margin: 0 auto 2rem; color:#555; }
+
+  /* Summary cards */
+  .summary-wrapper { display: flex; justify-content: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem; }
+  .summary-card { background:#fff; padding:1rem 1.5rem; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.05); font-weight:bold; text-align:center; min-width:150px; }
+
+  /* Filters */
   .filters { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; margin-bottom: 2rem; }
   .filters input, .filters select { padding: 0.5rem; font-size: 1rem; border-radius: 6px; border: 1px solid #ccc; }
 
+  /* Cards */
   .usecase-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
-  .usecase-card { background: #fff; border: 1px solid #ddd; border-left: 5px solid #aa0000; padding: 1rem 1.5rem; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); transition: transform 0.2s; }
+  .usecase-card { background: #fff; border-left: 5px solid #aa0000; padding: 1rem 1.5rem; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); transition: transform 0.2s; }
   .usecase-card:hover { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
   .usecase-card h3 { margin-top: 0; font-size: 1.2rem; color: #330000; }
   .usecase-card p { font-size: 0.95rem; color: #555; margin: 0.25rem 0; }
   .dataset-link { display: block; margin-top: 0.5rem; color: #0066cc; text-decoration: none; }
   .dataset-link:hover { text-decoration: underline; }
+
+  /* Domain label colors */
+  .domain-label { display:inline-block; padding:0.2rem 0.5rem; border-radius:4px; color:#fff; font-size:0.8rem; margin-right:0.3rem; }
+  .domain-Agriculture { background:#2ecc71; }
+  .domain-Health { background:#e74c3c; }
+  .domain-Environment { background:#3498db; }
+  .domain-Education { background:#f39c12; }
+  .domain-Technology { background:#9b59b6; }
 </style>
 </head>
 <body>
@@ -44,28 +59,28 @@
 
 <main>
   <h1>🌍 Use Case Explorer</h1>
-  <p style="text-align:center; max-width: 800px; margin: 0 auto 2rem; color:#555;">
+  <p class="intro">
     Explore AI and open data use cases across Africa. Filter by country, domain, or dataset type to discover how datasets are powering innovation.
   </p>
+
+  <!-- Summary Stats -->
+  <div class="summary-wrapper">
+    <div class="summary-card" id="totalDatasets">Datasets: 0</div>
+    <div class="summary-card" id="totalCountries">Countries: 0</div>
+    <div class="summary-card" id="totalDomains">Domains: 0</div>
+    <div class="summary-card" id="totalTypes">Data Types: 0</div>
+  </div>
 
   <!-- Filters -->
   <div class="filters">
     <input type="text" id="searchInput" placeholder="Search by use case name..." />
-    <select id="countryFilter">
-      <option value="">All Countries</option>
-    </select>
-    <select id="domainFilter">
-      <option value="">All Domains</option>
-    </select>
-    <select id="typeFilter">
-      <option value="">All Data Types</option>
-    </select>
+    <select id="countryFilter"><option value="">All Countries</option></select>
+    <select id="domainFilter"><option value="">All Domains</option></select>
+    <select id="typeFilter"><option value="">All Data Types</option></select>
   </div>
 
   <!-- Use Case Cards -->
-  <div class="usecase-grid" id="usecaseGrid">
-    <!-- Cards will be dynamically generated here -->
-  </div>
+  <div class="usecase-grid" id="usecaseGrid"></div>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
@@ -75,6 +90,11 @@
   const countryFilter = document.getElementById("countryFilter");
   const domainFilter = document.getElementById("domainFilter");
   const typeFilter = document.getElementById("typeFilter");
+
+  const totalDatasets = document.getElementById("totalDatasets");
+  const totalCountries = document.getElementById("totalCountries");
+  const totalDomains = document.getElementById("totalDomains");
+  const totalTypes = document.getElementById("totalTypes");
 
   let usecases = [];
 
@@ -86,6 +106,7 @@
       usecases = results.data.filter(d => d["Dataset Name"]); // remove empty rows
       populateFilters();
       renderUsecases();
+      updateSummary();
     }
   });
 
@@ -97,6 +118,13 @@
     countries.forEach(c => countryFilter.innerHTML += `<option value="${c}">${c}</option>`);
     domains.forEach(d => domainFilter.innerHTML += `<option value="${d}">${d}</option>`);
     types.forEach(t => typeFilter.innerHTML += `<option value="${t}">${t}</option>`);
+  }
+
+  function updateSummary() {
+    totalDatasets.textContent = `Datasets: ${usecases.length}`;
+    totalCountries.textContent = `Countries: ${[...new Set(usecases.map(u => u.Country))].length}`;
+    totalDomains.textContent = `Domains: ${[...new Set(usecases.map(u => u.Domain))].length}`;
+    totalTypes.textContent = `Data Types: ${[...new Set(usecases.map(u => u["Data Type"]))].length}`;
   }
 
   function renderUsecases() {
@@ -112,15 +140,19 @@
              (!type || u["Data Type"] === type);
     });
 
-    usecaseGrid.innerHTML = filtered.map(u => `
-      <div class="usecase-card">
-        <h3>${u["Dataset Name"]}</h3>
-        <p><strong>Country:</strong> ${u.Country}</p>
-        <p><strong>Domain:</strong> ${u.Domain}</p>
-        <p><strong>Data Type:</strong> ${u["Data Type"]}</p>
-        ${u.Link ? `<a href="${u.Link}" target="_blank" class="dataset-link">View Dataset</a>` : ""}
-      </div>
-    `).join("") || `<p style="text-align:center; color:#777;">No use cases found.</p>`;
+    usecaseGrid.innerHTML = filtered.map(u => {
+      const domainClass = u.Domain ? `domain-${u.Domain.replace(/\s+/g,'')}` : '';
+      return `
+        <div class="usecase-card">
+          <h3>${u["Dataset Name"]}</h3>
+          <p><strong>Country:</strong> ${u.Country}</p>
+          <p><strong>Domain:</strong> <span class="domain-label ${domainClass}">${u.Domain}</span></p>
+          <p><strong>Data Type:</strong> ${u["Data Type"]}</p>
+          <p><strong>License:</strong> ${u.License}</p>
+          ${u.Link ? `<a href="${u.Link}" target="_blank" class="dataset-link">View Dataset</a>` : ""}
+        </div>
+      `;
+    }).join("") || `<p style="text-align:center; color:#777;">No use cases found.</p>`;
   }
 
   searchInput.addEventListener("input", renderUsecases);
