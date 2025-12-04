@@ -18,8 +18,8 @@
 
   /* Summary cards */
   .summary-wrapper { display:flex; justify-content:center; flex-wrap:wrap; gap:1rem; margin-bottom:2rem; }
-  .summary-card { background:#fff; padding:1.2rem 1.5rem; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.08); font-weight:bold; text-align:center; min-width:160px; font-size:1.1rem; transition: transform 0.2s ease; }
-  .summary-card:hover { transform:translateY(-3px); }
+  .summary-card { background:#fff; padding:1.2rem 1.5rem; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.08); font-weight:bold; text-align:center; min-width:160px; font-size:1.1rem; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+  .summary-card:hover { transform:translateY(-5px); box-shadow:0 8px 20px rgba(0,0,0,0.12); }
 
   /* Filters */
   .filters { display:flex; flex-wrap:wrap; gap:1rem; justify-content:center; margin-bottom:2rem; }
@@ -28,15 +28,28 @@
 
   /* Cards Grid */
   .usecase-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(300px,1fr)); gap:1.5rem; }
-  .usecase-card { background:#fff; border-left:6px solid #aa0000; padding:1rem 1.5rem; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.06); transition: transform 0.2s ease, box-shadow 0.2s ease; }
-  .usecase-card:hover { transform:translateY(-4px); box-shadow:0 8px 20px rgba(0,0,0,0.1); }
-  .usecase-card h3 { margin-top:0; font-size:1.25rem; color:#330000; }
+  .usecase-card { background:#fff; border-left:6px solid #aa0000; padding:1rem 1.5rem; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.06); transition: transform 0.3s ease, box-shadow 0.3s ease; position:relative; overflow:hidden; }
+  .usecase-card:hover { transform:translateY(-6px); box-shadow:0 10px 25px rgba(0,0,0,0.12); }
+  .usecase-card h3 { margin-top:0; font-size:1.3rem; color:#330000; }
   .usecase-card p { font-size:0.95rem; color:#555; margin:0.25rem 0; }
   .dataset-link { display:inline-block; margin-top:0.5rem; color:#0066cc; font-weight:600; text-decoration:none; transition: color 0.2s; }
   .dataset-link:hover { text-decoration:underline; color:#003366; }
 
-  /* Domain label colors */
-  .domain-label { display:inline-block; padding:0.25rem 0.5rem; border-radius:4px; color:#fff; font-size:0.8rem; margin-right:0.3rem; }
+  /* Domain label colors and tooltip */
+  .domain-label { display:inline-block; padding:0.25rem 0.5rem; border-radius:4px; color:#fff; font-size:0.8rem; margin-right:0.3rem; position:relative; cursor:default; }
+  .domain-label:hover::after {
+    content: attr(data-tooltip);
+    position:absolute;
+    bottom:125%; left:50%;
+    transform:translateX(-50%);
+    background:rgba(0,0,0,0.75);
+    color:#fff; font-size:0.75rem;
+    padding:0.2rem 0.4rem;
+    border-radius:4px;
+    white-space:nowrap;
+    z-index:10;
+  }
+
   .domain-Agriculture { background:#2ecc71; }
   .domain-Health { background:#e74c3c; }
   .domain-Environment { background:#3498db; }
@@ -46,6 +59,10 @@
 
   /* Footer */
   footer { text-align:center; padding:1.5rem 0; border-top:1px solid #ddd; font-size:0.9rem; color:#666; background:#f9f9f9; margin-top:3rem; }
+
+  /* Card fade-in animation */
+  .fade-in { animation: fadeIn 0.4s ease forwards; opacity:0; }
+  @keyframes fadeIn { to { opacity:1; } }
 </style>
 </head>
 <body>
@@ -108,15 +125,31 @@
 
   let usecases = [];
 
-  // Load catalog CSV
+  // Animate summary counters
+  function animateValue(element, start, end, duration) {
+    let range = end - start;
+    let current = start;
+    let increment = end > start ? 1 : -1;
+    let stepTime = Math.abs(Math.floor(duration / range));
+    let timer = setInterval(function() {
+      current += increment;
+      element.textContent = element.id === 'totalDatasets' ? `Datasets: ${current}` :
+                            element.id === 'totalCountries' ? `Countries: ${current}` :
+                            element.id === 'totalDomains' ? `Domains: ${current}` :
+                            `Data Types: ${current}`;
+      if(current == end) clearInterval(timer);
+    }, stepTime);
+  }
+
+  // Load CSV
   Papa.parse("datasets/catalog.csv", {
     download: true,
     header: true,
     complete: function(results) {
-      usecases = results.data.filter(d => d["Dataset Name"]); // remove empty rows
+      usecases = results.data.filter(d => d["Dataset Name"]);
       populateFilters();
       renderUsecases();
-      updateSummary();
+      animateSummary();
     }
   });
 
@@ -130,11 +163,11 @@
     types.forEach(t => typeFilter.innerHTML += `<option value="${t}">${t}</option>`);
   }
 
-  function updateSummary() {
-    totalDatasets.textContent = `Datasets: ${usecases.length}`;
-    totalCountries.textContent = `Countries: ${[...new Set(usecases.map(u => u.Country))].length}`;
-    totalDomains.textContent = `Domains: ${[...new Set(usecases.map(u => u.Domain))].length}`;
-    totalTypes.textContent = `Data Types: ${[...new Set(usecases.map(u => u["Data Type"]))].length}`;
+  function animateSummary() {
+    animateValue(totalDatasets, 0, usecases.length, 800);
+    animateValue(totalCountries, 0, [...new Set(usecases.map(u=>u.Country))].length, 800);
+    animateValue(totalDomains, 0, [...new Set(usecases.map(u=>u.Domain))].length, 800);
+    animateValue(totalTypes, 0, [...new Set(usecases.map(u=>u["Data Type"]))].length, 800);
   }
 
   function renderUsecases() {
@@ -153,11 +186,12 @@
     usecaseGrid.innerHTML = filtered.map(u => {
       const domainClass = u.Domain ? `domain-${u.Domain.trim().replace(/\s+/g,'')}` : 'domain-Other';
       const domainName = u.Domain ? u.Domain.trim() : 'Other';
+      const tooltipText = `Domain: ${domainName}`;
       return `
-        <div class="usecase-card">
+        <div class="usecase-card fade-in">
           <h3>${u["Dataset Name"]}</h3>
           <p><strong>Country:</strong> ${u.Country}</p>
-          <p><strong>Domain:</strong> <span class="domain-label ${domainClass}">${domainName}</span></p>
+          <p><strong>Domain:</strong> <span class="domain-label ${domainClass}" data-tooltip="${tooltipText}">${domainName}</span></p>
           <p><strong>Data Type:</strong> ${u["Data Type"]}</p>
           <p><strong>License:</strong> ${u.License}</p>
           <p><strong>Use Case:</strong> ${u["Use Cases"] || 'N/A'}</p>
