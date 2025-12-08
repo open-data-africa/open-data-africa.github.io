@@ -1,59 +1,158 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Ecosystem — Readiness</title>
-<link rel="stylesheet" href="style.css">
-<style>
-  body{font-family:Segoe UI,Arial,sans-serif;margin:0;background:#f6f7fa}
-  header{background:#330000;color:#fff;padding:1rem;text-align:center}
-  main{max-width:1100px;margin:1.5rem auto;padding:1rem}
-  table{width:100%;border-collapse:collapse;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,.06)}
-  th,td{padding:.8rem;border-bottom:1px solid #eee;text-align:left}
-  th{background:#fafafa}
-  .score{font-weight:700;color:#333}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>African AI Ecosystem — Readiness Scoreboard</title>
+
+  <style>
+    :root { --bg:#0f172a; --card:#1e293b; --text:#e2e8f0; --accent:#60a5fa; }
+    body { margin:0; font-family:'Segoe UI',sans-serif; background:var(--bg); color:var(--text); }
+    header { background:linear-gradient(135deg,#1e293b,#0f172a); padding:3rem 1rem; text-align:center; }
+    h1 { margin:0; font-size:2.8rem; color:var(--accent); }
+    .subtitle { opacity:0.9; font-size:1.2rem; }
+
+    nav.breadcrumb { background:#1e293b; padding:1rem; text-align:center; font-size:1.1rem; }
+    nav.breadcrumb a { color:var(--accent); text-decoration:none; margin:0 .8rem; }
+
+    main { max-width:1100px; margin:2rem auto; padding:0 1rem; }
+
+    table {
+      width:100%; border-collapse:collapse; background:var(--card); border-radius:16px;
+      overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.4);
+    }
+    th { background:#334155; padding:1.5rem; text-align:left; font-size:1.1rem; }
+    td { padding:1.2rem 1.5rem; border-bottom:1px solid #334155; }
+    tr:hover { background:rgba(96,165,250,0.1); }
+    tr:last-child td { border-bottom:none; }
+
+    .rank { font-size:1.8rem; font-weight:bold; color:var(--accent); width:70px; }
+    .country { font-size:1.3rem; font-weight:600; }
+    .score-bar { height:12px; background:#334155; border-radius:6px; overflow:hidden; margin:0.5rem 0; }
+    .score-fill { height:100%; width:0%; transition:width 1.2s ease; border-radius:6px; }
+    .orgs { text-align:center; font-size:1.1rem; }
+
+    .details { margin-top:3rem; background:var(--card); padding:2rem; border-radius:16px; display:none; }
+    .org-item { padding:1rem; background:rgba(255,255,255,0.05); border-radius:12px; margin:0.8rem 0; }
+    .org-item strong { color:var(--accent); }
+
+    @media (max-width:900px) { table { font-size:0.95rem; } th,td { padding:1rem; } }
+  </style>
 </head>
 <body>
-<header><h1>AI Readiness Scoreboard (by country)</h1></header>
-<main>
-  <p style="color:#555">A simple composite readiness score using internal ecosystem signals. Use as a starting point — we can integrate external indicators later.</p>
-  <table id="scoreTable">
-    <thead><tr><th>Rank</th><th>Country</th><th>Organisations</th><th>Research/Ed</th><th>Readiness Score</th></tr></thead>
-    <tbody></tbody>
-  </table>
-</main>
 
-<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-<script>
-Papa.parse('datasets/Ecosystem.csv',{download:true,header:true,complete:(res)=>{
-  const rows = res.data.filter(r=>r.Name);
-  const countries = {};
-  rows.forEach(r=>{
-    const c = r.Country || 'Unknown';
-    countries[c] = countries[c] || {all:0, research:0};
-    countries[c].all++;
-    const t = (r.Type||'').toLowerCase();
-    if(t.includes('research') || t.includes('education') || t.includes('institute') || t.includes('lab')) countries[c].research++;
-  });
-  const results = Object.entries(countries).map(([country,obj])=>{
-    const all = obj.all;
-    const research = obj.research;
-    // simple normalized score: 0.6*norm(all) + 0.4*norm(research)
-    return {country, all, research};
-  });
-  // normalize
-  const maxAll = Math.max(...results.map(r=>r.all));
-  const maxRes = Math.max(...results.map(r=>r.research));
-  results.forEach(r=>{
-    const s = ( (0.6*(r.all/(maxAll||1))) + (0.4*(r.research/(maxRes||1))) )*100;
-    r.score = Math.round(s);
-  });
-  results.sort((a,b)=>b.score-a.score);
-  const tbody = document.querySelector('#scoreTable tbody');
-  tbody.innerHTML = results.map((r,i)=>`<tr><td>${i+1}</td><td>${r.country}</td><td>${r.all}</td><td>${r.research}</td><td class="score">${r.score}</td></tr>`).join('');
-}});
-</script>
+  <header>
+    <h1>African AI Ecosystem</h1>
+    <p class="subtitle">AI Readiness Scoreboard — Ranked by real ecosystem activity</p>
+  </header>
+
+  <nav class="breadcrumb">
+    <a href="ecosystem-overview.html">Overview</a> •
+    <a href="ecosystem-map.html">Map</a> •
+    <a href="ecosystem-readiness.html">Readiness</a> •
+    <a href="ecosystem-network.html">Network</a> •
+    <a href="ecosystem-investor.html">Investor Briefs</a>
+  </nav>
+
+  <main>
+    <table id="scoreboard">
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>Country</th>
+          <th>Organizations</th>
+          <th>Readiness Score</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <div class="details" id="details">
+      <h2 id="detailsCountry" style="color:var(--accent); margin-top:0;"></h2>
+      <div id="orgList"></div>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
+  <script>
+    const CSV_PATH = "https://open-data-africa.github.io/datasets/Ecosystem.csv";
+    let allData = [];
+
+    Papa.parse(CSV_PATH, {
+      download: true,
+      header: true,
+      complete: function(res) {
+        allData = res.data.filter(r => r.Name && r.Name.trim());
+        calculateAndDisplay();
+      }
+    });
+
+    function calculateAndDisplay() {
+      const countryStats = {};
+
+      allData.forEach(org => {
+        const c = (org.Country || "").trim() || "Unknown";
+        if (!countryStats[c]) countryStats[c] = { total: 0, research: 0, orgs: [] };
+        countryStats[c].total++;
+        countryStats[c].orgs.push(org);
+
+        const type = (org.Type || "").toLowerCase();
+        if (type.includes("research") || type.includes("lab") || type.includes("institute") || type.includes("education")) {
+          countryStats[c].research++;
+        }
+      });
+
+      const scores = Object.entries(countryStats).map(([country, stats]) => {
+        const base = stats.total * 10;
+        const researchBonus = stats.research * 15;
+        const score = Math.min(100, base + researchBonus);
+        return { country, ...stats, score };
+      });
+
+      scores.sort((a, b) => b.score - a.score);
+
+      const tbody = document.querySelector("#scoreboard tbody");
+      tbody.innerHTML = scores.map((s, i) => `
+        <tr style="cursor:pointer;" onclick="showDetails('${s.country}', ${i})">
+          <td class="rank">#${i + 1}</td>
+          <td class="country">${s.country}</td>
+          <td class="orgs">${s.total}</td>
+          <td>
+            <div class="score-bar">
+              <div class="score-fill" style="width:${s.score}%; background:${getScoreColor(s.score)}"></div>
+            </div>
+            <strong>${s.score.toFixed(0)}</strong>
+          </td>
+        </tr>
+      `).join("");
+
+      // Animate bars
+      document.querySelectorAll(".score-fill").forEach(bar => {
+        setTimeout(() => bar.style.width = bar.style.width, 300);
+      });
+    }
+
+    function getScoreColor(score) {
+      if (score >= 80) return "#34d399";
+      if (score >= 60) return "#60a5fa";
+      if (score >= 40) return "#f59e0b";
+      return "#f87171";
+    }
+
+    function showDetails(country, rank) {
+      const stats = allData.filter(o => (o.Country || "").trim() === country);
+      document.getElementById("detailsCountry").textContent = `${country} — Rank #${rank + 1}`;
+      document.getElementById("orgList").innerHTML = stats.map(o => `
+        <div class="org-item">
+          <strong>${o.Name?.trim()}</strong><br>
+          <small>${o.Type?.trim()} • ${o.Domain?.trim()}</small>
+          ${o.Website ? `<br><a href="${o.Website}" target="_blank" style="color:#60a5fa;">Visit Website</a>` : ""}
+        </div>
+      `).join("");
+      document.getElementById("details").style.display = "block";
+      document.getElementById("details").scrollIntoView({ behavior: "smooth" });
+    }
+  </script>
 </body>
 </html>
-
