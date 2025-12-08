@@ -76,7 +76,6 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <script>
-    // BULLETPROOF ABSOLUTE PATH FROM YOUR LIVE SITE
     const CSV_PATH = "https://open-data-africa.github.io/datasets/Ecosystem.csv";
 
     let data = [];
@@ -87,18 +86,27 @@
       errorDiv.style.display = "block";
     }
 
+    // KEY FIX: Your CSV uses semicolon (;) as delimiter
     Papa.parse(CSV_PATH, {
       download: true,
       header: true,
+      delimiter: ";",           // ← This fixes the "too few fields" error
+      skipEmptyLines: true,
       complete: function(res) {
-        if (res.errors.length) { showError("CSV parsing error: " + res.errors[0].message); return; }
+        if (res.errors.length) {
+          showError("CSV parsing error: " + res.errors.map(e => e.message).join("<br>"));
+          return;
+        }
         data = res.data.filter(r => r.Name && r.Name.trim());
-        if (data.length === 0) { showError("CSV loaded but no rows found. Check headers: Name,Type,Domain,Country,Website,Description"); return; }
+        if (data.length === 0) {
+          showError("CSV loaded but no valid rows found. Check column headers.");
+          return;
+        }
         populateFilters();
         updateDashboard(data);
       },
-      error: function() {
-        showError("Cannot load the file. Your URL works, but try refreshing or check console (F12).");
+      error: function(err) {
+        showError("Failed to download CSV: " + err);
       }
     });
 
@@ -124,7 +132,8 @@
     }
 
     function count(arr,key) {
-      const map = {}; arr.forEach(i=>{const v=i[key]||"Unknown"; map[v]=(map[v]||0)+1;});
+      const map = {}; 
+      arr.forEach(i=>{const v=i[key]||"Unknown"; map[v]=(map[v]||0)+1;});
       return Object.entries(map).sort((a,b)=>b[1]-a[1]).slice(0,key==="Country"?20:12);
     }
 
@@ -133,8 +142,17 @@
       const ctx = document.getElementById(id).getContext("2d");
       if(charts[id]) charts[id].destroy();
       const bg = Array.isArray(color) ? color : Array(dataArr.length).fill(color);
-      charts[id] = new Chart(ctx, {type, data:{labels:dataArr.map(d=>d[0]), datasets:[{data:dataArr.map(d=>d[1]), backgroundColor:bg}]},
-        options:{responsive:true, plugins:{legend:{display:type!=="doughnut"}, title:{display:true,text:title,color:"#e2e8f0",font:{size:16}}}}});
+      charts[id] = new Chart(ctx, {
+        type,
+        data: {labels:dataArr.map(d=>d[0]), datasets:[{data:dataArr.map(d=>d[1]), backgroundColor:bg}]},
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {display: type!=="doughnut"},
+            title: {display:true, text:title, color:"#e2e8f0", font:{size:16}}
+          }
+        }
+      });
     }
 
     ["search","countryFilter","typeFilter","domainFilter"].forEach(id =>
