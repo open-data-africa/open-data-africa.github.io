@@ -1,51 +1,204 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Ecosystem — Network</title>
-<link rel="stylesheet" href="style.css">
-<link href="https://unpkg.com/vis-network/styles/vis-network.min.css" rel="stylesheet" />
-<style>
-  body{font-family:Segoe UI,Arial,sans-serif;margin:0;background:#f6f7fb}
-  header{background:#330000;color:#fff;padding:1rem;text-align:center}
-  #network {height:80vh;margin:1rem}
-  .controls{max-width:1200px;margin:0 auto;padding:0 1rem}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>African AI Ecosystem — Network</title>
+  <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+  <link href="https://unpkg.com/vis-network/styles/vis-network.min.css" rel="stylesheet" type="text/css" />
+
+  <style>
+    :root { --bg:#0f172a; --card:#1e293b; --text:#e2e8f0; --accent:#60a5fa; }
+    body { margin:0; font-family:'Segoe UI',sans-serif; background:var(--bg); color:var(--text); height:100vh; }
+    header { background:linear-gradient(135deg,#1e293b,#0f172a); padding:3rem 1rem; text-align:center; }
+    h1 { margin:0; font-size:2.8rem; color:var(--accent); }
+    .subtitle { opacity:0.9; font-size:1.2rem; }
+
+    nav.breadcrumb { background:#1e293b; padding:1rem; text-align:center; font-size:1.1rem; }
+    nav.breadcrumb a { color:var(--accent); text-decoration:none; margin:0 .8rem; }
+
+    .controls {
+      max-width:1400px; margin:2rem auto; padding:0 1rem; display:flex; gap:1rem; flex-wrap:wrap; justify-content:center;
+    }
+    .controls input, .controls select {
+      padding:.7rem 1rem; border:none; border-radius:8px; background:#334155; color:white; min-width:220px;
+    }
+
+    #network { height:75vh; width:100%; border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,0.5); background:#0f172a; }
+
+    .legend {
+      max-width:600px; margin:2rem auto; background:var(--card); padding:1.5rem; border-radius:16px;
+      display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1rem;
+    }
+    .legend-item { display:flex; align-items:center; font-size:0.95rem; }
+    .legend-color { width:16px; height:16px; border-radius:50%; margin-right:0.8rem; }
+
+    #details {
+      max-width:600px; margin:2rem auto; background:var(--card); padding:1.5rem; border-radius:16px; display:none;
+    }
+    #details strong { color:var(--accent); font-size:1.3rem; }
+
+    @media (max-width:900px) { #network { height:60vh; } }
+  </style>
 </head>
 <body>
-<header><h1>Collaboration Network (proxy)</h1></header>
-<div class="controls"><p style="color:#555">Nodes are organisations. Edges connect organisations that share country or domain (simple collaboration proxy). Click a node to see details.</p></div>
-<div id="network"></div>
 
-<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-<script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
-<script>
-Papa.parse('datasets/Ecosystem.csv',{download:true,header:true,complete:(res)=>{
-  const rows = res.data.filter(r=>r.Name);
-  const nodes = rows.map((r,i)=>({id:i,label:r.Name,title:`<b>${r.Name}</b><br>${r.Type}<br>${r.Domain}<br>${r.Country}`,group:r.Type}));
-  const edges = [];
-  // connect if same country or same domain (but avoid too many edges: only connect top N per group)
-  const byCountry = {};
-  rows.forEach((r,i)=>{ const c=r.Country||'Unknown'; (byCountry[c]=byCountry[c]||[]).push(i); });
-  Object.values(byCountry).forEach(arr=>{ for(let i=0;i<arr.length;i++){ for(let j=i+1;j<arr.length;j++){ edges.push({from:arr[i],to:arr[j]}); } }});
-  const byDomain = {};
-  rows.forEach((r,i)=>{ const d=(r.Domain||'Unknown'); (byDomain[d]=byDomain[d]||[]).push(i); });
-  Object.values(byDomain).forEach(arr=>{ for(let i=0;i<arr.length;i++){ for(let j=i+1;j<arr.length;j++){ edges.push({from:arr[i],to:arr[j]}); } }});
-  // dedupe edges
-  const seen = new Set(); const uniq = [];
-  edges.forEach(e=>{ const k = e.from<e.to?`${e.from}-${e.to}`:`${e.to}-${e.from}`; if(!seen.has(k)){seen.add(k); uniq.push(e);} });
-  const container = document.getElementById('network');
-  const data = { nodes: new vis.DataSet(nodes), edges: new vis.DataSet(uniq) };
-  const options = { physics:{stabilization:true}, nodes:{shape:'dot',size:16}, edges:{color:'#888'} };
-  const net = new vis.Network(container,data,options);
-  net.on("click", params => {
-    if(params.nodes && params.nodes.length){
-      const node = data.nodes.get(params.nodes[0]);
-      alert(node.title.replace(/<br>/g,"\n").replace(/<[^>]+>/g,'')); // simple popup
+  <header>
+    <h1>African AI Ecosystem</h1>
+    <p class="subtitle">Interactive Network — See how startups, labs & hubs are connected</p>
+  </header>
+
+  <nav class="breadcrumb">
+    <a href="ecosystem-overview.html">Overview</a> •
+    <a href="ecosystem-map.html">Map</a> •
+    <a href="ecosystem-readiness.html">Readiness</a> •
+    <a href="ecosystem-network.html">Network</a> •
+    <a href="ecosystem-investor.html">Investor Briefs</a>
+  </nav>
+
+  <div class="controls">
+    <input type="text" id="search" placeholder="Search any organization..." />
+    <select id="typeFilter">
+      <option value="">All Types</option>
+    </select>
+  </div>
+
+  <div id="network"></div>
+
+  <div class="legend" id="legend"></div>
+
+  <div id="details">
+    <strong id="nodeName"></strong><br>
+    <small id="nodeInfo"></small><br><br>
+    <a id="nodeLink" href="#" target="_blank" style="color:#60a5fa; font-weight:bold;">Visit Website</a>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
+  <script>
+    const CSV_PATH = "https://open-data-africa.github.io/datasets/Ecosystem.csv";
+    let nodes = new vis.DataSet();
+    let edges = new vis.DataSet();
+    let network;
+    let allData = [];
+
+    const typeColors = {
+      "Startup": "#FF6B6B",
+      "Research Lab": "#A55EEA",
+      "Research Institute": "#C56CF0",
+      "Platform": "#4ECDC4",
+      "Community": "#96CEB4",
+      "Hub": "#FECA57",
+      "Program": "#FF9FF3",
+      "default": "#54A0FF"
+    };
+
+    function getColor(type) {
+      return typeColors[type] || typeColors["default"];
     }
-  });
-}});
-</script>
+
+    Papa.parse(CSV_PATH, {
+      download: true,
+      header: true,
+      complete: function(res) {
+        allData = res.data.filter(r => r.Name && r.Name.trim());
+        buildNetwork();
+        populateTypeFilter();
+        buildLegend();
+      }
+    });
+
+    function buildNetwork(filterType = "", searchQuery = "") {
+      nodes.clear();
+      edges.clear();
+
+      const filtered = allData.filter(org => {
+        const matchesType = !filterType || (org.Type || "").trim() === filterType;
+        const matchesSearch = !searchQuery || JSON.stringify(org).toLowerCase().includes(searchQuery.toLowerCase());
+        return matchesType && matchesSearch;
+      });
+
+      // Add nodes
+      filtered.forEach((org, i) => {
+        const name = org.Name?.trim() || "Unknown";
+        const type = org.Type?.trim() || "Unknown";
+        nodes.add({
+          id: i,
+          label: name,
+          title: `${name}\n${type} • ${org.Domain || ""}\n${org.Country || ""}`,
+          color: { background: getColor(type), border: "#fff" },
+          shape: "dot",
+          size: 18
+        });
+      });
+
+      // Add edges (connections)
+      filtered.forEach((org1, i) => {
+        filtered.forEach((org2, j) => {
+          if (i >= j) return; // avoid duplicates
+
+          let value = 0;
+          if ((org1.Country || "").trim() === (org2.Country || "").trim() && org1.Country) value += 3;
+          if ((org1.Domain || "").trim() === (org2.Domain || "").trim() && org1.Domain) value += 2;
+          if ((org1.Type || "").trim() === (org2.Type || "").trim() && org1.Type) value += 1;
+
+          if (value > 0) {
+            edges.add({ from: i, to: j, value, color: { opacity: value * 0.2 } });
+          }
+        });
+      });
+
+      const container = document.getElementById("network");
+      const data = { nodes, edges };
+      const options = {
+        physics: { stabilization: { iterations: 200 } },
+        nodes: { font: { color: "#e2e8f0" } },
+        edges: { smooth: false, color: "#60a5fa" },
+        interaction: { hover: true }
+      };
+
+      if (network) network.destroy();
+      network = new vis.Network(container, data, options);
+
+      network.on("click", params => {
+        if (params.nodes.length) {
+          const nodeId = params.nodes[0];
+          const org = filtered[nodeId];
+          document.getElementById("nodeName").textContent = org.Name || "Unknown";
+          document.getElementById("nodeInfo").textContent = `${org.Type || ""} • ${org.Domain || ""} • ${org.Country || ""}`;
+          document.getElementById("nodeLink").href = org.Website || "#";
+          document.getElementById("details").style.display = "block";
+        } else {
+          document.getElementById("details").style.display = "none";
+        }
+      });
+    }
+
+    function populateTypeFilter() {
+      const types = [...new Set(allData.map(r => (r.Type || "").trim()))].filter(Boolean).sort();
+      const select = document.getElementById("typeFilter");
+      types.forEach(t => select.add(new Option(t, t)));
+    }
+
+    function buildLegend() {
+      const legend = document.getElementById("legend");
+      Object.entries(typeColors).forEach(([type, color]) => {
+        if (type === "default") return;
+        legend.innerHTML += `
+          <div class="legend-item">
+            <div class="legend-color" style="background:${color};"></div>
+            <span>${type}</span>
+          </div>
+        `;
+      });
+    }
+
+    document.getElementById("search").addEventListener("input", () => {
+      buildNetwork(document.getElementById("typeFilter").value, document.getElementById("search").value);
+    });
+    document.getElementById("typeFilter").addEventListener("change", () => {
+      buildNetwork(document.getElementById("typeFilter").value, document.getElementById("search").value);
+    });
+  </script>
 </body>
 </html>
-
