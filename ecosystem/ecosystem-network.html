@@ -1,1 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Ecosystem — Network</title>
+<link rel="stylesheet" href="style.css">
+<link href="https://unpkg.com/vis-network/styles/vis-network.min.css" rel="stylesheet" />
+<style>
+  body{font-family:Segoe UI,Arial,sans-serif;margin:0;background:#f6f7fb}
+  header{background:#330000;color:#fff;padding:1rem;text-align:center}
+  #network {height:80vh;margin:1rem}
+  .controls{max-width:1200px;margin:0 auto;padding:0 1rem}
+</style>
+</head>
+<body>
+<header><h1>Collaboration Network (proxy)</h1></header>
+<div class="controls"><p style="color:#555">Nodes are organisations. Edges connect organisations that share country or domain (simple collaboration proxy). Click a node to see details.</p></div>
+<div id="network"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+<script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+<script>
+Papa.parse('datasets/Ecosystem.csv',{download:true,header:true,complete:(res)=>{
+  const rows = res.data.filter(r=>r.Name);
+  const nodes = rows.map((r,i)=>({id:i,label:r.Name,title:`<b>${r.Name}</b><br>${r.Type}<br>${r.Domain}<br>${r.Country}`,group:r.Type}));
+  const edges = [];
+  // connect if same country or same domain (but avoid too many edges: only connect top N per group)
+  const byCountry = {};
+  rows.forEach((r,i)=>{ const c=r.Country||'Unknown'; (byCountry[c]=byCountry[c]||[]).push(i); });
+  Object.values(byCountry).forEach(arr=>{ for(let i=0;i<arr.length;i++){ for(let j=i+1;j<arr.length;j++){ edges.push({from:arr[i],to:arr[j]}); } }});
+  const byDomain = {};
+  rows.forEach((r,i)=>{ const d=(r.Domain||'Unknown'); (byDomain[d]=byDomain[d]||[]).push(i); });
+  Object.values(byDomain).forEach(arr=>{ for(let i=0;i<arr.length;i++){ for(let j=i+1;j<arr.length;j++){ edges.push({from:arr[i],to:arr[j]}); } }});
+  // dedupe edges
+  const seen = new Set(); const uniq = [];
+  edges.forEach(e=>{ const k = e.from<e.to?`${e.from}-${e.to}`:`${e.to}-${e.from}`; if(!seen.has(k)){seen.add(k); uniq.push(e);} });
+  const container = document.getElementById('network');
+  const data = { nodes: new vis.DataSet(nodes), edges: new vis.DataSet(uniq) };
+  const options = { physics:{stabilization:true}, nodes:{shape:'dot',size:16}, edges:{color:'#888'} };
+  const net = new vis.Network(container,data,options);
+  net.on("click", params => {
+    if(params.nodes && params.nodes.length){
+      const node = data.nodes.get(params.nodes[0]);
+      alert(node.title.replace(/<br>/g,"\n").replace(/<[^>]+>/g,'')); // simple popup
+    }
+  });
+}});
+</script>
+</body>
+</html>
 
