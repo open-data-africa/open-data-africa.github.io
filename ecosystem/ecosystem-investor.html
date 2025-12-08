@@ -38,8 +38,6 @@
     .org-item a { color:#60a5fa; text-decoration:none; }
 
     .logo { width:80px; height:auto; margin-bottom:1rem; }
-
-    @media (max-width:900px) { .controls { flex-direction:column; } .controls select, .controls button { width:100%; } }
   </style>
 </head>
 <body>
@@ -66,7 +64,7 @@
     </div>
 
     <div class="preview" id="preview">
-      <img src="https://open-data-africa.github.io/assets/logo.png" alt="AI Africa Logo" class="logo" onerror="this.style.display='none'">
+      <img src="https://open-data-africa.github.io/assets/logo.png" alt="Logo" class="logo" onerror="this.style.display='none'">
       <h2 id="briefTitle">Country AI Ecosystem Brief</h2>
       <p><strong>Generated:</strong> <span id="genDate"></span></p>
       <p><strong>Total Organizations:</strong> <span id="orgCount">0</span></p>
@@ -122,49 +120,56 @@
       const country = document.getElementById("countrySelect").value;
       if (!country) return alert("Please select a country first.");
 
+      const orgs = allData.filter(o => (o.Country || "").trim() === country);
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
+
+      // Title & Date
+      doc.setFontSize(20);
+      doc.setTextColor(96, 165, 250);
+      doc.text(`${country} AI Ecosystem Brief`, 20, 30);
+
+      doc.setFontSize(11);
+      doc.setTextColor(150, 150, 150);
+      doc.text(`Generated: ${new Date().toLocaleDateString()}`, 20, 40);
+      doc.text(`Total Organizations: ${orgs.length}`, 20, 50);
+
+      // Organizations
+      let y = 70;
+      orgs.forEach((org, i) => {
+        if (y > 270) {
+          doc.addPage();
+          y = 20;
+        }
+
+        doc.setFontSize(14);
+        doc.setTextColor(96, 165, 250);
+        doc.text(`${i + 1}. ${org.Name?.trim() || "Unknown"}`, 20, y);
+        y += 8;
+
+        doc.setFontSize(10);
+        doc.setTextColor(200, 200, 200);
+        doc.text(`${org.Type?.trim() || "—"} • ${org.Domain?.trim() || "—"}`, 25, y);
+        y += 8;
+
+        if (org.Website) {
+          doc.setTextColor(96, 165, 250);
+          doc.textWithLink("Visit Website", 25, y, { url: org.Website });
+          y += 10;
+        } else {
+          y += 5;
+        }
+      });
+
+      // Optional logo (if you add one later)
       const logo = new Image();
+      logo.crossOrigin = "anonymous";
       logo.src = "https://open-data-africa.github.io/assets/logo.png";
-
       logo.onload = () => {
-        doc.addImage(logo, "PNG", 15, 10, 40, 40);
-        doc.setFontSize(18).setTextColor(96, 165, 250);
-        doc.text(`${country} AI Ecosystem Brief`, 60, 25);
-
-        doc.setFontSize(11).setTextColor(150, 150, 150);
-        doc.text(`Generated: ${new Date().toLocaleDateString()}`, 60, 35);
-
-        const orgs = allData.filter(o => (o.Country || "").trim() === country);
-        doc.setFontSize(12).setTextColor(226, 232, 240);
-        doc.text(`Total Organizations: ${orgs.length}`, 15, 55);
-
-        let y = 70;
-        orgs.forEach((o, i) => {
-          if (y > 270) { doc.addPage(); y = 20; }
-          doc.setFontSize(13).setTextColor(96, 165, 250);
-          doc.text(`${i + 1}. ${o.Name?.trim()}`, 15, y); y += 7;
-          doc.setFontSize(10).setTextColor(150, 150, 150);
-          doc.text(`${o.Type?.trim()} • ${o.Domain?.trim()}`, 18, y); y += 6;
-          if (o.Website) {
-            doc.setTextColor(96, 165, 250);
-            doc.textWithLink("Visit Website", 18, y, { url: o.Website });
-            y += 8;
-          } else { y += 5; }
-        });
-
+        doc.addImage(logo, "PNG", 150, 15, 40, 40);
         doc.save(`${country.replace(/ /g, "_")}_AI_Ecosystem_Brief.pdf`);
       };
-
-      logo.onerror = () => {
-        // Fallback without logo
-        doc.setFontSize(18).setTextColor(96, 165, 250);
-        doc.text(`${country} AI Ecosystem Brief`, 15, 25);
-        doc.setFontSize(11).setTextColor(150, 150, 150);
-        doc.text(`Generated: ${new Date().toLocaleDateString()}`, 15, 35);
-        // ... same as above
-        doc.save(`${country.replace(/ /g, "_")}_AI_Ecosystem_Brief.pdf`);
-      };
+      logo.onerror = () => doc.save(`${country.replace(/ /g, "_")}_AI_Ecosystem_Brief.pdf`);
     }
   </script>
 </body>
