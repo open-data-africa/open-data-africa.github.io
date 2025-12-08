@@ -25,26 +25,31 @@
     .controls select, .controls button {
       padding:.8rem 1.5rem; border:none; border-radius:12px; font-weight:600; cursor:pointer;
     }
-    .controls select { background:#334155; color:white; min-width:250px; }
+    .controls select { background:#334155; color:white; min-width:280px; }
     .controls button { background:var(--accent); color:#0f172a; font-size:1rem; }
 
     .preview {
-      background:var(--card); padding:2rem; border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,0.4);
+      background:var(--card); padding:2.5rem; border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,0.4);
       margin-top:2rem; display:none;
     }
-    .preview h2 { color:var(--accent); margin-top:0; }
-    .org-item { background:rgba(255,255,255,0.05); padding:1rem; border-radius:12px; margin:0.8rem 0; }
-    .org-item strong { color:var(--accent); }
+    .logo { width:90px; height:auto; margin-bottom:1.5rem; border-radius:8px; }
+    .executive { background:rgba(96,165,250,0.1); padding:1.5rem; border-radius:12px; margin:1.5rem 0; border-left:4px solid var(--accent); }
+    .executive strong { color:var(--accent); }
+    .org-item { background:rgba(255,255,255,0.05); padding:1.2rem; border-radius:12px; margin:1rem 0; }
+    .org-item strong { color:var(--accent); font-size:1.1rem; }
     .org-item a { color:#60a5fa; text-decoration:none; }
 
-    .logo { width:80px; height:auto; margin-bottom:1rem; }
+    .contact { margin-top:3rem; padding:2rem; background:rgba(255,255,255,0.05); border-radius:12px; text-align:center; }
+    .contact a { color:var(--accent); font-weight:bold; font-size:1.1rem; }
+
+    @media (max-width:900px) { .controls { flex-direction:column; } .controls select,.controls button { width:100%; } }
   </style>
 </head>
 <body>
 
   <header>
     <h1>African AI Ecosystem</h1>
-    <p class="subtitle">Investor Briefs — Download professional PDFs for any country</p>
+    <p class="subtitle">Professional Investor Briefs — One-click PDF for any country</p>
   </header>
 
   <nav class="breadcrumb">
@@ -66,10 +71,23 @@
     <div class="preview" id="preview">
       <img src="https://open-data-africa.github.io/assets/logo.png" alt="Logo" class="logo" onerror="this.style.display='none'">
       <h2 id="briefTitle">Country AI Ecosystem Brief</h2>
-      <p><strong>Generated:</strong> <span id="genDate"></span></p>
-      <p><strong>Total Organizations:</strong> <span id="orgCount">0</span></p>
+      <p><strong>Generated:</strong> <span id="genDate"></span> | <strong>Readiness Rank:</strong> <span id="rank">#—</span></p>
+
+      <div class="executive">
+        <strong>Executive Summary</strong><br><br>
+        <strong>Total AI Organizations:</strong> <span id="orgCount">0</span><br>
+        <strong>Startups:</strong> <span id="startupCount">0</span><br>
+        <strong>Readiness Score:</strong> <span id="readinessScore">0</span>/100<br>
+        <strong>Key Domains:</strong> <span id="keyDomains">—</span>
+      </div>
+
       <h3 style="margin:2rem 0 1rem; color:var(--accent);">Active Organizations</h3>
       <div id="orgList"></div>
+
+      <div class="contact">
+        Interested in co-investment, partnerships, or policy support?<br>
+        <a href="mailto:info@open-data-africa.org">Contact us → info@open-data-africa.org</a>
+      </div>
     </div>
   </main>
 
@@ -85,8 +103,31 @@
       complete: function(res) {
         allData = res.data.filter(r => r.Name && r.Name.trim());
         populateCountries();
+        calculateReadinessScores(); // Pre-calculate for ranking
       }
     });
+
+    // Readiness calculation (same as readiness page)
+    let countryScores = {};
+    function calculateReadinessScores() {
+      const stats = {};
+      allData.forEach(org => {
+        const c = (org.Country || "").trim() || "Unknown";
+        if (!stats[c]) stats[c] = { total: 0, research: 0, orgs: [] };
+        stats[c].total++;
+        stats[c].orgs.push(org);
+        const type = (org.Type || "").toLowerCase();
+        if (type.includes("research") || type.includes("lab") || type.includes("institute") || type.includes("education")) {
+          stats[c].research++;
+        }
+      });
+      countryScores = Object.entries(stats).map(([country, s]) => {
+        const score = Math.min(100, s.total * 10 + s.research * 15);
+        return { country, score, rank: 0, total: s.total, research: s.research, orgs: s.orgs };
+      });
+      countryScores.sort((a, b) => b.score - a.score);
+      countryScores.forEach((c, i) => c.rank = i + 1);
+    }
 
     function populateCountries() {
       const countries = [...new Set(allData.map(r => (r.Country || "").trim()))].filter(Boolean).sort();
@@ -101,9 +142,17 @@
       const preview = document.getElementById("preview");
       if (!country) { preview.style.display = "none"; return; }
 
+      const stats = countryScores.find(s => s.country === country) || { score: 0, rank: "—", total: 0 };
+      const startups = orgs.filter(o => (o.Type || "").toLowerCase().includes("startup")).length;
+      const domains = [...new Set(orgs.map(o => o.Domain?.trim()).filter(Boolean))].slice(0, 5).join(", ");
+
       document.getElementById("briefTitle").textContent = `${country} AI Ecosystem Brief`;
       document.getElementById("genDate").textContent = new Date().toLocaleDateString();
+      document.getElementById("rank").textContent = `#${stats.rank}`;
       document.getElementById("orgCount").textContent = orgs.length;
+      document.getElementById("startupCount").textContent = startups;
+      document.getElementById("readinessScore").textContent = stats.score.toFixed(0);
+      document.getElementById("keyDomains").textContent = domains || "Various";
 
       document.getElementById("orgList").innerHTML = orgs.map(o => `
         <div class="org-item">
@@ -121,55 +170,54 @@
       if (!country) return alert("Please select a country first.");
 
       const orgs = allData.filter(o => (o.Country || "").trim() === country);
+      const stats = countryScores.find(s => s.country === country) || { score: 0, rank: "—" };
+      const startups = orgs.filter(o => (o.Type || "").toLowerCase().includes("startup")).length;
+      const domains = [...new Set(orgs.map(o => o.Domain?.trim()).filter(Boolean))].slice(0, 5).join(", ");
+
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
 
-      // Title & Date
-      doc.setFontSize(20);
-      doc.setTextColor(96, 165, 250);
-      doc.text(`${country} AI Ecosystem Brief`, 20, 30);
-
-      doc.setFontSize(11);
-      doc.setTextColor(150, 150, 150);
-      doc.text(`Generated: ${new Date().toLocaleDateString()}`, 20, 40);
-      doc.text(`Total Organizations: ${orgs.length}`, 20, 50);
-
-      // Organizations
-      let y = 70;
-      orgs.forEach((org, i) => {
-        if (y > 270) {
-          doc.addPage();
-          y = 20;
-        }
-
-        doc.setFontSize(14);
-        doc.setTextColor(96, 165, 250);
-        doc.text(`${i + 1}. ${org.Name?.trim() || "Unknown"}`, 20, y);
-        y += 8;
-
-        doc.setFontSize(10);
-        doc.setTextColor(200, 200, 200);
-        doc.text(`${org.Type?.trim() || "—"} • ${org.Domain?.trim() || "—"}`, 25, y);
-        y += 8;
-
-        if (org.Website) {
-          doc.setTextColor(96, 165, 250);
-          doc.textWithLink("Visit Website", 25, y, { url: org.Website });
-          y += 10;
-        } else {
-          y += 5;
-        }
-      });
-
-      // Optional logo (if you add one later)
+      // Logo (if exists)
       const logo = new Image();
       logo.crossOrigin = "anonymous";
       logo.src = "https://open-data-africa.github.io/assets/logo.png";
-      logo.onload = () => {
-        doc.addImage(logo, "PNG", 150, 15, 40, 40);
+
+      const addContent = () => {
+        if (logo.complete && logo.naturalHeight !== 0) {
+          doc.addImage(logo, "PNG", 150, 10, 40, 40);
+        }
+
+        doc.setFontSize(20).setTextColor(96, 165, 250);
+        doc.text(`${country} AI Ecosystem Brief`, 20, 30);
+
+        doc.setFontSize(11).setTextColor(150, 150, 150);
+        doc.text(`Generated: ${new Date().toLocaleDateString()} | Readiness Rank #${stats.rank} | Score ${stats.score.toFixed(0)}/100`, 20, 40);
+
+        doc.setFontSize(12).setTextColor(226, 232, 240);
+        doc.text(`Total Organizations: ${orgs.length}  |  Startups: ${startups}  |  Key Domains: ${domains || "Various"}`, 20, 55);
+
+        let y = 75;
+        orgs.forEach((org, i) => {
+          if (y > 260) { doc.addPage(); y = 20; }
+          doc.setFontSize(14).setTextColor(96, 165, 250);
+          doc.text(`${i + 1}. ${org.Name?.trim()}`, 20, y); y += 8;
+          doc.setFontSize(10).setTextColor(200, 200, 200);
+          doc.text(`${org.Type?.trim()} • ${org.Domain?.trim()}`, 25, y); y += 8;
+          if (org.Website) {
+            doc.setTextColor(96, 165, 250);
+            doc.textWithLink("Visit Website", 25, y, { url: org.Website });
+            y += 10;
+          } else y += 5;
+        });
+
+        doc.setFontSize(10).setTextColor(150, 150, 150);
+        doc.text("Contact for co-investment & partnerships: info@open-data-africa.org", 20, 280);
+
         doc.save(`${country.replace(/ /g, "_")}_AI_Ecosystem_Brief.pdf`);
       };
-      logo.onerror = () => doc.save(`${country.replace(/ /g, "_")}_AI_Ecosystem_Brief.pdf`);
+
+      logo.onload = addContent;
+      logo.onerror = addContent; // Generate even if logo fails
     }
   </script>
 </body>
