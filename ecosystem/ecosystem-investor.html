@@ -1,1 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Investor Brief — Ecosystem</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  body{font-family:Segoe UI,Arial,sans-serif;margin:0;background:#f6f7fb}
+  header{background:#330000;color:#fff;padding:1rem;text-align:center}
+  main{max-width:1000px;margin:1rem auto;padding:1rem}
+  .controls{display:flex;gap:.5rem;align-items:center}
+  .brief{background:#fff;padding:1rem;border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,.06);margin-top:1rem}
+  .org{border-bottom:1px solid #eee;padding:.6rem 0}
+  .download{display:inline-block;margin-top:.6rem;padding:.5rem .8rem;background:#0066cc;color:#fff;border-radius:6px;text-decoration:none}
+</style>
+</head>
+<body>
+<header><h1>Investor Brief Generator</h1></header>
+<main>
+  <div class="controls">
+    <label for="country">Select country:</label>
+    <select id="country"><option value="">Loading...</option></select>
+    <button id="generate" class="download">Generate PDF Brief</button>
+  </div>
+
+  <div id="brief" class="brief"><em>Select a country to preview organisations.</em></div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+let rows=[];
+Papa.parse('datasets/Ecosystem.csv',{download:true,header:true,complete:(res)=>{
+  rows = res.data.filter(r=>r.Name);
+  const countries = [...new Set(rows.map(r=>r.Country).filter(Boolean))].sort();
+  const sel = document.getElementById('country'); sel.innerHTML = '<option value="">Select a country</option>';
+  countries.forEach(c=> sel.innerHTML += `<option value="${c}">${c}</option>`);
+}});
+
+document.getElementById('country').addEventListener('change', function(){
+  const c = this.value;
+  const list = rows.filter(r=>r.Country===c);
+  const container = document.getElementById('brief');
+  if(!c){ container.innerHTML = '<em>Select a country to preview organisations.</em>'; return; }
+  if(!list.length) { container.innerHTML = '<p>No organisations listed for this country.</p>'; return; }
+  container.innerHTML = `<h3>Organisations in ${c} (${list.length})</h3>` + list.map(o=>`<div class="org"><strong>${o.Name}</strong> — ${o.Type}<br/><small>${o.Domain}</small><br/><a href="${o.Website}" target="_blank">${o.Website}</a></div>`).join('');
+});
+
+document.getElementById('generate').addEventListener('click', async ()=>{
+  const country = document.getElementById('country').value;
+  if(!country) return alert('Choose a country first');
+  const list = rows.filter(r=>r.Country===country);
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  doc.setFontSize(16); doc.text(`Investor Brief — ${country}`,14,20);
+  doc.setFontSize(11); doc.text(`Generated: ${new Date().toLocaleDateString()}`,14,28);
+  let y=38;
+  list.forEach((o,i)=>{
+    if(y>270){ doc.addPage(); y=20; }
+    doc.setFontSize(12); doc.text(`${i+1}. ${o.Name} (${o.Type})`,14,y); y+=6;
+    doc.setFontSize(10); doc.text(`Domain: ${o.Domain}`,16,y); y+=6;
+    doc.text(`Website: ${o.Website}`,16,y); y+=8;
+  });
+  doc.save(`InvestorBrief_${country}.pdf`);
+});
+</script>
+</body>
+</html>
 
