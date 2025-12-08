@@ -86,20 +86,24 @@
       errorDiv.style.display = "block";
     }
 
-    // KEY FIX: Your CSV uses semicolon (;) as delimiter
+    // FIXED PARSING: Comma-delimited, handles quoted fields with commas inside descriptions
     Papa.parse(CSV_PATH, {
       download: true,
       header: true,
-      delimiter: ";",           // ← This fixes the "too few fields" error
-      skipEmptyLines: true,
+      dynamicTyping: false,     // Keep everything as strings to avoid issues
+      trimHeaders: true,        // Clean header names
+      skipEmptyLines: true,     // Ignore blank rows
       complete: function(res) {
+        console.log("Raw parsed data (first 3 rows):", res.data.slice(0, 3)); // Debug: Check console (F12)
         if (res.errors.length) {
           showError("CSV parsing error: " + res.errors.map(e => e.message).join("<br>"));
           return;
         }
-        data = res.data.filter(r => r.Name && r.Name.trim());
+        // FIXED FILTER: Check for non-empty Name after trimming
+        data = res.data.filter(r => r && r.Name && typeof r.Name === 'string' && r.Name.trim().length > 0);
+        console.log("Filtered data length:", data.length); // Debug
         if (data.length === 0) {
-          showError("CSV loaded but no valid rows found. Check column headers.");
+          showError("CSV loaded but no valid rows with 'Name' column. Headers found: " + (res.meta.fields ? res.meta.fields.join(", ") : "None"));
           return;
         }
         populateFilters();
@@ -113,7 +117,7 @@
     function populateFilters() {
       const uniq = (arr) => [...new Set(arr)].filter(Boolean).sort();
       ["countryFilter", "typeFilter", "domainFilter"].forEach(id => {
-        const key = id.replace("Filter","");
+        const key = id.replace("Filter", "");
         const values = uniq(data.map(r => r[key]));
         const sel = document.getElementById(id);
         values.forEach(v => sel.add(new Option(v, v)));
@@ -122,43 +126,44 @@
 
     function updateDashboard(set) {
       document.getElementById("total").textContent = set.length;
-      document.getElementById("countries").textContent = [...new Set(set.map(r=>r.Country))].filter(Boolean).length;
-      document.getElementById("startups").textContent = set.filter(r=>r.Type&&r.Type.toLowerCase().includes("startup")).length;
-      document.getElementById("domains").textContent = [...new Set(set.map(r=>r.Domain))].filter(Boolean).length;
+      document.getElementById("countries").textContent = [...new Set(set.map(r => r.Country))].filter(Boolean).length;
+      document.getElementById("startups").textContent = set.filter(r => r.Type && r.Type.toLowerCase().includes("startup")).length;
+      document.getElementById("domains").textContent = [...new Set(set.map(r => r.Domain))].filter(Boolean).length;
 
-      draw("byDomain", "bar", count(set,"Domain"), "By Domain", "#60a5fa");
-      draw("byType", "doughnut", count(set,"Type"), "By Type", ["#60a5fa","#f472b6","#a78bfa","#f59e0b","#34d399","#c084fc"]);
-      draw("byCountry", "bar", count(set,"Country"), "By Country (Top 20)", "#34d399");
+      draw("byDomain", "bar", count(set, "Domain"), "By Domain", "#60a5fa");
+      draw("byType", "doughnut", count(set, "Type"), "By Type", ["#60a5fa", "#f472b6", "#a78bfa", "#f59e0b", "#34d399", "#c084fc"]);
+      draw("byCountry", "bar", count(set, "Country"), "By Country (Top 20)", "#34d399");
     }
 
-    function count(arr,key) {
-      const map = {}; 
-      arr.forEach(i=>{const v=i[key]||"Unknown"; map[v]=(map[v]||0)+1;});
-      return Object.entries(map).sort((a,b)=>b[1]-a[1]).slice(0,key==="Country"?20:12);
+    function count(arr, key) {
+      const map = {};
+      arr.forEach(i => { const v = i[key] || "Unknown"; map[v] = (map[v] || 0) + 1; });
+      return Object.entries(map).sort((a, b) => b[1] - a[1]).slice(0, key === "Country" ? 20 : 12);
     }
 
     let charts = {};
-    function draw(id,type,dataArr,title,color) {
+    function draw(id, type, dataArr, title, color) {
       const ctx = document.getElementById(id).getContext("2d");
-      if(charts[id]) charts[id].destroy();
+      if (charts[id]) charts[id].destroy();
       const bg = Array.isArray(color) ? color : Array(dataArr.length).fill(color);
       charts[id] = new Chart(ctx, {
         type,
-        data: {labels:dataArr.map(d=>d[0]), datasets:[{data:dataArr.map(d=>d[1]), backgroundColor:bg}]},
+        data: { labels: dataArr.map(d => d[0]), datasets: [{ data: dataArr.map(d => d[1]), backgroundColor: bg }] },
         options: {
           responsive: true,
           plugins: {
-            legend: {display: type!=="doughnut"},
-            title: {display:true, text:title, color:"#e2e8f0", font:{size:16}}
+            legend: { display: type !== "doughnut" },
+            title: { display: true, text: title, color: "#e2e8f0", font: { size: 16 } }
           }
         }
       });
     }
 
-    ["search","countryFilter","typeFilter","domainFilter"].forEach(id =>
-      document.getElementById(id).addEventListener("input",filter) ||
-      document.getElementById(id).addEventListener("change",filter)
-    );
+    ["search", "countryFilter", "typeFilter", "domainFilter"].forEach(id => {
+      const el = document.getElementById(id);
+      el.addEventListener("input", filter);
+      el.addEventListener("change", filter);
+    });
 
     function filter() {
       const q = document.getElementById("search").value.toLowerCase();
@@ -167,8 +172,8 @@
       const d = document.getElementById("domainFilter").value;
 
       const filtered = data.filter(i => {
-        const match = !q || [i.Name,i.Description,i.Domain,i.Type,i.Country].some(f=>f&&f.toLowerCase().includes(q));
-        return match && (!c||i.Country===c) && (!t||i.Type===t) && (!d||i.Domain===d);
+        const match = !q || [i.Name, i.Description, i.Domain, i.Type, i.Country].some(f => f && f.toString().toLowerCase().includes(q));
+        return match && (!c || i.Country === c) && (!t || i.Type === t) && (!d || i.Domain === d);
       });
       updateDashboard(filtered);
     }
