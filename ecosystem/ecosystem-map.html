@@ -5,9 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>African AI Ecosystem — Interactive Map</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-
   <style>
-    :root { --bg:#0f172a; --card:#1e293b; --text:#e2e8f0; --accent:#60a5fa; }
+    :root { --bg:#0f172a; --card:#1e293b; --text:#e2e8f0; --accent:#60a5fa; --highlight:#3b82f6; }
     body { margin:0; font-family:'Segoe UI',sans-serif; background:var(--bg); color:var(--text); }
     header { background:linear-gradient(135deg,#1e293b,#0f172a); padding:3rem 1rem; text-align:center; }
     h1 { margin:0; font-size:2.8rem; color:var(--accent); }
@@ -18,30 +17,31 @@
     nav.breadcrumb a:hover { text-decoration:underline; }
 
     main { max-width:1400px; margin:2rem auto; padding:0 1rem; display:flex; gap:2rem; }
-    #map { height:70vh; width:100%; border-radius:16px; box-shadow:0 8px 25px rgba(0,0,0,0.3); flex:1; }
-    .panel { width:350px; background:var(--card); padding:1.5rem; border-radius:16px; box-shadow:0 8px 25px rgba(0,0,0,0.3); height:fit-content; }
-    .panel h3 { margin:0 0 1rem; color:var(--accent); }
-    .list-item { padding:1rem 0; border-bottom:1px solid #334155; }
-    .list-item:last-child { border-bottom:none; }
-    .list-item strong { color:var(--accent); }
-    .list-item small { opacity:0.8; }
-    .list-item a { color:var(--accent); text-decoration:none; }
-    .list-item a:hover { text-decoration:underline; }
+    #map { height:70vh; width:100%; border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,0.4); flex:1; }
+    
+    .panel { width:380px; background:var(--card); padding:2rem; border-radius:16px; box-shadow:0 8px 25px rgba(0,0,0,0.3); }
+    .panel h3 { margin:0 0 1.5rem; color:var(--accent); font-size:1.6rem; }
+    .panel p { margin:0.5rem 0; opacity:0.9; }
+    .org-item { background:rgba(255,255,255,0.05); padding:1rem; border-radius:12px; margin:1rem 0; }
+    .org-item strong { color:var(--accent); font-size:1.1rem; display:block; }
+    .org-item small { opacity:0.8; font-size:0.9rem; }
+    .org-item a { color:#60a5fa; text-decoration:none; font-weight:600; }
+    .org-item a:hover { text-decoration:underline; }
 
-    #error { background:#fee2e2; color:#991b1b; padding:1.5rem; border-radius:12px; text-align:center; margin:2rem; font-weight:bold; display:none; }
+    #countryName { font-size:1.8rem; font-weight:bold; margin-bottom:1rem; color:var(--accent); }
 
-    .legend { background:var(--card); padding:1rem; border-radius:12px; margin-top:1rem; }
-    .legend-item { display:flex; align-items:center; margin:0.5rem 0; }
-    .legend-color { width:20px; height:20px; border-radius:4px; margin-right:0.5rem; opacity:0.8; }
+    .legend { background:rgba(255,255,255,0.05); padding:1rem; border-radius:12px; margin-top:1.5rem; font-size:0.9rem; }
+    .legend-item { display:flex; align-items:center; margin:0.6rem 0; }
+    .legend-color { width:18px; height:18px; border-radius:4px; margin-right:0.8rem; }
 
-    @media (max-width:900px) { main { flex-direction:column; } .panel { width:100%; order:2; } #map { height:50vh; } }
+    @media (max-width:900px) { main { flex-direction:column; } .panel { width:100%; } #map { height:50vh; } }
   </style>
 </head>
 <body>
 
   <header>
     <h1>African AI Ecosystem</h1>
-    <p class="subtitle">Interactive Map — Click countries to explore organizations</p>
+    <p class="subtitle">Click any country to explore its AI startups, labs & hubs</p>
   </header>
 
   <nav class="breadcrumb">
@@ -53,22 +53,18 @@
   </nav>
 
   <main>
-    <div id="error"></div>
-
     <div id="map"></div>
 
     <div class="panel">
-      <h3>Country Profile</h3>
-      <div id="countryName" style="font-size:1.2rem; margin-bottom:1rem;"><em>Click a country to explore</em></div>
+      <div id="countryName">Click a country</div>
       <div id="countryStats"></div>
-      <h3 style="margin-top:2rem;">Top Organizations</h3>
-      <div id="orgList"></div>
+      <h3 style="margin-top:2rem;">Organizations</h3>
+      <div id="orgList"><p style="opacity:0.7; text-align:center;">Select a country to view details</p></div>
+
       <div class="legend">
-        <h4 style="margin:0 0 0.5rem; color:var(--accent);">Activity Legend</h4>
-        <div class="legend-item"><div class="legend-color" style="background:#800026;"></div> High (5+ orgs)</div>
-        <div class="legend-item"><div class="legend-color" style="background:#BD0026;"></div> Medium (2-4)</div>
-        <div class="legend-item"><div class="legend-color" style="background:#E31A1C;"></div> Low (1)</div>
-        <div class="legend-item"><div class="legend-color" style="background:#f2f2f2; border:1px solid #aaa;"></div> No activity</div>
+        <div class="legend-item"><div class="legend-color" style="background:#60a5fa;"></div> Hover / Selected</div>
+        <div class="legend-item"><div class="legend-color" style="background:#334155;"></div> Active AI Ecosystem</div>
+        <div class="legend-item"><div class="legend-color" style="background:#1e293b;"></div> No data yet</div>
       </div>
     </div>
   </main>
@@ -79,128 +75,105 @@
   <script>
     const CSV_PATH = "https://open-data-africa.github.io/datasets/Ecosystem.csv";
     const map = L.map('map').setView([6, 20], 3);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap contributors' }).addTo(map);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap'
+    }).addTo(map);
 
     let ecosystem = [];
-    const errorDiv = document.getElementById("error");
-
-    function showError(msg) {
-      errorDiv.innerHTML = `Error: ${msg}`;
-      errorDiv.style.display = "block";
-    }
-
-    // EMBEDDED MINIMAL AFRICA GEOJSON (reliable, no external dependency)
-    const africaGeoJSON = {
-      "type": "FeatureCollection",
-      "features": [
-        {"type": "Feature", "properties": {"ADMIN": "Kenya"}, "geometry": {"type": "Polygon", "coordinates": [[[33.9037,-4.7046],[41.8854,-4.7046],[41.8854,5.0301],[33.9037,5.0301],[33.9037,-4.7046]]]}},
-        {"type": "Feature", "properties": {"ADMIN": "Ethiopia"}, "geometry": {"type": "Polygon", "coordinates": [[[32.9995,3.4227],[48.1131,3.4227],[48.1131,14.4648],[32.9995,14.4648],[32.9995,3.4227]]]}},
-        {"type": "Feature", "properties": {"ADMIN": "Nigeria"}, "geometry": {"type": "Polygon", "coordinates": [[[-16.6921,4.2405],[15.5049,4.2405],[15.5049,14.0261],[-16.6921,14.0261],[-16.6921,4.2405]]]}},
-        {"type": "Feature", "properties": {"ADMIN": "Ghana"}, "geometry": {"type": "Polygon", "coordinates": [[[-3.2573,4.7431],[1.2017,4.7431],[1.2017,11.2019],[-3.2573,11.2019],[-3.2573,4.7431]]]}},
-        {"type": "Feature", "properties": {"ADMIN": "Pan-Africa"}, "geometry": {"type": "Polygon", "coordinates": [[[ -20, -35 ],[ 55, -35 ],[ 55, 37 ],[ -20, 37 ],[ -20, -35 ]]]}},
-        {"type": "Feature", "properties": {"ADMIN": "South Africa"}, "geometry": {"type": "Polygon", "coordinates": [[[16.4599,-34.8261],[32.8922,-34.8261],[32.8922,-22.1256],[16.4599,-22.1256],[16.4599,-34.8261]]]}},
-        {"type": "Feature", "properties": {"ADMIN": "Egypt"}, "geometry": {"type": "Polygon", "coordinates": [[[24.7031,21.6809],[37.2001,21.6809],[37.2001,31.5925],[24.7031,31.5925],[24.7031,21.6809]]]}},
-        // Add more countries as needed — this is minimal for your CSV
-      ]
-    };
+    let geoLayer;
 
     Papa.parse(CSV_PATH, {
       download: true,
       header: true,
-      dynamicTyping: false,
-      trimHeaders: true,
-      skipEmptyLines: true,
       complete: function(res) {
-        if (res.errors.length) { showError("CSV parsing error: " + res.errors.map(e => e.message).join("<br>")); return; }
-        ecosystem = res.data.filter(r => r && r.Name && r.Name.trim().length > 0);
-        if (ecosystem.length === 0) { showError("No valid rows found."); return; }
-        buildChoropleth();
-        console.log("Map loaded: ", ecosystem.length, " organizations"); // Debug
-      },
-      error: function() { showError("Failed to download CSV."); }
+        ecosystem = res.data.filter(r => r.Name && r.Name.trim());
+        buildMap();
+      }
     });
 
-    function buildChoropleth() {
-      const counts = {};
-      ecosystem.forEach(e => {
-        const country = (e.Country || "").trim();
-        if (country) counts[country] = (counts[country] || 0) + 1;
-      });
-      console.log("Country counts: ", counts); // Debug: Check matches
+    function buildMap() {
+      const activeCountries = [...new Set(ecosystem.map(r => (r.Country || "").trim()))].filter(Boolean);
 
-      const values = Object.values(counts);
-      const max = Math.max(...values, 1);
+      // Minimal Africa GeoJSON with all countries from your CSV
+      const africaGeoJSON = {
+        type: "FeatureCollection",
+        features: activeCountries.map(country => ({
+          type: "Feature",
+          properties: { ADMIN: country },
+          geometry: { type: "Polygon", coordinates: [getSimpleCoords(country)] }
+        }))
+      };
 
-      function getColor(d) {
-        const t = d / max;
-        if (t > 0.75) return '#800026';
-        if (t > 0.5) return '#BD0026';
-        if (t > 0.25) return '#E31A1C';
-        if (t > 0) return '#FC4E2A';
-        return '#f2f2f2';
-      }
+      if (geoLayer) map.removeLayer(geoLayer);
 
-      L.geoJSON(africaGeoJSON, {
-        style: function(feature) {
+      geoLayer = L.geoJSON(africaGeoJSON, {
+        style: () => ({
+          fillColor: "#334155",
+          weight: 2,
+          opacity: 1,
+          color: "white",
+          fillOpacity: 0.6
+        }),
+        onEachFeature: (feature, layer) => {
           const cname = feature.properties.ADMIN;
-          const value = counts[cname] || 0;
-          return {
-            fillColor: getColor(value),
-            weight: 2,
-            opacity: 1,
-            color: 'white',
-            dashArray: '3',
-            fillOpacity: 0.7
-          };
-        },
-        onEachFeature: function(feature, layer) {
-          const cname = feature.properties.ADMIN;
+
           layer.on({
-            click: function(e) {
-              console.log("Clicked: ", cname); // Debug
-              showCountry(feature, cname);
-            },
-            mouseover: function(e) {
-              const l = e.target;
-              l.setStyle({ weight: 5, fillOpacity: 0.9, color: '#60a5fa' });
-            },
-            mouseout: function(e) {
-              const l = e.target;
-              l.setStyle({ weight: 2, fillOpacity: 0.7, color: 'white' });
-            }
+            mouseover: () => layer.setStyle({ fillColor: "#60a5fa", fillOpacity: 0.9, weight: 4 }),
+            mouseout: () => layer.setStyle({ fillColor: "#334155", fillOpacity: 0.6, weight: 2 }),
+            click: () => showCountry(cname)
           });
-          layer.bindTooltip(`<strong>${cname}</strong><br>Orgs: ${counts[cname] || 0}`, { sticky: true, direction: 'top' });
+
+          const count = ecosystem.filter(o => (o.Country || "").trim() === cname).length;
+          layer.bindTooltip(`<strong>${cname}</strong><br>${count} organization${count !== 1 ? 's' : ''}`, { sticky: true });
         }
       }).addTo(map);
 
-      // Fit to Africa bounds
       map.fitBounds([[ -35, -20 ], [ 37, 55 ]]);
     }
 
-    function showCountry(feature, cname) {
-      const items = ecosystem.filter(e => (e.Country || "").trim() === cname);
-      document.getElementById("countryName").innerHTML = `<strong>${cname}</strong> <small style="opacity:0.7;">(${items.length} orgs)</small>`;
+    function showCountry(cname) {
+      const items = ecosystem.filter(o => (o.Country || "").trim() === cname);
+
+      document.getElementById("countryName").textContent = cname;
       document.getElementById("countryStats").innerHTML = `
-        <p><strong>Organizations:</strong> ${items.length}</p>
-        <p><strong>Key Domains:</strong> ${[...new Set(items.map(i => (i.Domain || "").trim()))].join(", ") || "N/A"}</p>
+        <p><strong>${items.length}</strong> AI organization${items.length !== 1 ? 's' : ''} active</p>
       `;
-      document.getElementById("orgList").innerHTML = items.length ? items.map(i => `
-        <div class="list-item">
-          <strong>${(i.Name || "").trim()}</strong><br>
-          <small>${(i.Type || "").trim()} • ${(i.Domain || "").trim()}</small><br>
-          <a href="${(i.Website || "#")}" target="_blank" rel="noopener">${(i.Website || "No website")}</a>
+
+      document.getElementById("orgList").innerHTML = items.length ? items.map(o => `
+        <div class="org-item">
+          <strong>${o.Name?.trim() || "Unknown"}</strong>
+          <small>${o.Type?.trim() || ""} • ${o.Domain?.trim() || ""}</small>
+          ${o.Website ? `<br><a href="${o.Website}" target="_blank">Visit Website</a>` : ""}
         </div>
-      `).join('') : '<p style="opacity:0.7; text-align:center;">No organizations listed yet.</p>';
+      `).join("") : "<p style='opacity:0.7; text-align:center;'>No organizations listed yet.</p>";
+
+      // Highlight selected country
+      if (geoLayer) {
+        geoLayer.eachLayer(layer => {
+          const isSelected = layer.feature.properties.ADMIN === cname;
+          layer.setStyle({
+            fillColor: isSelected ? "#60a5fa" : "#334155",
+            weight: isSelected ? 5 : 2,
+            fillOpacity: isSelected ? 0.9 : 0.6
+          });
+        });
+      }
 
       // Zoom to country
-      if (feature && feature.geometry) {
-        try {
-          const bounds = L.geoJSON(feature).getBounds();
-          map.fitBounds(bounds.pad(0.2));
-        } catch (e) {
-          console.log("Zoom failed for ", cname); // Debug
-        }
-      }
+      const layer = geoLayer.getLayers().find(l => l.feature.properties.ADMIN === cname);
+      if (layer) map.fitBounds(layer.getBounds().pad(0.3));
+    }
+
+    // Simple coord fallback (you can expand this)
+    function getSimpleCoords(country) {
+      const coords = {
+        "Kenya": [[33.9,-4.7],[41.9,-4.7],[41.9,5.0],[33.9,5.0],[33.9,-4.7]],
+        "Ethiopia": [[32.9,3.4],[48.0,3.4],[48.0,14.8],[32.9,14.8],[32.9,3.4]],
+        "Nigeria": [[2.6,4.2],[14.7,4.2],[14.7,13.9],[2.6,13.9],[2.6,4.2]],
+        "Ghana": [[-3.3,4.7],[1.2,4.7],[1.2,11.2],[-3.3,11.2],[-3.3,4.7]],
+        "Pan-Africa": [[-20,-35],[55,-35],[55,37],[-20,37],[-20,-35]]
+      };
+      return coords[country] || [[-20,-35],[55,-35],[55,37],[-20,37],[-20,-35]];
     }
   </script>
 </body>
