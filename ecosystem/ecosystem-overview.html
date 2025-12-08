@@ -1,31 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Ecosystem — Overview</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  body{font-family:Segoe UI,Arial,sans-serif;margin:0;background:#f5f5f7}
+  header{background:#330000;color:#fff;padding:1rem;text-align:center}
+  main{max-width:1200px;margin:1.5rem auto;padding:1rem}
+  .top-row{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;margin-bottom:1rem}
+  .stat{background:#fff;padding:1rem;border-radius:10px;min-width:160px;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.06)}
+  .charts{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+  canvas{background:#fff;padding:1rem;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,.06)}
+  @media(max-width:900px){.charts{grid-template-columns:1fr}}
+  nav.breadcrumb{padding:0.6rem 1rem;text-align:center;background:#fff;border-bottom:1px solid #eee}
+  .controls{display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center;margin-bottom:1rem}
+  .controls select,input{padding:.5rem;border-radius:6px;border:1px solid #ccc}
+</style>
+</head>
+<body>
+<header>
+  <h1>African AI Ecosystem — Overview</h1>
+  <p style="opacity:.9">Quick investor-focused view: counts, domains, and geographic distribution.</p>
+</header>
+
+<nav class="breadcrumb">
+  <a href="ecosystem-overview.html">Overview</a> ·
+  <a href="ecosystem-map.html">Map</a> ·
+  <a href="ecosystem-readiness.html">Readiness</a> ·
+  <a href="ecosystem-network.html">Network</a> ·
+  <a href="ecosystem-investor.html">Investor Brief</a>
+</nav>
+
+<main>
+  <div class="controls">
+    <input id="q" placeholder="Search name or domain">
+    <select id="filterCountry"><option value="">All Countries</option></select>
+    <select id="filterType"><option value="">All Types</option></select>
+  </div>
+
+  <div class="top-row">
+    <div class="stat" id="statTotal">Total organisations: —</div>
+    <div class="stat" id="statCountries">Countries: —</div>
+    <div class="stat" id="statDomains">Domains: —</div>
+    <div class="stat" id="statStartups">Startups: —</div>
+  </div>
+
+  <div class="charts">
+    <canvas id="chartDomains" height="300"></canvas>
+    <canvas id="chartTypes" height="300"></canvas>
+    <canvas id="chartCountries" height="300" style="grid-column:1 / -1"></canvas>
+  </div>
+</main>
+
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-Papa.parse('../datasets/Ecosystem.csv', {
-    download: true,
-    header: true,
-    skipEmptyLines: true,
-    complete: (results) => {
-        const data = results.data;
+const csvPath = "datasets/Ecosystem.csv";
+let data = [];
 
-        // Summary counts
-        const countries = new Set(data.map(d => d.Country)).size;
-        const startups = data.filter(d => d.Type === "Startup").length;
-        const research = data.filter(d => d.Type === "Research").length;
-        const investors = data.filter(d => d.Type === "Investor").length;
+function count(arr, keyFn){
+  const m = {};
+  arr.forEach(x => {
+    const k = keyFn(x) || "Unknown";
+    m[k] = (m[k]||0)+1;
+  });
+  return m;
+}
 
-        document.getElementById("totalCountries").textContent = countries;
-        document.getElementById("totalStartups").textContent = startups;
-        document.getElementById("totalResearch").textContent = research;
-        document.getElementById("totalInvestors").textContent = investors;
+function toSortedArray(obj, topN){
+  return Object.entries(obj).sort((a,b)=>b[1]-a[1]).slice(0,topN||999);
+}
 
-        // List of organizations
-        const list = document.getElementById("ecosystemList");
-        data.forEach(item => {
-            const li = document.createElement("li");
-            li.textContent = `${item.Name} – ${item.Type} (${item.Country})`;
-            list.appendChild(li);
-        });
-    }
-});
+function updateStats(){
+  document.getElementById('statTotal').textContent = `Total organisations: ${data.length}`;
+  document.getElementById('statCountries').textContent = `Countries: ${[...new Set(data.map(d=>d.Country))].filter(Boolean).length}`;
+  document.getElementById('statDomains').textContent = `Domains: ${[...new Set(data.map(d=>d.Domain))].filter(Boolean).length}`;
+  document.getElementById('statStartups').textContent = `Startups: ${data.filter(d=>d.Type && d.Type.toLowerCase().includes('startup')).length}`;
+}
+
+function buildFilters(){
+  const countries = [...new Set(data.map(d=>d.Country).filter(Boolean))].sort();
+  const types = [...new Set(data.map(d=>d.Type).filter(Boolean))].sort();
+  const cSel = document.getElementById('filterCountry');
+  const tSel = document.getElementById('filterType');
+  countries.forEach(c=> cSel.innerHTML += `<option value="${c}">${c}</option>`);
+  types.forEach(t=> tSel.innerHTML += `<option value="${t}">${t}</option>`);
+}
+
+function drawCharts(filtered){
+  // domains chart
+  const domains = count(filtered, d=>d.Domain);
+  const domArr = toSortedArray(domains, 10);
+  const ctx1 = document.getElementById('chartDomains').getContext('2d');
+  if(window.domChart) window.domChart.destroy();
+  window.domChart = new Chart(ctx1, {
+    type:'bar',
+    data:{ labels: domArr.map(d=>d[0]), datasets:[{label:'Organisations',data:domArr.map(d=>d[1]),backgroundColor:'rgba(51,0,0,0.7)'}]},
+    options:{responsive:true,maintainAspectRatio:false}
+  });
+
+  // types chart
+  const types = count(filtered, d=>d.Type);
+  const tArr = toSortedArray(types, 10);
+  const ctx2 = document.getElementById('chartTypes').getContext('2d');
+  if(window.typeChart) window.typeChart.destroy();
+  window.typeChart = new Chart(ctx2, {
+    type:'doughnut',
+    data:{labels:tArr.map(d=>d[0]),datasets:[{data:tArr.map(d=>d[1]),backgroundColor:['#3366cc','#dc3912','#ff9900','#109618','#990099','#0099c6']} ]},
+    options:{responsive:true,maintainAspectRatio:false}
+  });
+
+  // countries
+  const countries = count(filtered, d=>d.Country);
+  const cArr = toSortedArray(countries, 20);
+  const ctx3 = document.getElementById('chartCountries').getContext('2d');
+  if(window.countryChart) window.countryChart.destroy();
+  window.countryChart = new Chart(ctx3, {
+    type:'bar',
+    data:{ labels:cArr.map(d=>d[0]), datasets:[{label:'Organisations',data:cArr.map(d=>d[1]),backgroundColor:'rgba(50,115,220,0.7)'}]},
+    options:{responsive:true,maintainAspectRatio:false}
+  });
+}
+
+function applyFilters(){
+  const q = document.getElementById('q').value.toLowerCase();
+  const c = document.getElementById('filterCountry').value;
+  const t = document.getElementById('filterType').value;
+  const filtered = data.filter(d=>{
+    return (!q || (d.Name && d.Name.toLowerCase().includes(q)) || (d.Domain && d.Domain.toLowerCase().includes(q))) &&
+           (!c || d.Country===c) &&
+           (!t || d.Type===t);
+  });
+  updateStats(filtered);
+  drawCharts(filtered);
+}
+
+Papa.parse(csvPath, { download:true, header:true, complete: (res)=>{
+  data = res.data.filter(r=>r.Name);
+  updateStats();
+  buildFilters();
+  drawCharts(data);
+
+  document.getElementById('q').addEventListener('input', applyFilters);
+  document.getElementById('filterCountry').addEventListener('change', applyFilters);
+  document.getElementById('filterType').addEventListener('change', applyFilters);
+}});
 </script>
+</body>
+</html>
