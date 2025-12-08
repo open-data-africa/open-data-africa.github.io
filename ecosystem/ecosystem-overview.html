@@ -1,170 +1,267 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Ecosystem — Overview</title>
-<link rel="stylesheet" href="style.css">
-<style>
-  body{font-family:Segoe UI,Arial,sans-serif;margin:0;background:#f5f5f7}
-  header{background:#330000;color:#fff;padding:1rem;text-align:center}
-  main{max-width:1200px;margin:1.5rem auto;padding:1rem}
-  .top-row{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;margin-bottom:1rem}
-  .stat{background:#fff;padding:1rem;border-radius:10px;min-width:160px;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.06)}
-  .charts{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
-  canvas{background:#fff;padding:1rem;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,.06)}
-  @media(max-width:900px){.charts{grid-template-columns:1fr}}
-  nav.breadcrumb{padding:0.6rem 1rem;text-align:center;background:#fff;border-bottom:1px solid #eee}
-  .controls{display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center;margin-bottom:1rem}
-  .controls select,input{padding:.5rem;border-radius:6px;border:1px solid #ccc}
-  #errorMsg { color: red; text-align: center; font-weight: bold; }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>African AI Ecosystem — Overview Dashboard</title>
+
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --text: #e2e8f0;
+      --accent: #60a5fa;
+      --accent-dark: #3b82f6;
+      --success: #34d399;
+    }
+    body { 
+      margin:0; 
+      font-family: 'Segoe UI', system-ui, sans-serif; 
+      background: var(--bg); 
+      color: var(--text); 
+      line-height: 1.6;
+    }
+    header {
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      padding: 3rem 1rem;
+      text-align: center;
+    }
+    h1 { margin:0; font-size: 2.8rem; color: var(--accent); }
+    .subtitle { margin: 0.5rem 0 0; opacity: 0.9; font-size: 1.2rem; }
+
+    nav.breadcrumb {
+      background: #1e293b;
+      padding: 1rem;
+      text-align: center;
+      font-size: 1.1rem;
+    }
+    nav.breadcrumb a { color: var(--accent); text-decoration: none; margin: 0 0.8rem; }
+    nav.breadcrumb a:hover { text-decoration: underline; }
+
+    main { max-width: 1400px; margin: 2rem auto; padding: 0 1rem; }
+
+    .controls {
+      display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center;
+      margin-bottom: 2rem; padding: 1rem; background: var(--card); border-radius: 12px;
+    }
+    .controls input, .controls select {
+      padding: 0.7rem 1rem; border-radius: 8px; border: none; background: #334155; color: white; min-width: 200px;
+    }
+
+    .stats-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin: 2rem 0;
+    }
+    .stat-card {
+      background: var(--card); padding: 1.8rem; border-radius: 16px; text-align: center;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    }
+    .stat-card h3 { margin: 0; font-size: 2.8rem; color: var(--accent); }
+    .stat-card p { margin: 0.5rem 0 0; opacity: 0.8; }
+
+    .charts-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 3rem;
+    }
+    .chart-container {
+      background: var(--card); padding: 1.5rem; border-radius: 16px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    }
+    canvas { border-radius: 12px; }
+
+    #error { 
+      background: #fee2e2; color: #991b1b; padding: 1.5rem; border-radius: 12px; 
+      text-align: center; margin: 2rem; font-weight: bold; font-size: 1.1rem;
+    }
+
+    @media (max-width: 900px) {
+      .charts-grid { grid-template-columns: 1fr; }
+      h1 { font-size: 2.2rem; }
+    }
+  </style>
 </head>
 <body>
-<header>
-  <h1>African AI Ecosystem — Overview</h1>
-  <p style="opacity:.9">Quick investor-focused view: counts, domains, and geographic distribution.</p>
-</header>
 
-<nav class="breadcrumb">
-  <a href="ecosystem-overview.html">Overview</a> ·
-  <a href="ecosystem-map.html">Map</a> ·
-  <a href="ecosystem-readiness.html">Readiness</a> ·
-  <a href="ecosystem-network.html">Network</a> ·
-  <a href="ecosystem-investor.html">Investor Brief</a>
-</nav>
+  <header>
+    <h1>African AI Ecosystem</h1>
+    <p class="subtitle">Live Overview Dashboard — Startups, Labs, Communities & Research</p>
+  </header>
 
-<main>
-  <div id="errorMsg"></div>
-  <div class="controls">
-    <input id="q" placeholder="Search name or domain">
-    <select id="filterCountry"><option value="">All Countries</option></select>
-    <select id="filterType"><option value="">All Types</option></select>
-  </div>
+  <nav class="breadcrumb">
+    <a href="ecosystem-overview.html">Overview</a> •
+    <a href="ecosystem-map.html">Map</a> •
+    <a href="ecosystem-readiness.html">Readiness</a> •
+    <a href="ecosystem-network.html">Network</a> •
+    <a href="ecosystem-investor.html">Investor Briefs</a>
+  </nav>
 
-  <div class="top-row">
-    <div class="stat" id="statTotal">Total organisations: —</div>
-    <div class="stat" id="statCountries">Countries: —</div>
-    <div class="stat" id="statDomains">Domains: —</div>
-    <div class="stat" id="statStartups">Startups: —</div>
-  </div>
+  <main>
+    <div id="error" style="display:none;"></div>
 
-  <div class="charts">
-    <canvas id="chartDomains" height="300"></canvas>
-    <canvas id="chartTypes" height="300"></canvas>
-    <canvas id="chartCountries" height="300" style="grid-column:1 / -1"></canvas>
-  </div>
-</main>
+    <div class="controls">
+      <input type="text" id="search" placeholder="Search by name, domain, description..." />
+      <select id="countryFilter"><option value="">All Countries</option></select>
+      <select id="typeFilter"><option value="">All Types</option></select>
+      <select id="domainFilter"><option value="">All Domains</option></select>
+    </div>
 
-<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-const csvPath = "datasets/Ecosystem.csv"; // Fixed lowercase path
-let data = [];
+    <div class="stats-grid">
+      <div class="stat-card"><h3 id="total">0</h3><p>Total Organisations</p></div>
+      <div class="stat-card"><h3 id="countries">0</h3><p>Countries Represented</p></div>
+      <div class="stat-card"><h3 id="startups">0</h3><p>Startups</p></div>
+      <div class="stat-card"><h3 id="domains">0</h3><p>Active Domains</p></div>
+    </div>
 
-function showError(msg) {
-  document.getElementById('errorMsg').innerText = msg;
-}
+    <div class="charts-grid">
+      <div class="chart-container"><canvas id="byDomain"></canvas></div>
+      <div class="chart-container"><canvas id="byType"></canvas></div>
+      <div class="chart-container" style="grid-column: 1 / -1;"><canvas id="byCountry"></canvas></div>
+    </div>
+  </main>
 
-Papa.parse(csvPath, {
-  download: true,
-  header: true,
-  complete: (res) => {
-    if (res.errors.length > 0) {
-      showError("CSV Error: " + res.errors[0].message + ". Check file format or path.");
-      return;
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script>
+    // EXACT PATH TO YOUR CSV FILE
+    const CSV_PATH = "datasets/Ecosystem.csv";   // ← Capital E, as you have it!
+
+    let data = [];
+    const errorDiv = document.getElementById("error");
+
+    function showError(msg) {
+      errorDiv.innerHTML = `Error: ${msg}<br><br>
+        Make sure your file is exactly at:<br>
+        <code>https://yourusername.github.io/your-repo/datasets/Ecosystem.csv</code>`;
+      errorDiv.style.display = "block";
     }
-    data = res.data.filter(r => r.Name);
-    if (data.length === 0) {
-      showError("No data found in CSV. Check headers and content.");
-      return;
+
+    Papa.parse(CSV_PATH, {
+      download: true,
+      header: true,
+      complete: function(results) {
+        if (results.errors.length) {
+          showError("CSV parsing error: " + results.errors[0].message);
+          return;
+        }
+        data = results.data.filter(row => row.Name && row.Name.trim());
+        if (data.length === 0) {
+          showError("CSV loaded but no valid entries found. Check column names (Name, Type, Domain, Country, Website, Description).");
+          return;
+        }
+        populateFilters();
+        updateDashboard(data);
+      },
+      error: function(err) {
+        showError(`Failed to load the CSV file.<br>
+          Path used: <strong>${CSV_PATH}</strong><br>
+          Common fixes:<br>
+          • File name must be exactly <code>Ecosystem.csv</code> (capital E)<br>
+          • Must be inside a folder named <code>datasets</code><br>
+          • Test the direct URL in browser: it should download the CSV`);
+      }
+    });
+
+    function populateFilters() {
+      const unique = (arr) => [...new Set(arr)].filter(Boolean).sort();
+      const countries = unique(data.map(r => r.Country));
+      const types = unique(data.map(r => r.Type));
+      const domains = unique(data.map(r => r.Domain));
+
+      const addOptions = (id, values) => {
+        const sel = document.getElementById(id);
+        values.forEach(val => {
+          const opt = new Option(val, val);
+          sel.add(opt);
+        });
+      };
+
+      addOptions("countryFilter", countries);
+      addOptions("typeFilter", types);
+      addOptions("domainFilter", domains);
     }
-    updateStats();
-    buildFilters();
-    drawCharts(data);
-    document.getElementById('q').addEventListener('input', applyFilters);
-    document.getElementById('filterCountry').addEventListener('change', applyFilters);
-    document.getElementById('filterType').addEventListener('change', applyFilters);
-  },
-  error: (err) => {
-    showError("Failed to load CSV: " + err.message + ". Make sure datasets/Ecosystem.csv exists on GitHub Pages.");
-  }
-});
 
-// Rest of the script remains the same as before (count, toSortedArray, updateStats, buildFilters, drawCharts, applyFilters)
-function count(arr, keyFn){
-  const m = {};
-  arr.forEach(x => {
-    const k = keyFn(x) || "Unknown";
-    m[k] = (m[k]||0)+1;
-  });
-  return m;
-}
+    function updateDashboard(dataset) {
+      document.getElementById("total").textContent = dataset.length;
+      document.getElementById("countries").textContent = [...new Set(dataset.map(r => r.Country))].filter(Boolean).length;
+      document.getElementById("startups").textContent = dataset.filter(r => r.Type && r.Type.toLowerCase().includes("startup")).length;
+      document.getElementById("domains").textContent = [...new Set(dataset.map(r => r.Domain))].filter(Boolean).length;
 
-function toSortedArray(obj, topN){
-  return Object.entries(obj).sort((a,b)=>b[1]-a[1]).slice(0,topN||999);
-}
+      drawChart("byDomain", "bar", countBy(dataset, "Domain"), "By Domain", "#60a5fa");
+      drawChart("byType", "doughnut", countBy(dataset, "Type"), "By Type", ["#60a5fa","#f472b6","#a78bfa","#f59e0b","#34d399","#c084fc"]);
+      drawChart("byCountry", "bar", countBy(dataset, "Country"), "By Country (Top 20)", "#34d399");
+    }
 
-function updateStats(){
-  document.getElementById('statTotal').textContent = `Total organisations: ${data.length}`;
-  document.getElementById('statCountries').textContent = `Countries: ${[...new Set(data.map(d=>d.Country))].filter(Boolean).length}`;
-  document.getElementById('statDomains').textContent = `Domains: ${[...new Set(data.map(d=>d.Domain))].filter(Boolean).length}`;
-  document.getElementById('statStartups').textContent = `Startups: ${data.filter(d=>d.Type && d.Type.toLowerCase().includes('startup')).length}`;
-}
+    function countBy(arr, key) {
+      const map = {};
+      arr.forEach(item => {
+        const val = item[key] || "Unknown";
+        map[val] = (map[val] || 0) + 1;
+      });
+      return Object.entries(map)
+        .sort((a,b) => b[1] - a[1])
+        .slice(0, key === "Country" ? 20 : 12);
+    }
 
-function buildFilters(){
-  const countries = [...new Set(data.map(d=>d.Country).filter(Boolean))].sort();
-  const types = [...new Set(data.map(d=>d.Type).filter(Boolean))].sort();
-  const cSel = document.getElementById('filterCountry');
-  const tSel = document.getElementById('filterType');
-  countries.forEach(c=> cSel.innerHTML += `<option value="${c}">${c}</option>`);
-  types.forEach(t=> tSel.innerHTML += `<option value="${t}">${t}</option>`);
-}
+    let charts = {};
+    function drawChart(id, type, dataArr, title, color) {
+      const ctx = document.getElementById(id).getContext("2d");
+      if (charts[id]) charts[id].destroy();
 
-function drawCharts(filtered){
-  const domains = count(filtered, d=>d.Domain);
-  const domArr = toSortedArray(domains, 10);
-  const ctx1 = document.getElementById('chartDomains').getContext('2d');
-  if(window.domChart) window.domChart.destroy();
-  window.domChart = new Chart(ctx1, {
-    type:'bar',
-    data:{ labels: domArr.map(d=>d[0]), datasets:[{label:'Organisations',data:domArr.map(d=>d[1]),backgroundColor:'rgba(51,0,0,0.7)'}]},
-    options:{responsive:true,maintainAspectRatio:false}
-  });
+      const bgColors = Array.isArray(color) 
+        ? color 
+        : Array(dataArr.length).fill(color);
 
-  const types = count(filtered, d=>d.Type);
-  const tArr = toSortedArray(types, 10);
-  const ctx2 = document.getElementById('chartTypes').getContext('2d');
-  if(window.typeChart) window.typeChart.destroy();
-  window.typeChart = new Chart(ctx2, {
-    type:'doughnut',
-    data:{labels:tArr.map(d=>d[0]),datasets:[{data:tArr.map(d=>d[1]),backgroundColor:['#3366cc','#dc3912','#ff9900','#109618','#990099','#0099c6']} ]},
-    options:{responsive:true,maintainAspectRatio:false}
-  });
+      charts[id] = new Chart(ctx, {
+        type: type,
+        data: {
+          labels: dataArr.map(d => d[0]),
+          datasets: [{
+            label: title,
+            data: dataArr.map(d => d[1]),
+            backgroundColor: bgColors,
+            borderWidth: 1,
+            borderColor: "rgba(255,255,255,0.1)"
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: type !== "doughnut", labels: { color: "#e2e8f0" } },
+            title: { display: true, text: title, color: "#e2e8f0", font: { size: 16 } }
+          },
+          scales: type !== "doughnut" ? {
+            y: { beginAtZero: true, ticks: { color: "#94a3b8" }, grid: { color: "rgba(255,255,255,0.05)" } },
+            x: { ticks: { color: "#94a3b8" }, grid: { color: "rgba(255,255,255,0.05)" } }
+          } : {}
+        }
+      });
+    }
 
-  const countries = count(filtered, d=>d.Country);
-  const cArr = toSortedArray(countries, 20);
-  const ctx3 = document.getElementById('chartCountries').getContext('2d');
-  if(window.countryChart) window.countryChart.destroy();
-  window.countryChart = new Chart(ctx3, {
-    type:'bar',
-    data:{ labels:cArr.map(d=>d[0]), datasets:[{label:'Organisations',data:cArr.map(d=>d[1]),backgroundColor:'rgba(50,115,220,0.7)'}]},
-    options:{responsive:true,maintainAspectRatio:false}
-  });
-}
+    // Live filtering
+    ["search", "countryFilter", "typeFilter", "domainFilter"].forEach(id => {
+      document.getElementById(id).addEventListener("input", filter);
+      document.getElementById(id).addEventListener("change", filter);
+    });
 
-function applyFilters(){
-  const q = document.getElementById('q').value.toLowerCase();
-  const c = document.getElementById('filterCountry').value;
-  const t = document.getElementById('filterType').value;
-  const filtered = data.filter(d=>{
-    return (!q || (d.Name && d.Name.toLowerCase().includes(q)) || (d.Domain && d.Domain.toLowerCase().includes(q))) &&
-           (!c || d.Country===c) &&
-           (!t || d.Type===t);
-  });
-  updateStats(filtered);
-  drawCharts(filtered);
-}
-</script>
+    function filter() {
+      const q = document.getElementById("search").value.toLowerCase();
+      const country = document.getElementById("countryFilter").value;
+      const type = document.getElementById("typeFilter").value;
+      const domain = document.getElementById("domainFilter").value;
+
+      const filtered = data.filter(item => {
+        const searchMatch = !q || [
+          item.Name, item.Description, item.Domain, item.Type, item.Country
+        ].some(field => field && field.toLowerCase().includes(q));
+
+        return searchMatch &&
+               (!country || item.Country === country) &&
+               (!type || item.Type === type) &&
+               (!domain || item.Domain === domain);
+      });
+
+      updateDashboard(filtered);
+    }
+  </script>
 </body>
 </html>
