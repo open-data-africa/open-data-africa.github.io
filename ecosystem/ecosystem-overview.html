@@ -7,13 +7,14 @@
 
   <style>
     :root { --bg:#0f172a; --card:#1e293b; --text:#e2e8f0; --accent:#60a5fa; }
-    body { margin:0; font-family:'Segoe UI',sans-serif; background:var(--bg); color:var(--text); }
+    body { margin:0; font-family:'Segoe UI',sans-serif; background:var(--bg); color:var(--text); line-height:1.6; }
     header { background:linear-gradient(135deg,#1e293b,#0f172a); padding:3rem 1rem; text-align:center; }
     h1 { margin:0; font-size:2.8rem; color:var(--accent); }
     .subtitle { opacity:0.9; font-size:1.2rem; }
 
-    nav.breadcrumb { background:#1e293b; padding:1rem; text-align:center; }
+    nav.breadcrumb { background:#1e293b; padding:1rem; text-align:center; font-size:1.1rem; }
     nav.breadcrumb a { color:var(--accent); text-decoration:none; margin:0 .8rem; }
+    nav.breadcrumb a:hover { text-decoration:underline; }
 
     main { max-width:1400px; margin:2rem auto; padding:0 1rem; }
 
@@ -78,6 +79,17 @@
   <script>
     const CSV_PATH = "https://open-data-africa.github.io/datasets/Ecosystem.csv";
 
+    // BEAUTIFUL RAINBOW PALETTE (automatically cycles)
+    const rainbowColors = [
+      "#FF6B6B", "#4ECDC4", "#45B7D1", "#96CEB4", "#FECA57", "#FF9FF3", "#54A0FF",
+      "#48DBFB", "#1DD1A1", "#FF9F43", "#EE5A24", "#C56CF0", "#FFC048", "#FF6348",
+      "#A55EEA", "#32CCBC", "#FFA502", "#FF5252", "#667EEA", "#B2FF59", "#FF8A80"
+    ];
+
+    function getColors(count) {
+      return Array.from({length: count}, (_, i) => rainbowColors[i % rainbowColors.length]);
+    }
+
     let data = [];
     const errorDiv = document.getElementById("error");
 
@@ -86,32 +98,20 @@
       errorDiv.style.display = "block";
     }
 
-    // FIXED PARSING: Comma-delimited, handles quoted fields with commas inside descriptions
     Papa.parse(CSV_PATH, {
       download: true,
       header: true,
-      dynamicTyping: false,     // Keep everything as strings to avoid issues
-      trimHeaders: true,        // Clean header names
-      skipEmptyLines: true,     // Ignore blank rows
+      dynamicTyping: false,
+      trimHeaders: true,
+      skipEmptyLines: true,
       complete: function(res) {
-        console.log("Raw parsed data (first 3 rows):", res.data.slice(0, 3)); // Debug: Check console (F12)
-        if (res.errors.length) {
-          showError("CSV parsing error: " + res.errors.map(e => e.message).join("<br>"));
-          return;
-        }
-        // FIXED FILTER: Check for non-empty Name after trimming
-        data = res.data.filter(r => r && r.Name && typeof r.Name === 'string' && r.Name.trim().length > 0);
-        console.log("Filtered data length:", data.length); // Debug
-        if (data.length === 0) {
-          showError("CSV loaded but no valid rows with 'Name' column. Headers found: " + (res.meta.fields ? res.meta.fields.join(", ") : "None"));
-          return;
-        }
+        if (res.errors.length) { showError("CSV parsing error: " + res.errors.map(e => e.message).join("<br>")); return; }
+        data = res.data.filter(r => r && r.Name && r.Name.trim().length > 0);
+        if (data.length === 0) { showError("No valid rows found."); return; }
         populateFilters();
         updateDashboard(data);
       },
-      error: function(err) {
-        showError("Failed to download CSV: " + err);
-      }
+      error: function() { showError("Failed to download CSV."); }
     });
 
     function populateFilters() {
@@ -126,13 +126,13 @@
 
     function updateDashboard(set) {
       document.getElementById("total").textContent = set.length;
-      document.getElementById("countries").textContent = [...new Set(set.map(r => r.Country))].filter(Boolean).length;
-      document.getElementById("startups").textContent = set.filter(r => r.Type && r.Type.toLowerCase().includes("startup")).length;
-      document.getElementById("domains").textContent = [...new Set(set.map(r => r.Domain))].filter(Boolean).length;
+      document.getElementById("countries").textContent = [...new Set(set.map(r=>r.Country))].filter(Boolean).length;
+      document.getElementById("startups").textContent = set.filter(r=>r.Type&&r.Type.toLowerCase().includes("startup")).length;
+      document.getElementById("domains").textContent = [...new Set(set.map(r=>r.Domain))].filter(Boolean).length;
 
-      draw("byDomain", "bar", count(set, "Domain"), "By Domain", "#60a5fa");
-      draw("byType", "doughnut", count(set, "Type"), "By Type", ["#60a5fa", "#f472b6", "#a78bfa", "#f59e0b", "#34d399", "#c084fc"]);
-      draw("byCountry", "bar", count(set, "Country"), "By Country (Top 20)", "#34d399");
+      draw("byDomain", "bar", count(set,"Domain"), "By Domain", getColors);
+      draw("byType", "doughnut", count(set,"Type"), "By Type", getColors);
+      draw("byCountry", "bar", count(set,"Country"), "By Country (Top 20)", getColors);
     }
 
     function count(arr, key) {
@@ -142,24 +142,35 @@
     }
 
     let charts = {};
-    function draw(id, type, dataArr, title, color) {
+    function draw(id, type, dataArr, title, colorFn) {
       const ctx = document.getElementById(id).getContext("2d");
       if (charts[id]) charts[id].destroy();
-      const bg = Array.isArray(color) ? color : Array(dataArr.length).fill(color);
+
+      const colors = typeof colorFn === 'function' ? colorFn(dataArr.length) : colorFn;
+
       charts[id] = new Chart(ctx, {
         type,
-        data: { labels: dataArr.map(d => d[0]), datasets: [{ data: dataArr.map(d => d[1]), backgroundColor: bg }] },
+        data: {
+          labels: dataArr.map(d => d[0]),
+          datasets: [{
+            data: dataArr.map(d => d[1]),
+            backgroundColor: colors,
+            borderColor: "rgba(255,255,255,0.1)",
+            borderWidth: type === "doughnut" ? 3 : 1
+          }]
+        },
         options: {
           responsive: true,
           plugins: {
-            legend: { display: type !== "doughnut" },
-            title: { display: true, text: title, color: "#e2e8f0", font: { size: 16 } }
-          }
+            legend: { display: type !== "doughnut", labels: { color: "#e2e8f0" } },
+            title: { display: true, text: title, color: "#e2e8f0", font: { size: 18, weight: "bold" } }
+          },
+          animation: { duration: 1500 }
         }
       });
     }
 
-    ["search", "countryFilter", "typeFilter", "domainFilter"].forEach(id => {
+    ["search","countryFilter","typeFilter","domainFilter"].forEach(id => {
       const el = document.getElementById(id);
       el.addEventListener("input", filter);
       el.addEventListener("change", filter);
@@ -172,7 +183,7 @@
       const d = document.getElementById("domainFilter").value;
 
       const filtered = data.filter(i => {
-        const match = !q || [i.Name, i.Description, i.Domain, i.Type, i.Country].some(f => f && f.toString().toLowerCase().includes(q));
+        const match = !q || [i.Name,i.Description,i.Domain,i.Type,i.Country].some(f => f && f.toString().toLowerCase().includes(q));
         return match && (!c || i.Country === c) && (!t || i.Type === t) && (!d || i.Domain === d);
       });
       updateDashboard(filtered);
