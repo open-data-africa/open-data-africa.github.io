@@ -1,107 +1,187 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Ecosystem — Map</title>
-<link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-<style>
-  body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:#f5f5f7}
-  header{background:#330000;color:#fff;padding:1rem;text-align:center}
-  #map{height:72vh;width:100%}
-  main{display:flex;gap:1rem;max-width:1400px;margin:1rem auto;padding:0 1rem}
-  .panel{width:380px;background:#fff;padding:1rem;border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,.08)}
-  .panel h3{margin-top:0;color:#330000}
-  .list-item{padding:.4rem 0;border-bottom:1px solid #eee}
-  nav.breadcrumb{padding:.6rem;text-align:center;background:#fff;border-bottom:1px solid #eee}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>African AI Ecosystem — Interactive Map</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <style>
+    :root { --bg:#0f172a; --card:#1e293b; --text:#e2e8f0; --accent:#60a5fa; }
+    body { margin:0; font-family:'Segoe UI',sans-serif; background:var(--bg); color:var(--text); }
+    header { background:linear-gradient(135deg,#1e293b,#0f172a); padding:3rem 1rem; text-align:center; }
+    h1 { margin:0; font-size:2.8rem; color:var(--accent); }
+    .subtitle { opacity:0.9; font-size:1.2rem; }
+
+    nav.breadcrumb { background:#1e293b; padding:1rem; text-align:center; font-size:1.1rem; }
+    nav.breadcrumb a { color:var(--accent); text-decoration:none; margin:0 .8rem; }
+    nav.breadcrumb a:hover { text-decoration:underline; }
+
+    #map { height:70vh; width:100%; border-radius:12px; margin:1rem 0; }
+
+    main { max-width:1400px; margin:2rem auto; padding:0 1rem; display:flex; gap:2rem; }
+    .panel { width:350px; background:var(--card); padding:1.5rem; border-radius:16px; box-shadow:0 8px 25px rgba(0,0,0,.3); height:fit-content; }
+    .panel h3 { margin:0 0 1rem; color:var(--accent); }
+    .list-item { padding:1rem 0; border-bottom:1px solid #334155; }
+    .list-item:last-child { border-bottom:none; }
+    .list-item strong { color:var(--accent); }
+    .list-item small { opacity:0.8; }
+    .list-item a { color:var(--accent); text-decoration:none; }
+    .list-item a:hover { text-decoration:underline; }
+
+    #error { background:#fee2e2; color:#991b1b; padding:1.5rem; border-radius:12px; text-align:center; margin:2rem; font-weight:bold; display:none; }
+
+    .legend { background:var(--card); padding:1rem; border-radius:12px; margin-top:1rem; }
+    .legend-item { display:flex; align-items:center; margin:0.5rem 0; }
+    .legend-color { width:20px; height:20px; border-radius:4px; margin-right:0.5rem; }
+
+    @media (max-width:900px) { main { flex-direction:column; } .panel { width:100%; order:2; } #map { height:50vh; } }
+  </style>
 </head>
 <body>
-<header><h1>African AI Ecosystem — Map</h1></header>
-<nav class="breadcrumb">
-  <a href="ecosystem-overview.html">Overview</a> · <a href="ecosystem-map.html">Map</a> · <a href="ecosystem-readiness.html">Readiness</a>
-</nav>
 
-<main>
-  <div style="flex:1">
+  <header>
+    <h1>African AI Ecosystem</h1>
+    <p class="subtitle">Interactive Map — Click countries to explore organizations</p>
+  </header>
+
+  <nav class="breadcrumb">
+    <a href="ecosystem-overview.html">Overview</a> •
+    <a href="ecosystem-map.html">Map</a> •
+    <a href="ecosystem-readiness.html">Readiness</a> •
+    <a href="ecosystem-network.html">Network</a> •
+    <a href="ecosystem-investor.html">Investor Briefs</a>
+  </nav>
+
+  <main>
+    <div id="error"></div>
+
     <div id="map"></div>
-  </div>
-  <aside class="panel">
-    <h3>Country profile</h3>
-    <div id="countryName"><em>Click a country on the map</em></div>
-    <div id="countryStats" style="margin-top:.8rem"></div>
-    <h4 style="margin-top:1rem">Top organisations</h4>
-    <div id="orgList"></div>
-  </aside>
-</main>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-<!-- GeoJSON of African countries (Natural Earth simplified) -->
-<script src="https://cdn.jsdelivr.net/gh/datasets/geo-countries@master/data/countries.geojson"></script>
+    <div class="panel">
+      <h3>Country Profile</h3>
+      <div id="countryName" style="font-size:1.2rem; margin-bottom:1rem;"><em>Click a country to explore</em></div>
+      <div id="countryStats"></div>
+      <h3 style="margin-top:2rem;">Top Organizations</h3>
+      <div id="orgList"></div>
+      <div class="legend">
+        <h4 style="margin:0 0 0.5rem; color:var(--accent);">Legend</h4>
+        <div class="legend-item"><div class="legend-color" style="background:#800026;"></div> High Activity (5+)</div>
+        <div class="legend-item"><div class="legend-color" style="background:#BD0026;"></div> Medium (2-4)</div>
+        <div class="legend-item"><div class="legend-color" style="background:#E31A1C;"></div> Low (1)</div>
+        <div class="legend-item"><div class="legend-color" style="background:#f2f2f2; border:1px solid #aaa;"></div> No Activity</div>
+      </div>
+    </div>
+  </main>
 
-<script>
-const map = L.map('map').setView([6,20],3);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap contributors'}).addTo(map);
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/datasets/geo-countries@master/data/countries.geojson"></script>
 
-let ecosystem=[];
-Papa.parse('datasets/Ecosystem.csv', { download:true, header:true, complete: (res)=>{
-  ecosystem = res.data.filter(r=>r.Name);
-  buildChoropleth();
-}});
+  <script>
+    const CSV_PATH = "https://open-data-africa.github.io/datasets/Ecosystem.csv";
+    const map = L.map('map').setView([6, 20], 3);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap contributors' }).addTo(map);
 
-function buildChoropleth(){
-  // count organisations per country
-  const counts = {};
-  ecosystem.forEach(e => {
-    if(e.Country) counts[e.Country] = (counts[e.Country]||0) + 1;
-  });
+    let ecosystem = [];
+    const errorDiv = document.getElementById("error");
 
-  // compute color scale
-  const values = Object.values(counts);
-  const max = Math.max(...values,1);
-  function color(d){ // linear ramp
-    const t = d / max;
-    if(t>0.75) return '#800026';
-    if(t>0.5) return '#BD0026';
-    if(t>0.25) return '#E31A1C';
-    if(t>0.1) return '#FC4E2A';
-    return '#FD8D3C';
-  }
-
-  // add geojson, focus on Africa only (by continent property if present or by bounding box)
-  const geo = countries; // loaded from countries.geojson library var "countries"
-  L.geoJSON(geo, {
-    style: function(feature){
-      const cname = feature.properties.ADMIN || feature.properties.ADMIN_NAME || feature.properties.name;
-      const value = counts[cname] || 0;
-      return {fillColor: value? color(value): '#f2f2f2', weight:1, color:'#aaa', fillOpacity:0.8};
-    },
-    onEachFeature: function(feature, layer){
-      const cname = feature.properties.ADMIN || feature.properties.name;
-      layer.on('click', ()=> showCountry(feature, cname));
-      layer.bindTooltip(feature.properties.ADMIN || feature.properties.name, {sticky:true});
+    function showError(msg) {
+      errorDiv.innerHTML = `Error: ${msg}`;
+      errorDiv.style.display = "block";
     }
-  }).addTo(map);
-}
 
-function showCountry(feature, cname){
-  const list = document.getElementById('orgList');
-  const nameEl = document.getElementById('countryName');
-  const statsEl = document.getElementById('countryStats');
-  nameEl.innerHTML = `<strong>${cname}</strong>`;
-  const items = ecosystem.filter(e => e.Country && e.Country.trim() === cname);
-  statsEl.innerHTML = `<p><strong>Organisations:</strong> ${items.length}</p>`;
-  list.innerHTML = items.length ? items.map(i=>`<div class="list-item"><strong>${i.Name}</strong><br/><small>${i.Type} · ${i.Domain}</small><br/><a href="${i.Website}" target="_blank">${i.Website}</a></div>`).join('') : '<p style="color:#777">No organisations listed.</p>';
-  // center map to feature
-  if(feature.geometry && feature.geometry.coordinates){
-    try{
-      const bounds = L.geoJSON(feature).getBounds();
-      map.fitBounds(bounds.pad(0.6));
-    }catch(e){}
-  }
-}
-</script>
+    Papa.parse(CSV_PATH, {
+      download: true,
+      header: true,
+      dynamicTyping: false,
+      trimHeaders: true,
+      skipEmptyLines: true,
+      complete: function(res) {
+        if (res.errors.length) { showError("CSV parsing error: " + res.errors.map(e => e.message).join("<br>")); return; }
+        ecosystem = res.data.filter(r => r && r.Name && r.Name.trim().length > 0);
+        if (ecosystem.length === 0) { showError("No valid rows found."); return; }
+        buildChoropleth();
+      },
+      error: function() { showError("Failed to download CSV."); }
+    });
+
+    // RAINBOW COLORS FOR MARKERS (if you want individual org markers later)
+    const rainbowColors = ["#FF6B6B","#4ECDC4","#45B7D1","#96CEB4","#FECA57","#FF9FF3","#54A0FF","#48DBFB","#1DD1A1","#FF9F43"];
+
+    function buildChoropleth() {
+      const counts = {};
+      ecosystem.forEach(e => {
+        const country = (e.Country || "").trim() || "Unknown";
+        counts[country] = (counts[country] || 0) + 1;
+      });
+
+      const values = Object.values(counts);
+      const max = Math.max(...values, 1);
+
+      function getColor(d) {
+        const t = d / max;
+        if (t > 0.75) return '#800026';
+        if (t > 0.5) return '#BD0026';
+        if (t > 0.25) return '#E31A1C';
+        if (t > 0) return '#FC4E2A';
+        return '#f2f2f2';
+      }
+
+      const geo = window.countries; // From geojson script
+      L.geoJSON(geo, {
+        style: function(feature) {
+          const cname = feature.properties.ADMIN || feature.properties.name || feature.properties.NAME || "Unknown";
+          const value = counts[cname] || 0;
+          return {
+            fillColor: getColor(value),
+            weight: 1,
+            opacity: 1,
+            color: 'white',
+            dashArray: '3',
+            fillOpacity: 0.7
+          };
+        },
+        onEachFeature: function(feature, layer) {
+          const cname = feature.properties.ADMIN || feature.properties.name || feature.properties.NAME || "Unknown";
+          layer.on({
+            click: () => showCountry(feature, cname),
+            mouseover: (e) => {
+              const layer = e.target;
+              layer.setStyle({ weight: 3, fillOpacity: 0.9 });
+            },
+            mouseout: (e) => {
+              const layer = e.target;
+              layer.setStyle({ weight: 1, fillOpacity: 0.7 });
+            }
+          });
+          layer.bindTooltip(`<strong>${cname}</strong><br>Organizations: ${counts[cname] || 0}`, { sticky: true });
+        }
+      }).addTo(map);
+    }
+
+    function showCountry(feature, cname) {
+      const items = ecosystem.filter(e => (e.Country || "").trim() === cname);
+      document.getElementById("countryName").innerHTML = `<strong>${cname}</strong>`;
+      document.getElementById("countryStats").innerHTML = `
+        <p><strong>Organizations:</strong> ${items.length}</p>
+        <p><strong>Key Domains:</strong> ${[...new Set(items.map(i => (i.Domain || "").trim()))].join(", ") || "N/A"}</p>
+      `;
+      document.getElementById("orgList").innerHTML = items.length ? items.map(i => `
+        <div class="list-item">
+          <strong>${(i.Name || "").trim()}</strong><br>
+          <small>${(i.Type || "").trim()} • ${(i.Domain || "").trim()}</small><br>
+          <a href="${(i.Website || "#")}" target="_blank">${(i.Website || "No website")}</a>
+        </div>
+      `).join('') : '<p style="opacity:0.7;">No organizations listed.</p>';
+
+      if (feature && feature.geometry) {
+        try {
+          const bounds = L.geoJSON(feature).getBounds();
+          map.fitBounds(bounds.pad(0.2));
+        } catch (e) { /* Ignore */ }
+      }
+    }
+  </script>
 </body>
 </html>
-
