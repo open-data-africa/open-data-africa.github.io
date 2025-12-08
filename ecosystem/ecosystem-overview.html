@@ -17,6 +17,7 @@
   nav.breadcrumb{padding:0.6rem 1rem;text-align:center;background:#fff;border-bottom:1px solid #eee}
   .controls{display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center;margin-bottom:1rem}
   .controls select,input{padding:.5rem;border-radius:6px;border:1px solid #ccc}
+  #errorMsg { color: red; text-align: center; font-weight: bold; }
 </style>
 </head>
 <body>
@@ -34,6 +35,7 @@
 </nav>
 
 <main>
+  <div id="errorMsg"></div>
   <div class="controls">
     <input id="q" placeholder="Search name or domain">
     <select id="filterCountry"><option value="">All Countries</option></select>
@@ -57,9 +59,39 @@
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-const csvPath = "datasets/Ecosystem.csv";
+const csvPath = "datasets/ecosystem.csv"; // Fixed lowercase path
 let data = [];
 
+function showError(msg) {
+  document.getElementById('errorMsg').innerText = msg;
+}
+
+Papa.parse(csvPath, {
+  download: true,
+  header: true,
+  complete: (res) => {
+    if (res.errors.length > 0) {
+      showError("CSV Error: " + res.errors[0].message + ". Check file format or path.");
+      return;
+    }
+    data = res.data.filter(r => r.Name);
+    if (data.length === 0) {
+      showError("No data found in CSV. Check headers and content.");
+      return;
+    }
+    updateStats();
+    buildFilters();
+    drawCharts(data);
+    document.getElementById('q').addEventListener('input', applyFilters);
+    document.getElementById('filterCountry').addEventListener('change', applyFilters);
+    document.getElementById('filterType').addEventListener('change', applyFilters);
+  },
+  error: (err) => {
+    showError("Failed to load CSV: " + err.message + ". Make sure datasets/ecosystem.csv exists on GitHub Pages.");
+  }
+});
+
+// Rest of the script remains the same as before (count, toSortedArray, updateStats, buildFilters, drawCharts, applyFilters)
 function count(arr, keyFn){
   const m = {};
   arr.forEach(x => {
@@ -90,7 +122,6 @@ function buildFilters(){
 }
 
 function drawCharts(filtered){
-  // domains chart
   const domains = count(filtered, d=>d.Domain);
   const domArr = toSortedArray(domains, 10);
   const ctx1 = document.getElementById('chartDomains').getContext('2d');
@@ -101,7 +132,6 @@ function drawCharts(filtered){
     options:{responsive:true,maintainAspectRatio:false}
   });
 
-  // types chart
   const types = count(filtered, d=>d.Type);
   const tArr = toSortedArray(types, 10);
   const ctx2 = document.getElementById('chartTypes').getContext('2d');
@@ -112,7 +142,6 @@ function drawCharts(filtered){
     options:{responsive:true,maintainAspectRatio:false}
   });
 
-  // countries
   const countries = count(filtered, d=>d.Country);
   const cArr = toSortedArray(countries, 20);
   const ctx3 = document.getElementById('chartCountries').getContext('2d');
@@ -136,17 +165,6 @@ function applyFilters(){
   updateStats(filtered);
   drawCharts(filtered);
 }
-
-Papa.parse(csvPath, { download:true, header:true, complete: (res)=>{
-  data = res.data.filter(r=>r.Name);
-  updateStats();
-  buildFilters();
-  drawCharts(data);
-
-  document.getElementById('q').addEventListener('input', applyFilters);
-  document.getElementById('filterCountry').addEventListener('change', applyFilters);
-  document.getElementById('filterType').addEventListener('change', applyFilters);
-}});
 </script>
 </body>
 </html>
