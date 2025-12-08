@@ -59,7 +59,7 @@
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-const csvPath = "datasets/ecosystem.csv"; // Fixed lowercase path
+const csvPath = "datasets/Ecosystem.csv"; // Fixed lowercase path
 let data = [];
 
 function showError(msg) {
@@ -87,7 +87,7 @@ Papa.parse(csvPath, {
     document.getElementById('filterType').addEventListener('change', applyFilters);
   },
   error: (err) => {
-    showError("Failed to load CSV: " + err.message + ". Make sure datasets/ecosystem.csv exists on GitHub Pages.");
+    showError("Failed to load CSV: " + err.message + ". Make sure datasets/Ecosystem.csv exists on GitHub Pages.");
   }
 });
 
