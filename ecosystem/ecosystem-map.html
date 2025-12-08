@@ -6,7 +6,7 @@
   <title>African AI Ecosystem — Interactive Map</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
-    :root { --bg:#0f172a; --card:#1e293b; --text:#e2e8f0; --accent:#60a5fa; --highlight:#3b82f6; }
+    :root { --bg:#0f172a; --card:#1e293b; --text:#e2e8f0; --accent:#60a5fa; }
     body { margin:0; font-family:'Segoe UI',sans-serif; background:var(--bg); color:var(--text); }
     header { background:linear-gradient(135deg,#1e293b,#0f172a); padding:3rem 1rem; text-align:center; }
     h1 { margin:0; font-size:2.8rem; color:var(--accent); }
@@ -14,34 +14,30 @@
 
     nav.breadcrumb { background:#1e293b; padding:1rem; text-align:center; font-size:1.1rem; }
     nav.breadcrumb a { color:var(--accent); text-decoration:none; margin:0 .8rem; }
-    nav.breadcrumb a:hover { text-decoration:underline; }
 
     main { max-width:1400px; margin:2rem auto; padding:0 1rem; display:flex; gap:2rem; }
-    #map { height:70vh; width:100%; border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,0.4); flex:1; }
-    
+    #map { height:75vh; width:100%; border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,0.5); flex:1; }
+
     .panel { width:380px; background:var(--card); padding:2rem; border-radius:16px; box-shadow:0 8px 25px rgba(0,0,0,0.3); }
     .panel h3 { margin:0 0 1.5rem; color:var(--accent); font-size:1.6rem; }
-    .panel p { margin:0.5rem 0; opacity:0.9; }
     .org-item { background:rgba(255,255,255,0.05); padding:1rem; border-radius:12px; margin:1rem 0; }
     .org-item strong { color:var(--accent); font-size:1.1rem; display:block; }
     .org-item small { opacity:0.8; font-size:0.9rem; }
     .org-item a { color:#60a5fa; text-decoration:none; font-weight:600; }
-    .org-item a:hover { text-decoration:underline; }
 
     #countryName { font-size:1.8rem; font-weight:bold; margin-bottom:1rem; color:var(--accent); }
 
-    .legend { background:rgba(255,255,255,0.05); padding:1rem; border-radius:12px; margin-top:1.5rem; font-size:0.9rem; }
-    .legend-item { display:flex; align-items:center; margin:0.6rem 0; }
-    .legend-color { width:18px; height:18px; border-radius:4px; margin-right:0.8rem; }
+    .legend { background:rgba(255,255,255,0.05); padding:1rem; border-radius:12px; margin-top:1.5rem; font-size:0.9rem; text-align:center; }
+    .legend-item { margin:0.5rem 0; }
 
-    @media (max-width:900px) { main { flex-direction:column; } .panel { width:100%; } #map { height:50vh; } }
+    @media (max-width:900px) { main { flex-direction:column; } .panel { width:100%; } #map { height:55vh; } }
   </style>
 </head>
 <body>
 
   <header>
     <h1>African AI Ecosystem</h1>
-    <p class="subtitle">Click any country to explore its AI startups, labs & hubs</p>
+    <p class="subtitle">Click the dots to explore AI activity by country</p>
   </header>
 
   <nav class="breadcrumb">
@@ -56,15 +52,14 @@
     <div id="map"></div>
 
     <div class="panel">
-      <div id="countryName">Click a country</div>
+      <div id="countryName">Click a dot</div>
       <div id="countryStats"></div>
       <h3 style="margin-top:2rem;">Organizations</h3>
       <div id="orgList"><p style="opacity:0.7; text-align:center;">Select a country to view details</p></div>
 
       <div class="legend">
-        <div class="legend-item"><div class="legend-color" style="background:#60a5fa;"></div> Hover / Selected</div>
-        <div class="legend-item"><div class="legend-color" style="background:#334155;"></div> Active AI Ecosystem</div>
-        <div class="legend-item"><div class="legend-color" style="background:#1e293b;"></div> No data yet</div>
+        <div class="legend-item">Small dot = AI activity in this country</div>
+        <div class="legend-item">Click dot → View full profile</div>
       </div>
     </div>
   </main>
@@ -80,100 +75,87 @@
     }).addTo(map);
 
     let ecosystem = [];
-    let geoLayer;
 
     Papa.parse(CSV_PATH, {
       download: true,
       header: true,
       complete: function(res) {
         ecosystem = res.data.filter(r => r.Name && r.Name.trim());
-        buildMap();
+        plotDots();
       }
     });
 
-    function buildMap() {
-      const activeCountries = [...new Set(ecosystem.map(r => (r.Country || "").trim()))].filter(Boolean);
+    function plotDots() {
+      const countryData = {};
+      ecosystem.forEach(org => {
+        const c = (org.Country || "").trim();
+        if (!c) return;
+        if (!countryData[c]) countryData[c] = { count: 0, orgs: [] };
+        countryData[c].count++;
+        countryData[c].orgs.push(org);
+      });
 
-      // Minimal Africa GeoJSON with all countries from your CSV
-      const africaGeoJSON = {
-        type: "FeatureCollection",
-        features: activeCountries.map(country => ({
-          type: "Feature",
-          properties: { ADMIN: country },
-          geometry: { type: "Polygon", coordinates: [getSimpleCoords(country)] }
-        }))
-      };
+      Object.entries(countryData).forEach(([country, data]) => {
+        const coords = getCoords(country);
+        if (!coords) return;
 
-      if (geoLayer) map.removeLayer(geoLayer);
+        const size = data.count > 3 ? 26 : data.count > 1 ? 22 : 18;
 
-      geoLayer = L.geoJSON(africaGeoJSON, {
-        style: () => ({
-          fillColor: "#334155",
-          weight: 2,
+        const marker = L.circleMarker(coords, {
+          radius: size,
+          fillColor: "#60a5fa",
+          color: "#fff",
+          weight: 3,
           opacity: 1,
-          color: "white",
-          fillOpacity: 0.6
-        }),
-        onEachFeature: (feature, layer) => {
-          const cname = feature.properties.ADMIN;
+          fillOpacity: 0.8
+        }).addTo(map);
 
-          layer.on({
-            mouseover: () => layer.setStyle({ fillColor: "#60a5fa", fillOpacity: 0.9, weight: 4 }),
-            mouseout: () => layer.setStyle({ fillColor: "#334155", fillOpacity: 0.6, weight: 2 }),
-            click: () => showCountry(cname)
-          });
+        marker.bindTooltip(`<strong>${country}</strong><br>${data.count} organization${data.count > 1 ? 's' : ''}`, {
+          permanent: false,
+          direction: "top"
+        });
 
-          const count = ecosystem.filter(o => (o.Country || "").trim() === cname).length;
-          layer.bindTooltip(`<strong>${cname}</strong><br>${count} organization${count !== 1 ? 's' : ''}`, { sticky: true });
-        }
-      }).addTo(map);
+        marker.on({
+          mouseover: () => marker.setStyle({ fillColor: "#a5b4fc", weight: 5 }),
+          mouseout: () => marker.setStyle({ fillColor: "#60a5fa", weight: 3 }),
+          click: () => showCountry(country, data.orgs, marker)
+        });
+      });
 
       map.fitBounds([[ -35, -20 ], [ 37, 55 ]]);
     }
 
-    function showCountry(cname) {
-      const items = ecosystem.filter(o => (o.Country || "").trim() === cname);
+    function showCountry(country, orgs, marker) {
+      document.getElementById("countryName").textContent = country;
+      document.getElementById("countryStats").innerHTML = `<p><strong>${orgs.length}</strong> active AI organization${orgs.length > 1 ? 's' : ''}</p>`;
 
-      document.getElementById("countryName").textContent = cname;
-      document.getElementById("countryStats").innerHTML = `
-        <p><strong>${items.length}</strong> AI organization${items.length !== 1 ? 's' : ''} active</p>
-      `;
-
-      document.getElementById("orgList").innerHTML = items.length ? items.map(o => `
+      document.getElementById("orgList").innerHTML = orgs.map(o => `
         <div class="org-item">
-          <strong>${o.Name?.trim() || "Unknown"}</strong>
-          <small>${o.Type?.trim() || ""} • ${o.Domain?.trim() || ""}</small>
+          <strong>${o.Name?.trim()}</strong>
+          <small>${o.Type?.trim()} • ${o.Domain?.trim()}</small>
           ${o.Website ? `<br><a href="${o.Website}" target="_blank">Visit Website</a>` : ""}
         </div>
-      `).join("") : "<p style='opacity:0.7; text-align:center;'>No organizations listed yet.</p>";
+      `).join("");
 
-      // Highlight selected country
-      if (geoLayer) {
-        geoLayer.eachLayer(layer => {
-          const isSelected = layer.feature.properties.ADMIN === cname;
-          layer.setStyle({
-            fillColor: isSelected ? "#60a5fa" : "#334155",
-            weight: isSelected ? 5 : 2,
-            fillOpacity: isSelected ? 0.9 : 0.6
-          });
-        });
-      }
-
-      // Zoom to country
-      const layer = geoLayer.getLayers().find(l => l.feature.properties.ADMIN === cname);
-      if (layer) map.fitBounds(layer.getBounds().pad(0.3));
+      // Zoom to the dot
+      map.setView(marker.getLatLng(), 6);
     }
 
-    // Simple coord fallback (you can expand this)
-    function getSimpleCoords(country) {
-      const coords = {
-        "Kenya": [[33.9,-4.7],[41.9,-4.7],[41.9,5.0],[33.9,5.0],[33.9,-4.7]],
-        "Ethiopia": [[32.9,3.4],[48.0,3.4],[48.0,14.8],[32.9,14.8],[32.9,3.4]],
-        "Nigeria": [[2.6,4.2],[14.7,4.2],[14.7,13.9],[2.6,13.9],[2.6,4.2]],
-        "Ghana": [[-3.3,4.7],[1.2,4.7],[1.2,11.2],[-3.3,11.2],[-3.3,4.7]],
-        "Pan-Africa": [[-20,-35],[55,-35],[55,37],[-20,37],[-20,-35]]
+    // Country → center coordinates
+    function getCoords(country) {
+      const map = {
+        "Kenya": [-1.2921, 36.8219],
+        "Ethiopia": [8.9806, 38.7578],
+        "Nigeria": [9.0765, 7.3986],
+        "Ghana": [7.9465, -1.0232],
+        "South Africa": [-30.5595, 22.9375],
+        "Rwanda": [-1.9403, 29.8739],
+        "Uganda": [1.3733, 32.2903],
+        "Egypt": [26.8206, 30.8025],
+        "Morocco": [31.7917, -7.0926],
+        "Pan-Africa": [6, 20]
       };
-      return coords[country] || [[-20,-35],[55,-35],[55,37],[-20,37],[-20,-35]];
+      return map[country] || null;
     }
   </script>
 </body>
