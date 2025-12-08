@@ -1,1 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Ecosystem — Readiness</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  body{font-family:Segoe UI,Arial,sans-serif;margin:0;background:#f6f7fa}
+  header{background:#330000;color:#fff;padding:1rem;text-align:center}
+  main{max-width:1100px;margin:1.5rem auto;padding:1rem}
+  table{width:100%;border-collapse:collapse;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,.06)}
+  th,td{padding:.8rem;border-bottom:1px solid #eee;text-align:left}
+  th{background:#fafafa}
+  .score{font-weight:700;color:#333}
+</style>
+</head>
+<body>
+<header><h1>AI Readiness Scoreboard (by country)</h1></header>
+<main>
+  <p style="color:#555">A simple composite readiness score using internal ecosystem signals. Use as a starting point — we can integrate external indicators later.</p>
+  <table id="scoreTable">
+    <thead><tr><th>Rank</th><th>Country</th><th>Organisations</th><th>Research/Ed</th><th>Readiness Score</th></tr></thead>
+    <tbody></tbody>
+  </table>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+<script>
+Papa.parse('datasets/Ecosystem.csv',{download:true,header:true,complete:(res)=>{
+  const rows = res.data.filter(r=>r.Name);
+  const countries = {};
+  rows.forEach(r=>{
+    const c = r.Country || 'Unknown';
+    countries[c] = countries[c] || {all:0, research:0};
+    countries[c].all++;
+    const t = (r.Type||'').toLowerCase();
+    if(t.includes('research') || t.includes('education') || t.includes('institute') || t.includes('lab')) countries[c].research++;
+  });
+  const results = Object.entries(countries).map(([country,obj])=>{
+    const all = obj.all;
+    const research = obj.research;
+    // simple normalized score: 0.6*norm(all) + 0.4*norm(research)
+    return {country, all, research};
+  });
+  // normalize
+  const maxAll = Math.max(...results.map(r=>r.all));
+  const maxRes = Math.max(...results.map(r=>r.research));
+  results.forEach(r=>{
+    const s = ( (0.6*(r.all/(maxAll||1))) + (0.4*(r.research/(maxRes||1))) )*100;
+    r.score = Math.round(s);
+  });
+  results.sort((a,b)=>b.score-a.score);
+  const tbody = document.querySelector('#scoreTable tbody');
+  tbody.innerHTML = results.map((r,i)=>`<tr><td>${i+1}</td><td>${r.country}</td><td>${r.all}</td><td>${r.research}</td><td class="score">${r.score}</td></tr>`).join('');
+}});
+</script>
+</body>
+</html>
 
