@@ -45,4 +45,155 @@
     <a href="ecosystem-overview.html">Overview</a> •
     <a href="ecosystem-map.html">Map</a> •
     <a href="ecosystem-readiness.html">Readiness</a> •
-    <a href="ecosystem-network
+    <a href="ecosystem-network.html">Network</a> •
+    <a href="ecosystem-investor.html">Investor Briefs</a>
+  </nav>
+
+  <main>
+    <div id="error" style="display:none;"></div>
+
+    <div class="controls">
+      <input type="text" id="search" placeholder="Search by name, domain, description..." />
+      <select id="countryFilter"><option value="">All Countries</option></select>
+      <select id="typeFilter"><option value="">All Types</option></select>
+      <select id="domainFilter"><option value="">All Domains</option></select>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card"><h3 id="total">0</h3><p>Total Organisations</p></div>
+      <div class="stat-card"><h3 id="countries">0</h3><p>Countries</p></div>
+      <div class="stat-card"><h3 id="startups">0</h3><p>Startups</p></div>
+      <div class="stat-card"><h3 id="domains">0</h3><p>Domains</p></div>
+    </div>
+
+    <div class="charts-grid">
+      <div class="chart-container"><canvas id="byDomain"></canvas></div>
+      <div class="chart-container"><canvas id="byType"></canvas></div>
+      <div class="chart-container" style="grid-column:1/-1;"><canvas id="byCountry"></canvas></div>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script>
+    const CSV_PATH = "https://open-data-africa.github.io/datasets/Ecosystem.csv";
+
+    const rainbowColors = [
+      "#FF6B6B","#4ECDC4","#45B7D1","#96CEB4","#FECA57","#FF9FF3","#54A0FF","#48DBFB",
+      "#1DD1A1","#FF9F43","#EE5A24","#C56CF0","#FFC048","#FF6348","#A55EEA","#32CCBC",
+      "#FFA502","#FF5252","#667EEA","#B2FF59","#FF8A80","#0BE881","#FF3838","#33D9B2"
+    ];
+
+    function getColors(count) {
+      return Array.from({length: count}, (_, i) => rainbowColors[i % rainbowColors.length]);
+    }
+
+    let data = [];
+    const errorDiv = document.getElementById("error");
+
+    function showError(msg) {
+      errorDiv.innerHTML = `Error: ${msg}`;
+      errorDiv.style.display = "block";
+    }
+
+    Papa.parse(CSV_PATH, {
+      download: true,
+      header: true,
+      dynamicTyping: false,
+      trimHeaders: true,
+      skipEmptyLines: true,
+      complete: function(res) {
+        if (res.errors.length) { showError("CSV parsing error: " + res.errors.map(e => e.message).join("<br>")); return; }
+        data = res.data.filter(r => r && r.Name && r.Name.trim().length > 0);
+        if (data.length === 0) { showError("No valid rows found."); return; }
+        populateFilters();
+        updateDashboard(data);
+      },
+      error: function() { showError("Failed to download CSV."); }
+    });
+
+    function populateFilters() {
+      const uniq = (arr) => [...new Set(arr)].filter(Boolean).sort();
+      ["countryFilter", "typeFilter", "domainFilter"].forEach(id => {
+        const key = id.replace("Filter", "");
+        const values = uniq(data.map(r => r[key] || "Unknown"));
+        const sel = document.getElementById(id);
+        values.forEach(v => sel.add(new Option(v, v)));
+      });
+    }
+
+    function updateDashboard(set) {
+      document.getElementById("total").textContent = set.length;
+      document.getElementById("countries").textContent = [...new Set(set.map(r=>r.Country || "Unknown"))].filter(v=>v!=="Unknown").length;
+      document.getElementById("startups").textContent = set.filter(r=>r.Type&&r.Type.toLowerCase().includes("startup")).length;
+      document.getElementById("domains").textContent = [...new Set(set.map(r=>r.Domain || "Unknown"))].filter(v=>v!=="Unknown").length;
+
+      draw("byDomain", "bar", count(set,"Domain"), "By Domain", getColors);
+      draw("byType", "doughnut", count(set,"Type"), "By Type", getColors);
+      draw("byCountry", "bar", count(set,"Country"), "By Country", getColors);
+    }
+
+    function count(arr, key) {
+      const map = {};
+      arr.forEach(i => {
+        const v = (i[key] || "").trim() || "Unknown";
+        map[v] = (map[v] || 0) + 1;
+      });
+      return Object.entries(map)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, key === "Country" ? 20 : 12);
+    }
+
+    let charts = {};
+    function draw(id, type, dataArr, title, colorFn) {
+      const ctx = document.getElementById(id).getContext("2d");
+      if (charts[id]) charts[id].destroy();
+      const colors = colorFn(dataArr.length);
+
+      charts[id] = new Chart(ctx, {
+        type,
+        data: {
+          labels: dataArr.map(d => d[0]),
+          datasets: [{
+            data: dataArr.map(d => d[1]),
+            backgroundColor: colors,
+            borderColor: "rgba(255,255,255,0.1)",
+            borderWidth: type === "doughnut" ? 4 : 1
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: type !== "doughnut", labels: { color: "#e2e8f0" } },
+            title: { display: true, text: title, color: "#e2e8f0", font: { size: 18, weight: "bold" } }
+          },
+          animation: { duration: 1500 }
+        }
+      });
+    }
+
+    ["search","countryFilter","typeFilter","domainFilter"].forEach(id => {
+      const el = document.getElementById(id);
+      el.addEventListener("input", filter);
+      el.addEventListener("change", filter);
+    });
+
+    function filter() {
+      const q = document.getElementById("search").value.toLowerCase();
+      const c = document.getElementById("countryFilter").value;
+      const t = document.getElementById("typeFilter").value;
+      const d = document.getElementById("domainFilter").value;
+
+      const filtered = data.filter(i => {
+        const match = !q || [i.Name,i.Description,i.Domain,i.Type,i.Country].some(f => f && f.toString().toLowerCase().includes(q));
+        const valC = (i.Country || "").trim() || "Unknown";
+        const valT = (i.Type || "").trim() || "Unknown";
+        const valD = (i.Domain || "").trim() || "Unknown";
+        return match && (!c || valC === c) && (!t || valT === t) && (!d || valD === d);
+      });
+      updateDashboard(filtered);
+    }
+  </script>
+</body>
+</html>
