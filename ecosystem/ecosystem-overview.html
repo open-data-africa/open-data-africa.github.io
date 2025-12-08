@@ -83,6 +83,11 @@
       return Array.from({length: count}, (_, i) => rainbowColors[i % rainbowColors.length]);
     }
 
+    // THIS IS THE KEY FIX — never let undefined or empty string slip through
+    function clean(value) {
+      return (value === null || value === undefined || value === "") ? "Unknown" : String(value).trim();
+    }
+
     let data = [];
     const errorDiv = document.getElementById("error");
 
@@ -108,12 +113,12 @@
     });
 
     function populateFilters() {
-      const uniq = (arr) => [...new Set(arr.map(v => (v || "").trim()).filter(Boolean))].sort();
+      const uniq = (arr) => [...new Set(arr.map(v => clean(v)).filter(v => v !== "Unknown"))].sort();
       const countries = uniq(data.map(r => r.Country));
       const types = uniq(data.map(r => r.Type));
       const domains = uniq(data.map(r => r.Domain));
 
-      [ ["countryFilter", countries], ["typeFilter", types], ["domainFilter", domains] ].forEach(([id, values]) => {
+      [["countryFilter", countries], ["typeFilter", types], ["domainFilter", domains]].forEach(([id, values]) => {
         const sel = document.getElementById(id);
         values.forEach(v => sel.add(new Option(v, v)));
       });
@@ -121,9 +126,9 @@
 
     function updateDashboard(set) {
       document.getElementById("total").textContent = set.length;
-      document.getElementById("countries").textContent = [...new Set(set.map(r => r.Country || "").filter(Boolean))].length;
-      document.getElementById("startups").textContent = set.filter(r => (r.Type || "").toLowerCase().includes("startup")).length;
-      document.getElementById("domains").textContent = [...new Set(set.map(r => r.Domain || "").filter(Boolean))].length;
+      document.getElementById("countries").textContent = [...new Set(set.map(r => clean(r.Country)))].filter(v => v !== "Unknown").length;
+      document.getElementById("startups").textContent = set.filter(r => clean(r.Type).toLowerCase().includes("startup")).length;
+      document.getElementById("domains").textContent = [...new Set(set.map(r => clean(r.Domain)))].filter(v => v !== "Unknown").length;
 
       draw("byDomain", "bar", count(set,"Domain"), "By Domain", getColors);
       draw("byType", "doughnut", count(set,"Type"), "By Type", getColors);
@@ -133,10 +138,12 @@
     function count(arr, key) {
       const map = {};
       arr.forEach(i => {
-        const v = (i[key] || "").trim() || "Unknown";
+        const v = clean(i[key]);   // ← This guarantees no "undefined"
         map[v] = (map[v] || 0) + 1;
       });
-      return Object.entries(map).sort((a, b) => b[1] - a[1]).slice(0, key === "Country" ? 20 : 12);
+      return Object.entries(map)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, key === "Country" ? 20 : 12);
     }
 
     let charts = {};
@@ -171,10 +178,10 @@
       const d = document.getElementById("domainFilter").value;
 
       const filtered = data.filter(i => {
-        const match = !q || [i.Name,i.Description,i.Domain,i.Type,i.Country].some(f => f && f.toString().toLowerCase().includes(q));
-        const valC = (i.Country || "").trim();
-        const valT = (i.Type || "").trim();
-        const valD = (i.Domain || "").trim();
+        const match = !q || Object.values(i).some(f => f && String(f).toLowerCase().includes(q));
+        const valC = clean(i.Country);
+        const valT = clean(i.Type);
+        const valD = clean(i.Domain);
         return match && (!c || valC === c) && (!t || valT === t) && (!d || valD === d);
       });
       updateDashboard(filtered);
