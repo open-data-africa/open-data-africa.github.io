@@ -76,16 +76,14 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <script>
-    // THIS IS YOUR EXACT CORRECT PATH
-    const CSV_PATH = "datasets/Ecosystem.csv";   // ← Already perfect!
+    // BULLETPROOF ABSOLUTE PATH FROM YOUR LIVE SITE
+    const CSV_PATH = "https://open-data-africa.github.io/datasets/Ecosystem.csv";
 
     let data = [];
     const errorDiv = document.getElementById("error");
 
     function showError(msg) {
-      errorDiv.innerHTML = `Error: ${msg}<br><br>
-        Your CSV must be at: <code>${window.location.origin}/datasets/Ecosystem.csv</code><br>
-        Open that link in a new tab — it should download the CSV.`;
+      errorDiv.innerHTML = `Error: ${msg}`;
       errorDiv.style.display = "block";
     }
 
@@ -100,11 +98,10 @@
         updateDashboard(data);
       },
       error: function() {
-        showError("Cannot load the file. Make sure <code>datasets/Ecosystem.csv</code> exists and GitHub Pages is enabled.");
+        showError("Cannot load the file. Your URL works, but try refreshing or check console (F12).");
       }
     });
 
-    // (The rest of the script — filters, charts, etc. — is unchanged and perfect)
     function populateFilters() {
       const uniq = (arr) => [...new Set(arr)].filter(Boolean).sort();
       ["countryFilter", "typeFilter", "domainFilter"].forEach(id => {
