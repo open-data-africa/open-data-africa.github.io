@@ -14,7 +14,6 @@
 
     nav.breadcrumb { background:#1e293b; padding:1rem; text-align:center; font-size:1.1rem; }
     nav.breadcrumb a { color:var(--accent); text-decoration:none; margin:0 .8rem; }
-    nav.breadcrumb a:hover { text-decoration:underline; }
 
     main { max-width:1400px; margin:2rem auto; padding:0 1rem; }
 
@@ -29,7 +28,7 @@
     .chart-container { background:var(--card); padding:1.5rem; border-radius:16px; box-shadow:0 8px 25px rgba(0,0,0,.3); }
     canvas { border-radius:12px; }
 
-    #error { background:#fee2e2; color:#991b1b; padding:1.5rem; border-radius:12px; text-align:center; margin:2rem; font-weight:bold; }
+    #error { background:#fee2e2; color:#991b1b; padding:1.5rem; border-radius:12px; text-align:center; margin:2rem; font-weight:bold; display:none; }
 
     @media (max-width:900px) { .charts-grid { grid-template-columns:1fr; } }
   </style>
@@ -50,7 +49,7 @@
   </nav>
 
   <main>
-    <div id="error" style="display:none;"></div>
+    <div id="error"></div>
 
     <div class="controls">
       <input type="text" id="search" placeholder="Search by name, domain, description..." />
@@ -78,12 +77,7 @@
 
   <script>
     const CSV_PATH = "https://open-data-africa.github.io/datasets/Ecosystem.csv";
-
-    const rainbowColors = [
-      "#FF6B6B","#4ECDC4","#45B7D1","#96CEB4","#FECA57","#FF9FF3","#54A0FF","#48DBFB",
-      "#1DD1A1","#FF9F43","#EE5A24","#C56CF0","#FFC048","#FF6348","#A55EEA","#32CCBC",
-      "#FFA502","#FF5252","#667EEA","#B2FF59","#FF8A80","#0BE881","#FF3838","#33D9B2"
-    ];
+    const rainbowColors = ["#FF6B6B","#4ECDC4","#45B7D1","#96CEB4","#FECA57","#FF9FF3","#54A0FF","#48DBFB","#1DD1A1","#FF9F43","#EE5A24","#C56CF0","#FFC048","#FF6348","#A55EEA","#32CCBC","#FFA502","#FF5252","#667EEA","#B2FF59","#FF8A80"];
 
     function getColors(count) {
       return Array.from({length: count}, (_, i) => rainbowColors[i % rainbowColors.length]);
@@ -114,10 +108,12 @@
     });
 
     function populateFilters() {
-      const uniq = (arr) => [...new Set(arr)].filter(Boolean).sort();
-      ["countryFilter", "typeFilter", "domainFilter"].forEach(id => {
-        const key = id.replace("Filter", "");
-        const values = uniq(data.map(r => r[key] || "Unknown"));
+      const uniq = (arr) => [...new Set(arr.map(v => (v || "").trim()).filter(Boolean))].sort();
+      const countries = uniq(data.map(r => r.Country));
+      const types = uniq(data.map(r => r.Type));
+      const domains = uniq(data.map(r => r.Domain));
+
+      [ ["countryFilter", countries], ["typeFilter", types], ["domainFilter", domains] ].forEach(([id, values]) => {
         const sel = document.getElementById(id);
         values.forEach(v => sel.add(new Option(v, v)));
       });
@@ -125,9 +121,9 @@
 
     function updateDashboard(set) {
       document.getElementById("total").textContent = set.length;
-      document.getElementById("countries").textContent = [...new Set(set.map(r=>r.Country || "Unknown"))].filter(v=>v!=="Unknown").length;
-      document.getElementById("startups").textContent = set.filter(r=>r.Type&&r.Type.toLowerCase().includes("startup")).length;
-      document.getElementById("domains").textContent = [...new Set(set.map(r=>r.Domain || "Unknown"))].filter(v=>v!=="Unknown").length;
+      document.getElementById("countries").textContent = [...new Set(set.map(r => r.Country || "").filter(Boolean))].length;
+      document.getElementById("startups").textContent = set.filter(r => (r.Type || "").toLowerCase().includes("startup")).length;
+      document.getElementById("domains").textContent = [...new Set(set.map(r => r.Domain || "").filter(Boolean))].length;
 
       draw("byDomain", "bar", count(set,"Domain"), "By Domain", getColors);
       draw("byType", "doughnut", count(set,"Type"), "By Type", getColors);
@@ -140,9 +136,7 @@
         const v = (i[key] || "").trim() || "Unknown";
         map[v] = (map[v] || 0) + 1;
       });
-      return Object.entries(map)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, key === "Country" ? 20 : 12);
+      return Object.entries(map).sort((a, b) => b[1] - a[1]).slice(0, key === "Country" ? 20 : 12);
     }
 
     let charts = {};
@@ -150,18 +144,9 @@
       const ctx = document.getElementById(id).getContext("2d");
       if (charts[id]) charts[id].destroy();
       const colors = colorFn(dataArr.length);
-
       charts[id] = new Chart(ctx, {
         type,
-        data: {
-          labels: dataArr.map(d => d[0]),
-          datasets: [{
-            data: dataArr.map(d => d[1]),
-            backgroundColor: colors,
-            borderColor: "rgba(255,255,255,0.1)",
-            borderWidth: type === "doughnut" ? 4 : 1
-          }]
-        },
+        data: { labels: dataArr.map(d => d[0]), datasets: [{ data: dataArr.map(d => d[1]), backgroundColor: colors }] },
         options: {
           responsive: true,
           plugins: {
@@ -187,9 +172,9 @@
 
       const filtered = data.filter(i => {
         const match = !q || [i.Name,i.Description,i.Domain,i.Type,i.Country].some(f => f && f.toString().toLowerCase().includes(q));
-        const valC = (i.Country || "").trim() || "Unknown";
-        const valT = (i.Type || "").trim() || "Unknown";
-        const valD = (i.Domain || "").trim() || "Unknown";
+        const valC = (i.Country || "").trim();
+        const valT = (i.Type || "").trim();
+        const valD = (i.Domain || "").trim();
         return match && (!c || valC === c) && (!t || valT === t) && (!d || valD === d);
       });
       updateDashboard(filtered);
