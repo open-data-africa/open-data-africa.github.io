@@ -3,117 +3,157 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>African AI Ecosystem — Network</title>
-  <script src="https://unpkg.com/vis-network@9.1.2/standalone/umd/vis-network.min.js"></script>
+  <title>African AI Ecosystem — Directory</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
     :root { --bg:#0f172a; --card:#1e293b; --text:#e2e8f0; --accent:#60a5fa; }
-    body { margin:0; font-family:'Segoe UI',sans-serif; background:var(--bg); color:var(--text); height:100vh; }
+    body { margin:0; font-family:'Segoe UI',sans-serif; background:var(--bg); color:var(--text); }
     header { background:linear-gradient(135deg,#1e293b,#0f172a); padding:3rem 1rem; text-align:center; }
     h1 { margin:0; font-size:2.8rem; color:var(--accent); }
     nav { background:#1e293b; padding:1rem; text-align:center; }
     nav a { color:var(--accent); margin:0 .8rem; text-decoration:none; }
-    #network { height:80vh; width:100%; border-radius:16px; background:#0f172a; }
-    .details { max-width:700px; margin:2rem auto; background:var(--card); padding:2rem; border-radius:16px; display:none; }
-    .org { background:rgba(255,255,255,0.05); padding:1rem; border-radius:12px; margin:1rem 0; }
-    .org strong { color:var(--accent); }
+
+    .container { max-width:1400px; margin:2rem auto; padding:0 1rem; display:grid; grid-template-columns:1fr 400px; gap:2rem; }
+    table { width:100%; border-collapse:collapse; background:var(--card); border-radius:16px; overflow:hidden; }
+    th { background:#334155; padding:1.2rem; text-align:left; cursor:pointer; }
+    th:hover { background:#3b4a66; }
+    td { padding:1rem; border-bottom:1px solid #334155; }
+    tr:hover { background:rgba(96,165,250,0.1); }
+    a { color:#60a5fa; text-decoration:none; }
+    .tag { background:rgba(96,165,250,0.2); padding:0.3rem 0.8rem; border-radius:20px; font-size:0.8rem; }
+
+    #map { height:500px; border-radius:16px; background:#1e293b; }
+    .controls { text-align:center; margin:1rem 0; }
+    .controls input, select { padding:0.8rem; border-radius:8px; border:none; background:#334155; color:white; min-width:200px; }
+
+    @media (max-width:1000px) { .container { grid-template-columns:1fr; } #map { height:300px; } }
   </style>
 </head>
 <body>
 
   <header>
     <h1>African AI Ecosystem</h1>
-    <p style="opacity:0.9;">Interactive Network — Click any country to explore</p>
+    <p style="opacity:0.9;">Directory — All startups, labs & hubs in one place</p>
   </header>
 
   <nav>
     <a href="ecosystem-overview.html">Overview</a> •
     <a href="ecosystem-map.html">Map</a> •
     <a href="ecosystem-readiness.html">Readiness</a> •
-    <a href="ecosystem-network.html">Network</a> •
+    <a href="ecosystem-directory.html">Directory</a> •
     <a href="ecosystem-investor.html">Investor Briefs</a>
   </nav>
 
-  <div id="network"></div>
-
-  <div class="details" id="details">
-    <h2 id="title" style="color:var(--accent);"></h2>
-    <div id="orgs"></div>
+  <div class="controls">
+    <input type="text" id="search" placeholder="Search name, domain, country..." />
+    <select id="typeFilter"><option value="">All Types</option></select>
+    <select id="countryFilter"><option value="">All Countries</option></select>
   </div>
 
+  <div class="container">
+    <table id="table">
+      <thead>
+        <tr>
+          <th onclick="sortTable(0)">Name</th>
+          <th onclick="sortTable(1)">Type</th>
+          <th onclick="sortTable(2)">Domain</th>
+          <th onclick="sortTable(3)">Country</th>
+          <th>Website</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+
+    <div id="map"></div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
   <script>
     const CSV_PATH = "https://open-data-africa.github.io/datasets/Ecosystem.csv";
+    let allData = [];
+    const map = L.map('map').setView([6, 20], 3);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+    const markers = L.layerGroup().addTo(map);
+
+    const countryCoords = {
+      "Kenya": [-1.2921, 36.8219], "Ethiopia": [8.9806, 38.7578], "Nigeria": [9.0765, 7.3986],
+      "Ghana": [7.9465, -1.0232], "South Africa": [-30.5595, 22.9375], "Rwanda": [-1.9403, 29.8739],
+      "Cameroon": [3.8480, 11.5021], "Tunisia": [36.8190, 10.1658], "Egypt": [26.8206, 30.8025],
+      "Pan-Africa": [6, 20]
+    };
 
     Papa.parse(CSV_PATH, {
       download: true,
       header: true,
       complete: function(res) {
-        const data = res.data.filter(r => r.Name && r.Name.trim());
-
-        const countryMap = {};
-        data.forEach(org => {
-          const c = (org.Country || "Other").trim();
-          if (!countryMap[c]) countryMap[c] = { orgs: [], types: {} };
-          countryMap[c].orgs.push(org);
-          const t = (org.Type || "Other").trim();
-          countryMap[c].types[t] = (countryMap[c].types[t] || 0) + 1;
-        });
-
-        const nodes = [];
-        const edges = [];
-
-        Object.entries(countryMap).forEach(([country, info], i) => {
-          const dominantType = Object.entries(info.types).sort((a,b) => b[1]-a[1])[0][0];
-          const color = {
-            "Startup": "#FF6B6B",
-            "Research Lab": "#A55EEA",
-            "Research Institute": "#C56CF0",
-            "Platform": "#4ECDC4",
-            "Community": "#96CEB4",
-            "Innovation Hub": "#FECA57",
-            "Education Institute": "#96CEB4",
-            "Program": "#FF9FF3"
-          }[dominantType] || "#54A0FF";
-
-          nodes.push({
-            id: country,
-            label: `${country}\n${info.orgs.length} org${info.orgs.length>1?'s':''}`,
-            size: 25 + info.orgs.length * 12,
-            color: { background: color, border: "#fff", highlight: { background: "#a5b4fc" } },
-            font: { color: "#e2e8f0", size: 16, strokeWidth: 4, strokeColor: "#0f172a" },
-            shape: "dot",
-            orgs: info.orgs
-          });
-        });
-
-        const container = document.getElementById("network");
-        const dataNet = { nodes: new vis.DataSet(nodes), edges: new vis.DataSet(edges) };
-
-        new vis.Network(container, dataNet, {
-          physics: { enabled: false },
-          layout: { improvedLayout: true },
-          nodes: { shape: "dot", font: { align: "center" } },
-          interaction: { hover: true, zoomView: true, dragView: true }
-        }).on("click", params => {
-          if (params.nodes.length) {
-            const country = params.nodes[0];
-            const info = countryMap[country];
-            document.getElementById("title").textContent = `${country} — ${info.orgs.length} organization${info.orgs.length>1?'s':''}`;
-            document.getElementById("orgs").innerHTML = info.orgs.map(o => `
-              <div class="org">
-                <strong>${o.Name}</strong><br>
-                <small>${o.Type} • ${o.Domain}</small><br>
-                ${o.Website ? `<a href="${o.Website}" target="_blank">Visit Website</a>` : ""}
-              </div>
-            `).join("");
-            document.getElementById("details").style.display = "block";
-          } else {
-            document.getElementById("details").style.display = "none";
-          }
-        });
+        allData = res.data.filter(r => r.Name && r.Name.trim());
+        populateFilters();
+        renderTable(allData);
+        plotMap(allData);
       }
     });
+
+    function renderTable(data) {
+      const tbody = document.getElementById("tbody");
+      tbody.innerHTML = data.map(o => `
+        <tr>
+          <td><strong>${o.Name}</strong></td>
+          <td><span class="tag">${o.Type}</span></td>
+          <td>${o.Domain}</td>
+          <td>${o.Country}</td>
+          <td><a href="${o.Website}" target="_blank">Visit</a></td>
+        </tr>
+      `).join("");
+    }
+
+    function plotMap(data) {
+      markers.clearLayers();
+      const count = {};
+      data.forEach(o => {
+        const c = (o.Country || "").trim();
+        if (c && countryCoords[c]) count[c] = (count[c] || 0) + 1;
+      });
+      Object.entries(count).forEach(([c, n]) => {
+        const [lat, lng] = countryCoords[c];
+        L.circleMarker([lat, lng], {
+          radius: Math.min(20, 8 + n * 3),
+          color: "#fff", weight: 3, fillColor: "#60a5fa", fillOpacity: 0.8
+        }).addTo(markers).bindTooltip(`${c}: ${n} org${n>1?'s':''}`);
+      });
+    }
+
+    function populateFilters() {
+      const types = [...new Set(allData.map(r => r.Type))].filter(Boolean).sort();
+      const countries = [...new Set(allData.map(r => r.Country))].filter(Boolean).sort();
+      document.getElementById("typeFilter").innerHTML += types.map(t => `<option>${t}</option>`).join("");
+      document.getElementById("countryFilter").innerHTML += countries.map(c => `<option>${c}</option>`).join("");
+    }
+
+    document.getElementById("search").addEventListener("input", filter);
+    document.getElementById("typeFilter").addEventListener("change", filter);
+    document.getElementById("countryFilter").addEventListener("change", filter);
+
+    function filter() {
+      const q = document.getElementById("search").value.toLowerCase();
+      const type = document.getElementById("typeFilter").value;
+      const country = document.getElementById("countryFilter").value;
+
+      const filtered = allData.filter(o => {
+        const match = !q || Object.values(o).some(v => v && v.toLowerCase().includes(q));
+        const tMatch = !type || o.Type === type;
+        const cMatch = !country || o.Country === country;
+        return match && tMatch && cMatch;
+      });
+
+      renderTable(filtered);
+      plotMap(filtered);
+    }
+
+    function sortTable(n) {
+      // Simple table sort (add if you want)
+    }
   </script>
 </body>
 </html>
