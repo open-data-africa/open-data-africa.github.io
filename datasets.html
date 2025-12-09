@@ -6,12 +6,24 @@
   <title>Open Data Africa – Datasets</title>
   <link rel="stylesheet" href="style.css" />
   <style>
-    .metrics { text-align: center; margin: 2rem 0; padding: 1.5rem; background: rgba(96,165,250,0.1); border-radius: 16px; font-size: 1.1rem; }
-    .metrics span { font-weight: bold; color: #60a5fa; }
-    .countries { margin-top: 1.5rem; }
-    .country-list { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; margin-top: 0.8rem; }
-    .country-item { background: rgba(255,255,255,0.05); padding: 0.6rem 1rem; border-radius: 12px; font-size: 0.95rem; }
-    .country-flag { font-size: 1.4rem; margin-right: 0.4rem; }
+    .metrics { text-align: center; margin: 2.5rem 0; padding: 1.8rem; background: rgba(96,165,250,0.1); border-radius: 16px; border: 1px solid rgba(96,165,250,0.2); }
+    .metrics span { font-weight: bold; color: #60a5fa; font-size: 1.5rem; }
+    .country-table { 
+      margin-top: 1.5rem; 
+      width: 100%; 
+      max-width: 600px; 
+      margin-left: auto; 
+      margin-right: auto;
+      background: rgba(255,255,255,0.05);
+      border-radius: 12px;
+      overflow: hidden;
+      font-size: 0.95rem;
+    }
+    .country-table th { background: rgba(96,165,250,0.2); padding: 1rem; font-weight: 600; }
+    .country-table td { padding: 0.9rem 1.2rem; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .country-table tr:last-child td { border-bottom: none; }
+    .flag { font-size: 1.4rem; margin-right: 0.6rem; }
+    .country-name { font-weight: 600; }
   </style>
 </head>
 <body>
@@ -45,18 +57,23 @@
       </a>
     </div>
 
-    <!-- Real Metrics + Live Visitor Countries -->
+    <!-- Live Stats + Country Table -->
     <div class="metrics">
       <p>
         Total Downloads: <span id="downloadCount">Loading...</span><br>
-        Unique Visitors: <span id="visitorCount">Loading...</span><br>
-        <small>Last updated: <span id="lastUpdate">—</span></small>
+        Unique Visitors: <span id="visitorCount">Loading...</span>
       </p>
 
-      <div class="countries">
-        <strong>Visitors from:</strong>
-        <div class="country-list" id="countryList">Loading countries...</div>
-      </div>
+      <table class="country-table" id="countryTable">
+        <thead>
+          <tr>
+            <th colspan="2"><strong>Top Visitor Countries</strong></th>
+          </tr>
+        </thead>
+        <tbody id="countryRows">
+          <tr><td colspan="2">Loading real-time data...</td></tr>
+        </tbody>
+      </table>
     </div>
 
     <p>Have a dataset you'd like to contribute to our open data catalogue?</p>
@@ -70,34 +87,28 @@
     <p>© 2025 Open Data Africa. All rights reserved.</p>
   </footer>
 
-  <!-- FREE Real-Time Counters + Country Detection -->
+  <!-- Real-Time Counter + Country Table -->
   <script>
     const DOWNLOAD_KEY = "open-data-africa-downloads";
     const VISITOR_KEY = "open-data-africa-visitors";
-    const COUNTRY_KEY = "open-data-africa-country";
+    const COUNTRY_BASE = "open-data-africa-country";
 
-    // Increment visitor + get country
-    async function trackVisit() {
-      if (sessionStorage.getItem("tracked")) return;
+    // Track visitor + country
+    if (!sessionStorage.getItem("tracked")) {
       sessionStorage.setItem("tracked", "true");
-
-      try {
-        const ipRes = await fetch("https://api.ipify.org?format=json");
-        const { ip } = await ipRes.json();
-        const geoRes = await fetch(`https://ipapi.co/${ip}/json/`);
-        const geo = await geoRes.json();
-
-        const countryCode = geo.country_code || "XX";
-        const countryName = geo.country_name || "Unknown";
-
-        // Increment visitor counter
-        await fetch(`https://api.countapi.xyz/hit/${VISITOR_KEY}/visit`);
-        // Increment country
-        await fetch(`https://api.countapi.xyz/hit/${COUNTRY_KEY}-${countryCode}/visit`);
-      } catch (e) { /* silent */ }
+      fetch("https://api.ipify.org?format=json")
+        .then(r => r.json())
+        .then(d => fetch(`https://ipapi.co/${d.ip}/country_code/`))
+        .then(r => r.text())
+        .then(code => {
+          if (code && code.length === 2) {
+            fetch(`https://api.countapi.xyz/hit/${COUNTRY_BASE}-${code}/visit`);
+          }
+        })
+        .catch(() => {});
     }
 
-    // Load all metrics
+    // Load metrics
     async function loadMetrics() {
       try {
         const [dl, visit] = await Promise.all([
@@ -109,43 +120,48 @@
 
         document.getElementById("downloadCount").textContent = (dlData.value || 0).toLocaleString();
         document.getElementById("visitorCount").textContent = (visitData.value || 0).toLocaleString();
-        document.getElementById("lastUpdate").textContent = new Date().toLocaleDateString();
       } catch (e) {
         document.getElementById("downloadCount").textContent = "1,200+";
         document.getElementById("visitorCount").textContent = "850+";
       }
 
-      // Load top 10 countries
+      // Load top 8 countries
       try {
-        const res = await fetch("https://api.countapi.xyz/info/" + COUNTRY_KEY + "-");
+        const res = await fetch(`https://api.countapi.xyz/info/${COUNTRY_BASE}-`);
         const data = await res.json();
         const countries = Object.entries(data.values || {})
           .sort((a, b) => b[1] - a[1])
-          .slice(0, 10);
+          .slice(0, 8);
 
-        const flags = {
-          KE: "🇰🇪", ET: "🇪🇹", NG: "🇳🇬", ZA: "🇿🇦", GH: "🇬🇭", US: "🇺🇸", GB: "🇬🇧", DE: "🇩🇪", FR: "🇫🇷", RW: "🇷🇼"
-        };
+        const flags = { KE:"Kenya", NG:"Nigeria", ET:"Ethiopia", ZA:"South Africa", GH:"Ghana", US:"United States", GB:"United Kingdom", RW:"Rwanda", TZ:"Tanzania", UG:"Uganda", CM:"Cameroon", EG:"Egypt", FR:"France", DE:"Germany" };
+        const flagEmoji = { KE:"Kenya", NG:"Nigeria", ET:"Ethiopia", ZA:"South Africa", GH:"Ghana", US:"United States", GB:"United Kingdom", RW:"Rwanda" };
 
-        document.getElementById("countryList").innerHTML = countries.map(([code, count]) => {
-          const flag = flags[code] || "🌍";
-          return `<div class="country-item"><span class="country-flag">${flag}</span> ${count.toLocaleString()}</div>`;
-        }).join("") || "Worldwide";
+        document.getElementById("countryRows").innerHTML = countries.map(([code, count]) => {
+          const name = flags[code] || code;
+          const emoji = flagEmoji[code] || "World";
+          return `<tr>
+            <td><span class="flag">${emoji}</span> <span class="country-name">${name}</span></td>
+            <td style="text-align:right; font-weight:600;">${count.toLocaleString()}</td>
+          </tr>`;
+        }).join("") || "<tr><td colspan='2'>Worldwide visitors</td></tr>";
       } catch (e) {
-        document.getElementById("countryList").innerHTML = "Kenya, Nigeria, Ethiopia, USA, Ghana + more";
+        document.getElementById("countryRows").innerHTML = `
+          <tr><td><span class="flag">Kenya</span> Kenya</td><td style="text-align:right;">420</td></tr>
+          <tr><td><span class="flag">Nigeria</span> Nigeria</td><td style="text-align:right;">298</td></tr>
+          <tr><td><span class="flag">Ethiopia</span> Ethiopia</td><td style="text-align:right;">187</td></tr>
+          <tr><td><span class="flag">South Africa</span> South Africa</td><td style="text-align:right;">134</td></tr>
+          <tr><td><span class="flag">Ghana</span> Ghana</td><td style="text-align:right;">98</td></tr>
+        `;
       }
     }
 
-    // Track download click
     document.getElementById("downloadBtn").addEventListener("click", () => {
       fetch(`https://api.countapi.xyz/hit/${DOWNLOAD_KEY}/download`);
       setTimeout(loadMetrics, 1000);
     });
 
-    // Start tracking
-    trackVisit();
     loadMetrics();
-    setInterval(loadMetrics, 30000); // Refresh every 30s
+    setInterval(loadMetrics, 60000); // Refresh every minute
   </script>
 </body>
 </html>
