@@ -3,8 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>African AI Ecosystem — Network & Clusters</title>
-  <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+  <title>African AI Ecosystem — Network</title>
+  <script src="https://unpkg.com/cytoscape@3.28.1/dist/cytoscape.min.js"></script>
+  <script src="https://unpkg.com/layout-base@2.0.1/layout-base.js"></script>
+  <script src="https://unpkg.com/cose-base@2.0.1/cose-base.js"></script>
+  <script src="https://unpkg.com/cytoscape-cose-bilkent@4.1.0/cytoscape-cose-bilkent.js"></script>
+
   <style>
     :root { --bg:#0f172a; --card:#1e293b; --text:#e2e8f0; --accent:#60a5fa; }
     body { margin:0; font-family:'Segoe UI',sans-serif; background:var(--bg); color:var(--text); height:100vh; }
@@ -12,29 +16,43 @@
     h1 { margin:0; font-size:2.8rem; color:var(--accent); }
     .subtitle { opacity:0.9; font-size:1.2rem; }
 
-    nav.breadcrumb { background:#1e293b; padding:1rem; text-align:center; }
+    nav.breadcrumb { background:#1e293b; padding:1rem; text-align:center; font-size:1.1rem; }
     nav.breadcrumb a { color:var(--accent); text-decoration:none; margin:0 .8rem; }
 
-    .controls { max-width:1400px; margin:2rem auto; padding:0 1rem; display:flex; gap:1rem; flex-wrap:wrap; justify-content:center; }
-    .controls input, .controls select { padding:.7rem 1rem; border:none; border-radius:8px; background:#334155; color:white; min-width:200px; }
+    .controls {
+      max-width:1400px; margin:2rem auto; padding:0 1rem; display:flex; gap:1rem; flex-wrap:wrap; justify-content:center;
+    }
+    .controls input, .controls select {
+      padding:.7rem 1rem; border:none; border-radius:8px; background:#334155; color:white; min-width:220px;
+    }
 
-    #network { height:75vh; width:100%; border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,0.5); background:#0f172a; }
+    #cy { height:75vh; width:100%; border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,0.5); background:#0f172a; }
 
-    .legend { max-width:800px; margin:2rem auto; background:var(--card); padding:1.5rem; border-radius:16px; display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1rem; }
+    .legend {
+      max-width:800px; margin:2rem auto; background:var(--card); padding:1.5rem; border-radius:16px;
+      display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1rem;
+    }
     .legend-item { display:flex; align-items:center; font-size:0.95rem; }
     .legend-color { width:18px; height:18px; border-radius:50%; margin-right:0.8rem; }
 
-    #details { max-width:600px; margin:2rem auto; background:var(--card); padding:1.5rem; border-radius:16px; display:none; }
-    #details strong { color:var(--accent); font-size:1.3rem; }
+    #details {
+      max-width:700px; margin:2rem auto; background:var(--card); padding:2rem; border-radius:16px; display:none;
+      box-shadow:0 10px 30px rgba(0,0,0,0.4);
+    }
+    #details strong { color:var(--accent); font-size:1.5rem; }
+    .org-item {
+      background:rgba(255,255,255,0.05); padding:1.2rem; border-radius:12px; margin:1rem 0;
+    }
+    .org-item a { color:#60a5fa; text-decoration:none; font-weight:600; }
 
-    @media (max-width:900px) { #network { height:60vh; } }
+    @media (max-width:900px) { #cy { height:60vh; } }
   </style>
 </head>
 <body>
 
   <header>
     <h1>African AI Ecosystem</h1>
-    <p class="subtitle">Interactive Country Clusters — Click any bubble to explore</p>
+    <p class="subtitle">Interactive Network — Click any country cluster to explore</p>
   </header>
 
   <nav class="breadcrumb">
@@ -52,9 +70,9 @@
     </select>
   </div>
 
-  <div id="network"></div>
+  <div id="cy"></div>
 
-  <div class="legend" id="legend">
+  <div class="legend">
     <div class="legend-item"><div class="legend-color" style="background:#FF6B6B;"></div> Startup-heavy</div>
     <div class="legend-item"><div class="legend-color" style="background:#A55EEA;"></div> Research-heavy</div>
     <div class="legend-item"><div class="legend-color" style="background:#4ECDC4;"></div> Platform/Community</div>
@@ -63,7 +81,7 @@
   </div>
 
   <div id="details">
-    <strong id="clusterTitle"></strong><br>
+    <strong id="clusterTitle"></strong>
     <div id="orgList"></div>
   </div>
 
@@ -71,10 +89,8 @@
 
   <script>
     const CSV_PATH = "https://open-data-africa.github.io/datasets/Ecosystem.csv";
+    let cy;
     let allData = [];
-    let nodes = new vis.DataSet();
-    let edges = new vis.DataSet();
-    let network;
 
     const typeColors = {
       "Startup": "#FF6B6B",
@@ -93,15 +109,12 @@
       header: true,
       complete: function(res) {
         allData = res.data.filter(r => r.Name && r.Name.trim());
-        buildCountryClusters();
         populateTypeFilter();
+        buildNetwork();
       }
     });
 
-    function buildCountryClusters(filterType = "", search = "") {
-      nodes.clear();
-      edges.clear();
-
+    function buildNetwork(filterType = "", search = "") {
       const countryMap = {};
       allData.forEach(org => {
         const c = (org.Country || "Unknown").trim();
@@ -113,50 +126,63 @@
         countryMap[c].types[t] = (countryMap[c].types[t] || 0) + 1;
       });
 
+      const elements = [];
       Object.entries(countryMap).forEach(([country, data]) => {
         if (data.orgs.length === 0) return;
-
         const dominantType = Object.entries(data.types).sort((a,b) => b[1]-a[1])[0][0];
         const color = typeColors[dominantType] || typeColors.default;
 
-        nodes.add({
-          id: country,
-          label: `${country}\n${data.orgs.length} org${data.orgs.length>1?'s':''}`,
-          size: 20 + data.orgs.length * 8,
-          color: { background: color, border: "#fff", highlight: { background: "#a5b4fc" } },
-          font: { color: "#e2e8f0", size: 16, strokeWidth: 4, strokeColor: "#0f172a" },
-          shape: "dot",
-          title: `${data.orgs.length} organizations in ${country}`
+        elements.push({
+          data: {
+            id: country,
+            label: `${country}\n${data.orgs.length} org${data.orgs.length>1?'s':''}`,
+            orgs: data.orgs
+          },
+          style: {
+            'background-color': color,
+            'width': 40 + data.orgs.length * 15,
+            'height': 40 + data.orgs.length * 15,
+            'text-outline-color': '#0f172a',
+            'text-outline-width': 4,
+            'color': '#e2e8f0',
+            'font-size': 16,
+            'font-weight': 'bold'
+          }
         });
       });
 
-      const container = document.getElementById("network");
-      const data = { nodes, edges };
-      const options = {
-        nodes: { shape: "dot", font: { align: "center" } },
-        physics: { enabled: false },
-        layout: { improvedLayout: true },
-        interaction: { hover: true, zoomView: true }
-      };
+      if (cy) cy.destroy();
 
-      if (network) network.destroy();
-      network = new vis.Network(container, data, options);
+      cy = cytoscape({
+        container: document.getElementById('cy'),
+        elements: elements,
+        style: [
+          { selector: 'node', style: { 'background-color': '#60a5fa', 'label': 'data(label)', 'text-valign': 'center', 'text-halign': 'center' } },
+          { selector: ':selected', style: { 'border-width': 6, 'border-color': '#a5b4fc' } }
+        ],
+        layout: { name: 'cose-bilkent', animate: true, animationDuration: 1000, idealEdgeLength: 200 },
+        userZoomingEnabled: true,
+        userPanningEnabled: true,
+        boxSelectionEnabled: false
+      });
 
-      network.on("click", params => {
-        if (params.nodes.length) {
-          const country = params.nodes[0];
-          const orgs = countryMap[country]?.orgs || [];
-          document.getElementById("clusterTitle").textContent = `${country} — ${orgs.length} organization${orgs.length>1?'s':''}`;
-          document.getElementById("orgList").innerHTML = orgs.map(o => `
-            <div style="margin:1rem 0; padding:1rem; background:rgba(255,255,255,0.05); border-radius:12px;">
-              <strong style="color:#60a5fa;">${o.Name?.trim()}</strong><br>
-              <small>${o.Type?.trim()} • ${o.Domain?.trim()}</small>
-              ${o.Website ? `<br><a href="${o.Website}" target="_blank" style="color:#60a5fa;">Visit Website</a>` : ""}
-            </div>
-          `).join("");
-          document.getElementById("details").style.display = "block";
-          document.getElementById("details").scrollIntoView({ behavior: "smooth" });
-        } else {
+      cy.on('tap', 'node', function(evt) {
+        const node = evt.target;
+        const orgs = node.data('orgs') || [];
+        document.getElementById("clusterTitle").textContent = `${node.data('id')} — ${orgs.length} organization${orgs.length>1?'s':''}`;
+        document.getElementById("orgList").innerHTML = orgs.map(o => `
+          <div class="org-item">
+            <strong>${o.Name?.trim()}</strong><br>
+            <small>${o.Type?.trim()} • ${o.Domain?.trim()}</small>
+            ${o.Website ? `<br><a href="${o.Website}" target="_blank">Visit Website</a>` : ""}
+          </div>
+        `).join("");
+        document.getElementById("details").style.display = "block";
+        document.getElementById("details").scrollIntoView({ behavior: "smooth" });
+      });
+
+      cy.on('tap', function(event) {
+        if (event.target === cy) {
           document.getElementById("details").style.display = "none";
         }
       });
@@ -168,8 +194,12 @@
       types.forEach(t => select.add(new Option(t, t)));
     }
 
-    document.getElementById("search").addEventListener("input", () => buildCountryClusters(document.getElementById("typeFilter").value, document.getElementById("search").value));
-    document.getElementById("typeFilter").addEventListener("change", () => buildCountryClusters(document.getElementById("typeFilter").value, document.getElementById("search").value));
+    document.getElementById("search").addEventListener("input", () => {
+      buildNetwork(document.getElementById("typeFilter").value, document.getElementById("search").value);
+    });
+    document.getElementById("typeFilter").addEventListener("change", () => {
+      buildNetwork(document.getElementById("typeFilter").value, document.getElementById("search").value);
+    });
   </script>
 </body>
 </html>
