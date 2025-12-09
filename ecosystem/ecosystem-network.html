@@ -4,22 +4,16 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>African AI Ecosystem — Network</title>
-  <script src="https://d3js.org/d3.v7.min.js"></script>
-
+  <script src="https://unpkg.com/vis-network@9.1.2/standalone/umd/vis-network.min.js"></script>
   <style>
-    :root { --bg:#0f172a; --text:#e2e8f0; --accent:#60a5fa; }
-    body { margin:0; background:var(--bg); color:var(--text); font-family:'Segoe UI',sans-serif; }
+    :root { --bg:#0f172a; --card:#1e293b; --text:#e2e8f0; --accent:#60a5fa; }
+    body { margin:0; font-family:'Segoe UI',sans-serif; background:var(--bg); color:var(--text); height:100vh; }
     header { background:linear-gradient(135deg,#1e293b,#0f172a); padding:3rem 1rem; text-align:center; }
     h1 { margin:0; font-size:2.8rem; color:var(--accent); }
     nav { background:#1e293b; padding:1rem; text-align:center; }
     nav a { color:var(--accent); margin:0 .8rem; text-decoration:none; }
-    svg { width:100%; height:80vh; background:#0f172a; }
-    .node circle { stroke:#fff; stroke-width:3px; cursor:pointer; }
-    .node text { fill:#e2e8f0; font-size:14px; pointer-events:none; text-anchor:middle; }
-    .details {
-      max-width:700px; margin:2rem auto; background:#1e293b; padding:2rem; border-radius:16px;
-      display:none; box-shadow:0 10px 30px rgba(0,0,0,0.5);
-    }
+    #network { height:80vh; width:100%; border-radius:16px; background:#0f172a; }
+    .details { max-width:700px; margin:2rem auto; background:var(--card); padding:2rem; border-radius:16px; display:none; }
     .org { background:rgba(255,255,255,0.05); padding:1rem; border-radius:12px; margin:1rem 0; }
     .org strong { color:var(--accent); }
   </style>
@@ -28,7 +22,7 @@
 
   <header>
     <h1>African AI Ecosystem</h1>
-    <p style="opacity:0.9;">Interactive Network — Click any bubble to explore</p>
+    <p style="opacity:0.9;">Interactive Network — Click any country to explore</p>
   </header>
 
   <nav>
@@ -39,7 +33,7 @@
     <a href="ecosystem-investor.html">Investor Briefs</a>
   </nav>
 
-  <svg id="graph"></svg>
+  <div id="network"></div>
 
   <div class="details" id="details">
     <h2 id="title" style="color:var(--accent);"></h2>
@@ -50,12 +44,6 @@
 
   <script>
     const CSV_PATH = "https://open-data-africa.github.io/datasets/Ecosystem.csv";
-    const width = 1200, height = 700;
-
-    const svg = d3.select("#graph")
-      .attr("viewBox", [0, 0, width, height]);
-
-    const g = svg.append("g");
 
     Papa.parse(CSV_PATH, {
       download: true,
@@ -63,73 +51,67 @@
       complete: function(res) {
         const data = res.data.filter(r => r.Name && r.Name.trim());
 
-        // Group by country
         const countryMap = {};
         data.forEach(org => {
           const c = (org.Country || "Other").trim();
-          if (!countryMap[c]) countryMap[c] = { orgs: [], count: 0 };
+          if (!countryMap[c]) countryMap[c] = { orgs: [], types: {} };
           countryMap[c].orgs.push(org);
-          countryMap[c].count++;
+          const t = (org.Type || "Other").trim();
+          countryMap[c].types[t] = (countryMap[c].types[t] || 0) + 1;
         });
 
-        const nodes = Object.entries(countryMap).map(([country, info]) => ({
-          id: country,
-          name: country,
-          size: info.count,
-          orgs: info.orgs
-        }));
+        const nodes = [];
+        const edges = [];
 
-        const links = []; // optional: add connections later
+        Object.entries(countryMap).forEach(([country, info], i) => {
+          const dominantType = Object.entries(info.types).sort((a,b) => b[1]-a[1])[0][0];
+          const color = {
+            "Startup": "#FF6B6B",
+            "Research Lab": "#A55EEA",
+            "Research Institute": "#C56CF0",
+            "Platform": "#4ECDC4",
+            "Community": "#96CEB4",
+            "Innovation Hub": "#FECA57",
+            "Education Institute": "#96CEB4",
+            "Program": "#FF9FF3"
+          }[dominantType] || "#54A0FF";
 
-        const simulation = d3.forceSimulation(nodes)
-          .force("charge", d3.forceManyBody().strength(-800))
-          .force("center", d3.forceCenter(width/2, height/2))
-          .force("collision", d3.forceCollide().radius(d => d.size * 30))
-          .on("tick", ticked);
+          nodes.push({
+            id: country,
+            label: `${country}\n${info.orgs.length} org${info.orgs.length>1?'s':''}`,
+            size: 25 + info.orgs.length * 12,
+            color: { background: color, border: "#fff", highlight: { background: "#a5b4fc" } },
+            font: { color: "#e2e8f0", size: 16, strokeWidth: 4, strokeColor: "#0f172a" },
+            shape: "dot",
+            orgs: info.orgs
+          });
+        });
 
-        const node = g.selectAll(".node")
-          .data(nodes)
-          .enter().append("g")
-          .attr("class", "node")
-          .call(d3.drag()
-            .on("start", dragstarted)
-            .on("drag", dragged)
-            .on("end", dragended));
+        const container = document.getElementById("network");
+        const dataNet = { nodes: new vis.DataSet(nodes), edges: new vis.DataSet(edges) };
 
-        node.append("circle")
-          .attr("r", d => d.size * 25 + 30)
-          .attr("fill", d => d.size > 3 ? "#FF6B6B" : d.size > 1 ? "#60a5fa" : "#96CEB4")
-          .on("click", clicked);
-
-        node.append("text")
-          .text(d => `${d.name}\n${d.size} org${d.size>1?'s':''}`)
-          .attr("dy", "0.35em");
-
-        function ticked() {
-          node.attr("transform", d => `translate(${d.x},${d.y})`);
-        }
-
-        function clicked(event, d) {
-          document.getElementById("title").textContent = `${d.name} — ${d.orgs.length} organization${d.orgs.length>1?'s':''}`;
-          document.getElementById("orgs").innerHTML = d.orgs.map(o => `
-            <div class="org">
-              <strong>${o.Name}</strong><br>
-              <small>${o.Type} • ${o.Domain}</small><br>
-              ${o.Website ? `<a href="${o.Website}" target="_blank">Visit Website</a>` : ""}
-            </div>
-          `).join("");
-          document.getElementById("details").style.display = "block";
-        }
-
-        function dragstarted(event, d) {
-          if (!event.active) simulation.alphaTarget(0.3).restart();
-          d.fx = d.x; d.fy = d.y;
-        }
-        function dragged(event, d) { d.fx = event.x; d.fy = event.y; }
-        function dragended(event, d) {
-          if (!event.active) simulation.alphaTarget(0);
-          d.fx = null; d.fy = null;
-        }
+        new vis.Network(container, dataNet, {
+          physics: { enabled: false },
+          layout: { improvedLayout: true },
+          nodes: { shape: "dot", font: { align: "center" } },
+          interaction: { hover: true, zoomView: true, dragView: true }
+        }).on("click", params => {
+          if (params.nodes.length) {
+            const country = params.nodes[0];
+            const info = countryMap[country];
+            document.getElementById("title").textContent = `${country} — ${info.orgs.length} organization${info.orgs.length>1?'s':''}`;
+            document.getElementById("orgs").innerHTML = info.orgs.map(o => `
+              <div class="org">
+                <strong>${o.Name}</strong><br>
+                <small>${o.Type} • ${o.Domain}</small><br>
+                ${o.Website ? `<a href="${o.Website}" target="_blank">Visit Website</a>` : ""}
+              </div>
+            `).join("");
+            document.getElementById("details").style.display = "block";
+          } else {
+            document.getElementById("details").style.display = "none";
+          }
+        });
       }
     });
   </script>
