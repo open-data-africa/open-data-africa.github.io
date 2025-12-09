@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>African AI Ecosystem — Network</title>
+
+  <!-- Cytoscape + Required Layouts -->
   <script src="https://unpkg.com/cytoscape@3.28.1/dist/cytoscape.min.js"></script>
   <script src="https://unpkg.com/layout-base@2.0.1/layout-base.js"></script>
   <script src="https://unpkg.com/cose-base@2.0.1/cose-base.js"></script>
@@ -11,38 +13,26 @@
 
   <style>
     :root { --bg:#0f172a; --card:#1e293b; --text:#e2e8f0; --accent:#60a5fa; }
-    body { margin:0; font-family:'Segoe UI',sans-serif; background:var(--bg); color:var(--text); height:100vh; }
+    body { margin:0; font-family:'Segoe UI',sans-serif; background:var(--bg); color:var(--text); }
     header { background:linear-gradient(135deg,#1e293b,#0f172a); padding:3rem 1rem; text-align:center; }
     h1 { margin:0; font-size:2.8rem; color:var(--accent); }
     .subtitle { opacity:0.9; font-size:1.2rem; }
 
-    nav.breadcrumb { background:#1e293b; padding:1rem; text-align:center; font-size:1.1rem; }
+    nav.breadcrumb { background:#1e293b; padding:1rem; text-align:center; }
     nav.breadcrumb a { color:var(--accent); text-decoration:none; margin:0 .8rem; }
 
-    .controls {
-      max-width:1400px; margin:2rem auto; padding:0 1rem; display:flex; gap:1rem; flex-wrap:wrap; justify-content:center;
-    }
-    .controls input, .controls select {
-      padding:.7rem 1rem; border:none; border-radius:8px; background:#334155; color:white; min-width:220px;
-    }
+    .controls { max-width:1400px; margin:2rem auto; padding:0 1rem; display:flex; gap:1rem; flex-wrap:wrap; justify-content:center; }
+    .controls input, .controls select { padding:.7rem 1rem; border:none; border-radius:8px; background:#334155; color:white; min-width:220px; }
 
     #cy { height:75vh; width:100%; border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,0.5); background:#0f172a; }
 
-    .legend {
-      max-width:800px; margin:2rem auto; background:var(--card); padding:1.5rem; border-radius:16px;
-      display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1rem;
-    }
+    .legend { max-width:800px; margin:2rem auto; background:var(--card); padding:1.5rem; border-radius:16px; display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1rem; }
     .legend-item { display:flex; align-items:center; font-size:0.95rem; }
     .legend-color { width:18px; height:18px; border-radius:50%; margin-right:0.8rem; }
 
-    #details {
-      max-width:700px; margin:2rem auto; background:var(--card); padding:2rem; border-radius:16px; display:none;
-      box-shadow:0 10px 30px rgba(0,0,0,0.4);
-    }
+    #details { max-width:700px; margin:2rem auto; background:var(--card); padding:2rem; border-radius:16px; display:none; box-shadow:0 10px 30px rgba(0,0,0,0.4); }
     #details strong { color:var(--accent); font-size:1.5rem; }
-    .org-item {
-      background:rgba(255,255,255,0.05); padding:1.2rem; border-radius:12px; margin:1rem 0;
-    }
+    .org-item { background:rgba(255,255,255,0.05); padding:1.2rem; border-radius:12px; margin:1rem 0; }
     .org-item a { color:#60a5fa; text-decoration:none; font-weight:600; }
 
     @media (max-width:900px) { #cy { height:60vh; } }
@@ -52,7 +42,7 @@
 
   <header>
     <h1>African AI Ecosystem</h1>
-    <p class="subtitle">Interactive Network — Click any country cluster to explore</p>
+    <p class="subtitle">Interactive Country Clusters — Click any bubble to explore</p>
   </header>
 
   <nav class="breadcrumb">
@@ -65,9 +55,7 @@
 
   <div class="controls">
     <input type="text" id="search" placeholder="Search country or organization..." />
-    <select id="typeFilter">
-      <option value="">All Types</option>
-    </select>
+    <select id="typeFilter"><option value="">All Types</option></select>
   </div>
 
   <div id="cy"></div>
@@ -103,6 +91,9 @@
       "Program": "#FF9FF3",
       "default": "#54A0FF"
     };
+
+    // Register the layout (this was missing!)
+    cytoscape.use(cytoscapeCoseBilkent);
 
     Papa.parse(CSV_PATH, {
       download: true,
@@ -140,13 +131,15 @@
           },
           style: {
             'background-color': color,
-            'width': 40 + data.orgs.length * 15,
-            'height': 40 + data.orgs.length * 15,
+            'width': 50 + data.orgs.length * 20,
+            'height': 50 + data.orgs.length * 20,
             'text-outline-color': '#0f172a',
-            'text-outline-width': 4,
+            'text-outline-width': 6,
             'color': '#e2e8f0',
-            'font-size': 16,
-            'font-weight': 'bold'
+            'font-size': 18,
+            'font-weight': 'bold',
+            'text-valign': 'center',
+            'text-halign': 'center'
           }
         });
       });
@@ -157,10 +150,16 @@
         container: document.getElementById('cy'),
         elements: elements,
         style: [
-          { selector: 'node', style: { 'background-color': '#60a5fa', 'label': 'data(label)', 'text-valign': 'center', 'text-halign': 'center' } },
-          { selector: ':selected', style: { 'border-width': 6, 'border-color': '#a5b4fc' } }
+          { selector: 'node', style: { 'label': 'data(label)' } }
         ],
-        layout: { name: 'cose-bilkent', animate: true, animationDuration: 1000, idealEdgeLength: 200 },
+        layout: {
+          name: 'cose-bilkent',
+          animate: true,
+          animationDuration: 1000,
+          idealEdgeLength: 180,
+          nodeRepulsion: 8500,
+          gravity: 0.25
+        },
         userZoomingEnabled: true,
         userPanningEnabled: true,
         boxSelectionEnabled: false
