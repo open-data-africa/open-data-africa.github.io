@@ -3,157 +3,135 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>African AI Ecosystem — Directory</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <title>African AI Ecosystem — 3D Globe</title>
+  <script src="https://unpkg.com/globe.gl"></script>
   <style>
-    :root { --bg:#0f172a; --card:#1e293b; --text:#e2e8f0; --accent:#60a5fa; }
-    body { margin:0; font-family:'Segoe UI',sans-serif; background:var(--bg); color:var(--text); }
-    header { background:linear-gradient(135deg,#1e293b,#0f172a); padding:3rem 1rem; text-align:center; }
-    h1 { margin:0; font-size:2.8rem; color:var(--accent); }
-    nav { background:#1e293b; padding:1rem; text-align:center; }
-    nav a { color:var(--accent); margin:0 .8rem; text-decoration:none; }
-
-    .container { max-width:1400px; margin:2rem auto; padding:0 1rem; display:grid; grid-template-columns:1fr 400px; gap:2rem; }
-    table { width:100%; border-collapse:collapse; background:var(--card); border-radius:16px; overflow:hidden; }
-    th { background:#334155; padding:1.2rem; text-align:left; cursor:pointer; }
-    th:hover { background:#3b4a66; }
-    td { padding:1rem; border-bottom:1px solid #334155; }
-    tr:hover { background:rgba(96,165,250,0.1); }
-    a { color:#60a5fa; text-decoration:none; }
-    .tag { background:rgba(96,165,250,0.2); padding:0.3rem 0.8rem; border-radius:20px; font-size:0.8rem; }
-
-    #map { height:500px; border-radius:16px; background:#1e293b; }
-    .controls { text-align:center; margin:1rem 0; }
-    .controls input, select { padding:0.8rem; border-radius:8px; border:none; background:#334155; color:white; min-width:200px; }
-
-    @media (max-width:1000px) { .container { grid-template-columns:1fr; } #map { height:300px; } }
+    body { margin:0; background:#000; overflow:hidden; }
+    #globe { width:100vw; height:100vh; }
+    
+    .title {
+      position:absolute; top:20px; left:50%; transform:translateX(-50%);
+      color:#60a5fa; font-size:3.5rem; font-weight:bold; z-index:10;
+      text-shadow:0 0 30px #60a5fa, 0 0 60px #60a5fa;
+      letter-spacing:2px;
+    }
+    
+    .controls {
+      position:absolute; top:20px; right:20px; background:rgba(0,0,0,0.7);
+      padding:1.2rem; border-radius:20px; z-index:10; backdrop-filter:blur(20px);
+      border:1px solid rgba(96,165,250,0.3);
+    }
+    .btn {
+      background:linear-gradient(45deg,#60a5fa,#a5b4fc); color:#000;
+      border:none; padding:0.9rem 1.8rem; border-radius:15px; cursor:pointer;
+      font-weight:bold; font-size:1rem; margin:0.5rem 0; width:100%;
+      box-shadow:0 8px 20px rgba(96,165,250,0.4);
+    }
+    .btn:hover { transform:scale(1.05); box-shadow:0 12px 30px rgba(96,165,250,0.6); }
+    
+    .info {
+      position:absolute; bottom:20px; left:20px; background:rgba(0,0,0,0.7);
+      padding:1.5rem 2rem; border-radius:20px; color:#e2e8f0; max-width:420px;
+      backdrop-filter:blur(20px); border:1px solid rgba(96,165,250,0.3);
+      box-shadow:0 10px 30px rgba(0,0,0,0.5);
+    }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>African AI Ecosystem</h1>
-    <p style="opacity:0.9;">Directory — All startups, labs & hubs in one place</p>
-  </header>
-
-  <nav>
-    <a href="ecosystem-overview.html">Overview</a> •
-    <a href="ecosystem-map.html">Map</a> •
-    <a href="ecosystem-readiness.html">Readiness</a> •
-    <a href="ecosystem-directory.html">Directory</a> •
-    <a href="ecosystem-investor.html">Investor Briefs</a>
-  </nav>
+  <div class="title">AFRICAN AI ECOSYSTEM</div>
 
   <div class="controls">
-    <input type="text" id="search" placeholder="Search name, domain, country..." />
-    <select id="typeFilter"><option value="">All Types</option></select>
-    <select id="countryFilter"><option value="">All Countries</option></select>
+    <button class="btn" id="toggleRotate">Pause Rotation</button>
   </div>
 
-  <div class="container">
-    <table id="table">
-      <thead>
-        <tr>
-          <th onclick="sortTable(0)">Name</th>
-          <th onclick="sortTable(1)">Type</th>
-          <th onclick="sortTable(2)">Domain</th>
-          <th onclick="sortTable(3)">Country</th>
-          <th>Website</th>
-        </tr>
-      </thead>
-      <tbody id="tbody"></tbody>
-    </table>
+  <div id="globe"></div>
 
-    <div id="map"></div>
+  <div class="info">
+    <strong>Click any glowing dot → Visit startup</strong><br>
+    Drag to explore • Scroll to zoom • Click "Pause" to stop rotation
   </div>
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
   <script>
     const CSV_PATH = "https://open-data-africa.github.io/datasets/Ecosystem.csv";
-    let allData = [];
-    const map = L.map('map').setView([6, 20], 3);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-    const markers = L.layerGroup().addTo(map);
 
-    const countryCoords = {
-      "Kenya": [-1.2921, 36.8219], "Ethiopia": [8.9806, 38.7578], "Nigeria": [9.0765, 7.3986],
-      "Ghana": [7.9465, -1.0232], "South Africa": [-30.5595, 22.9375], "Rwanda": [-1.9403, 29.8739],
-      "Cameroon": [3.8480, 11.5021], "Tunisia": [36.8190, 10.1658], "Egypt": [26.8206, 30.8025],
-      "Pan-Africa": [6, 20]
-    };
+    const globe = Globe()
+      .globeImageUrl('//unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
+      .bumpImageUrl('//unpkg.com/three-globe/example/img/earth-topology.png')
+      .backgroundImageUrl('//unpkg.com/three-globe/example/img/night-sky.png')
+      .showAtmosphere(true)
+      .atmosphereColor('#60a5fa')
+      .atmosphereAltitude(0.25)
+      (document.getElementById('globe'));
 
     Papa.parse(CSV_PATH, {
       download: true,
       header: true,
       complete: function(res) {
-        allData = res.data.filter(r => r.Name && r.Name.trim());
-        populateFilters();
-        renderTable(allData);
-        plotMap(allData);
+        const data = res.data.filter(r => r.Name && r.Country);
+
+        const coords = {
+          "Kenya": [-1.29, 36.82], "Ethiopia": [9.02, 38.75], "Nigeria": [9.08, 7.40],
+          "Ghana": [7.95, -1.02], "South Africa": [-30.56, 22.94], "Rwanda": [-1.94, 29.87],
+          "Cameroon": [3.85, 11.50], "Tunisia": [36.82, 10.17], "Egypt": [26.82, 30.80],
+          "Pan-Africa": [6, 20]
+        };
+
+        // RAINBOW COLORS BY TYPE — small & elegant
+        const typeColor = {
+          "Startup": "#FF6B6B",
+          "Research Lab": "#A55EEA",
+          "Research Institute": "#C56CF0",
+          "Platform": "#4ECDC4",
+          "Community": "#96CEB4",
+          "Innovation Hub": "#FECA57",
+          "Education Institute": "#FF9FF3",
+          "Program": "#54A0FF",
+          "default": "#60A5FA"
+        };
+
+        const points = data.map(org => {
+          const t = (org.Type || "").trim();
+          return {
+            lat: coords[org.Country]?.[0] || 6,
+            lng: coords[org.Country]?.[1] || 20,
+            size: 0.8,                    // ← Small & elegant
+            color: typeColor[t] || typeColor.default,
+            name: org.Name,
+            type: t,
+            domain: org.Domain,
+            website: org.Website,
+            country: org.Country
+          };
+        });
+
+        globe
+          .pointsData(points)
+          .pointAltitude(0.03)           // ← Lower height = cleaner look
+          .pointColor(d => d.color)
+          .pointRadius(d => d.size)      // ← Tiny, beautiful dots
+          .pointLabel(d => `
+            <div style="background:rgba(0,0,0,0.9); padding:12px; border-radius:12px; border:2px solid ${d.color}; min-width:200px; font-size:0.9rem;">
+              <b style="color:${d.color}; font-size:1.1rem;">${d.name}</b><br>
+              ${d.type} • ${d.domain}<br>
+              <i>${d.country}</i>
+            </div>
+          `)
+          .onPointClick(point => window.open(point.website, '_blank'));
+
+        // Auto-rotate + pause button
+        globe.controls().autoRotate = true;
+        globe.controls().autoRotateSpeed = 0.6;
+
+        document.getElementById('toggleRotate').addEventListener('click', function() {
+          const rotating = globe.controls().autoRotate;
+          globe.controls().autoRotate = !rotating;
+          this.textContent = rotating ? "Resume Rotation" : "Pause Rotation";
+        });
       }
     });
-
-    function renderTable(data) {
-      const tbody = document.getElementById("tbody");
-      tbody.innerHTML = data.map(o => `
-        <tr>
-          <td><strong>${o.Name}</strong></td>
-          <td><span class="tag">${o.Type}</span></td>
-          <td>${o.Domain}</td>
-          <td>${o.Country}</td>
-          <td><a href="${o.Website}" target="_blank">Visit</a></td>
-        </tr>
-      `).join("");
-    }
-
-    function plotMap(data) {
-      markers.clearLayers();
-      const count = {};
-      data.forEach(o => {
-        const c = (o.Country || "").trim();
-        if (c && countryCoords[c]) count[c] = (count[c] || 0) + 1;
-      });
-      Object.entries(count).forEach(([c, n]) => {
-        const [lat, lng] = countryCoords[c];
-        L.circleMarker([lat, lng], {
-          radius: Math.min(20, 8 + n * 3),
-          color: "#fff", weight: 3, fillColor: "#60a5fa", fillOpacity: 0.8
-        }).addTo(markers).bindTooltip(`${c}: ${n} org${n>1?'s':''}`);
-      });
-    }
-
-    function populateFilters() {
-      const types = [...new Set(allData.map(r => r.Type))].filter(Boolean).sort();
-      const countries = [...new Set(allData.map(r => r.Country))].filter(Boolean).sort();
-      document.getElementById("typeFilter").innerHTML += types.map(t => `<option>${t}</option>`).join("");
-      document.getElementById("countryFilter").innerHTML += countries.map(c => `<option>${c}</option>`).join("");
-    }
-
-    document.getElementById("search").addEventListener("input", filter);
-    document.getElementById("typeFilter").addEventListener("change", filter);
-    document.getElementById("countryFilter").addEventListener("change", filter);
-
-    function filter() {
-      const q = document.getElementById("search").value.toLowerCase();
-      const type = document.getElementById("typeFilter").value;
-      const country = document.getElementById("countryFilter").value;
-
-      const filtered = allData.filter(o => {
-        const match = !q || Object.values(o).some(v => v && v.toLowerCase().includes(q));
-        const tMatch = !type || o.Type === type;
-        const cMatch = !country || o.Country === country;
-        return match && tMatch && cMatch;
-      });
-
-      renderTable(filtered);
-      plotMap(filtered);
-    }
-
-    function sortTable(n) {
-      // Simple table sort (add if you want)
-    }
   </script>
 </body>
 </html>
