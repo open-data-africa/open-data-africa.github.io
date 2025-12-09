@@ -3,10 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>African AI Ecosystem — Network</title>
+  <title>African AI Ecosystem — Network & Clusters</title>
   <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
-  <link href="https://unpkg.com/vis-network/styles/vis-network.min.css" rel="stylesheet" type="text/css" />
-
   <style>
     :root { --bg:#0f172a; --card:#1e293b; --text:#e2e8f0; --accent:#60a5fa; }
     body { margin:0; font-family:'Segoe UI',sans-serif; background:var(--bg); color:var(--text); height:100vh; }
@@ -14,28 +12,19 @@
     h1 { margin:0; font-size:2.8rem; color:var(--accent); }
     .subtitle { opacity:0.9; font-size:1.2rem; }
 
-    nav.breadcrumb { background:#1e293b; padding:1rem; text-align:center; font-size:1.1rem; }
+    nav.breadcrumb { background:#1e293b; padding:1rem; text-align:center; }
     nav.breadcrumb a { color:var(--accent); text-decoration:none; margin:0 .8rem; }
 
-    .controls {
-      max-width:1400px; margin:2rem auto; padding:0 1rem; display:flex; gap:1rem; flex-wrap:wrap; justify-content:center;
-    }
-    .controls input, .controls select {
-      padding:.7rem 1rem; border:none; border-radius:8px; background:#334155; color:white; min-width:220px;
-    }
+    .controls { max-width:1400px; margin:2rem auto; padding:0 1rem; display:flex; gap:1rem; flex-wrap:wrap; justify-content:center; }
+    .controls input, .controls select { padding:.7rem 1rem; border:none; border-radius:8px; background:#334155; color:white; min-width:200px; }
 
     #network { height:75vh; width:100%; border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,0.5); background:#0f172a; }
 
-    .legend {
-      max-width:600px; margin:2rem auto; background:var(--card); padding:1.5rem; border-radius:16px;
-      display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1rem;
-    }
+    .legend { max-width:800px; margin:2rem auto; background:var(--card); padding:1.5rem; border-radius:16px; display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1rem; }
     .legend-item { display:flex; align-items:center; font-size:0.95rem; }
-    .legend-color { width:16px; height:16px; border-radius:50%; margin-right:0.8rem; }
+    .legend-color { width:18px; height:18px; border-radius:50%; margin-right:0.8rem; }
 
-    #details {
-      max-width:600px; margin:2rem auto; background:var(--card); padding:1.5rem; border-radius:16px; display:none;
-    }
+    #details { max-width:600px; margin:2rem auto; background:var(--card); padding:1.5rem; border-radius:16px; display:none; }
     #details strong { color:var(--accent); font-size:1.3rem; }
 
     @media (max-width:900px) { #network { height:60vh; } }
@@ -45,7 +34,7 @@
 
   <header>
     <h1>African AI Ecosystem</h1>
-    <p class="subtitle">Interactive Network — See how startups, labs & hubs are connected</p>
+    <p class="subtitle">Interactive Country Clusters — Click any bubble to explore</p>
   </header>
 
   <nav class="breadcrumb">
@@ -57,7 +46,7 @@
   </nav>
 
   <div class="controls">
-    <input type="text" id="search" placeholder="Search any organization..." />
+    <input type="text" id="search" placeholder="Search country or organization..." />
     <select id="typeFilter">
       <option value="">All Types</option>
     </select>
@@ -65,22 +54,27 @@
 
   <div id="network"></div>
 
-  <div class="legend" id="legend"></div>
+  <div class="legend" id="legend">
+    <div class="legend-item"><div class="legend-color" style="background:#FF6B6B;"></div> Startup-heavy</div>
+    <div class="legend-item"><div class="legend-color" style="background:#A55EEA;"></div> Research-heavy</div>
+    <div class="legend-item"><div class="legend-color" style="background:#4ECDC4;"></div> Platform/Community</div>
+    <div class="legend-item"><div class="legend-color" style="background:#96CEB4;"></div> Education/Hub</div>
+    <div class="legend-item">Bigger bubble = More organizations</div>
+  </div>
 
   <div id="details">
-    <strong id="nodeName"></strong><br>
-    <small id="nodeInfo"></small><br><br>
-    <a id="nodeLink" href="#" target="_blank" style="color:#60a5fa; font-weight:bold;">Visit Website</a>
+    <strong id="clusterTitle"></strong><br>
+    <div id="orgList"></div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
   <script>
     const CSV_PATH = "https://open-data-africa.github.io/datasets/Ecosystem.csv";
+    let allData = [];
     let nodes = new vis.DataSet();
     let edges = new vis.DataSet();
     let network;
-    let allData = [];
 
     const typeColors = {
       "Startup": "#FF6B6B",
@@ -88,73 +82,61 @@
       "Research Institute": "#C56CF0",
       "Platform": "#4ECDC4",
       "Community": "#96CEB4",
-      "Hub": "#FECA57",
+      "Innovation Hub": "#FECA57",
+      "Education Institute": "#96CEB4",
       "Program": "#FF9FF3",
       "default": "#54A0FF"
     };
-
-    function getColor(type) {
-      return typeColors[type] || typeColors["default"];
-    }
 
     Papa.parse(CSV_PATH, {
       download: true,
       header: true,
       complete: function(res) {
         allData = res.data.filter(r => r.Name && r.Name.trim());
-        buildNetwork();
+        buildCountryClusters();
         populateTypeFilter();
-        buildLegend();
       }
     });
 
-    function buildNetwork(filterType = "", searchQuery = "") {
+    function buildCountryClusters(filterType = "", search = "") {
       nodes.clear();
       edges.clear();
 
-      const filtered = allData.filter(org => {
-        const matchesType = !filterType || (org.Type || "").trim() === filterType;
-        const matchesSearch = !searchQuery || JSON.stringify(org).toLowerCase().includes(searchQuery.toLowerCase());
-        return matchesType && matchesSearch;
+      const countryMap = {};
+      allData.forEach(org => {
+        const c = (org.Country || "Unknown").trim();
+        if (!countryMap[c]) countryMap[c] = { orgs: [], types: {} };
+        if (!filterType || (org.Type || "").trim() === filterType)
+          if (!search || JSON.stringify(org).toLowerCase().includes(search.toLowerCase()))
+            countryMap[c].orgs.push(org);
+        const t = (org.Type || "Unknown").trim();
+        countryMap[c].types[t] = (countryMap[c].types[t] || 0) + 1;
       });
 
-      // Add nodes
-      filtered.forEach((org, i) => {
-        const name = org.Name?.trim() || "Unknown";
-        const type = org.Type?.trim() || "Unknown";
+      Object.entries(countryMap).forEach(([country, data]) => {
+        if (data.orgs.length === 0) return;
+
+        const dominantType = Object.entries(data.types).sort((a,b) => b[1]-a[1])[0][0];
+        const color = typeColors[dominantType] || typeColors.default;
+
         nodes.add({
-          id: i,
-          label: name,
-          title: `${name}\n${type} • ${org.Domain || ""}\n${org.Country || ""}`,
-          color: { background: getColor(type), border: "#fff" },
+          id: country,
+          label: `${country}\n${data.orgs.length} org${data.orgs.length>1?'s':''}`,
+          size: 20 + data.orgs.length * 8,
+          color: { background: color, border: "#fff", highlight: { background: "#a5b4fc" } },
+          font: { color: "#e2e8f0", size: 16, strokeWidth: 4, strokeColor: "#0f172a" },
           shape: "dot",
-          size: 18
-        });
-      });
-
-      // Add edges (connections)
-      filtered.forEach((org1, i) => {
-        filtered.forEach((org2, j) => {
-          if (i >= j) return; // avoid duplicates
-
-          let value = 0;
-          if ((org1.Country || "").trim() === (org2.Country || "").trim() && org1.Country) value += 3;
-          if ((org1.Domain || "").trim() === (org2.Domain || "").trim() && org1.Domain) value += 2;
-          if ((org1.Type || "").trim() === (org2.Type || "").trim() && org1.Type) value += 1;
-
-          if (value > 0) {
-            edges.add({ from: i, to: j, value, color: { opacity: value * 0.2 } });
-          }
+          title: `${data.orgs.length} organizations in ${country}`
         });
       });
 
       const container = document.getElementById("network");
       const data = { nodes, edges };
       const options = {
-        physics: { stabilization: { iterations: 200 } },
-        nodes: { font: { color: "#e2e8f0" } },
-        edges: { smooth: false, color: "#60a5fa" },
-        interaction: { hover: true }
+        nodes: { shape: "dot", font: { align: "center" } },
+        physics: { enabled: false },
+        layout: { improvedLayout: true },
+        interaction: { hover: true, zoomView: true }
       };
 
       if (network) network.destroy();
@@ -162,12 +144,18 @@
 
       network.on("click", params => {
         if (params.nodes.length) {
-          const nodeId = params.nodes[0];
-          const org = filtered[nodeId];
-          document.getElementById("nodeName").textContent = org.Name || "Unknown";
-          document.getElementById("nodeInfo").textContent = `${org.Type || ""} • ${org.Domain || ""} • ${org.Country || ""}`;
-          document.getElementById("nodeLink").href = org.Website || "#";
+          const country = params.nodes[0];
+          const orgs = countryMap[country]?.orgs || [];
+          document.getElementById("clusterTitle").textContent = `${country} — ${orgs.length} organization${orgs.length>1?'s':''}`;
+          document.getElementById("orgList").innerHTML = orgs.map(o => `
+            <div style="margin:1rem 0; padding:1rem; background:rgba(255,255,255,0.05); border-radius:12px;">
+              <strong style="color:#60a5fa;">${o.Name?.trim()}</strong><br>
+              <small>${o.Type?.trim()} • ${o.Domain?.trim()}</small>
+              ${o.Website ? `<br><a href="${o.Website}" target="_blank" style="color:#60a5fa;">Visit Website</a>` : ""}
+            </div>
+          `).join("");
           document.getElementById("details").style.display = "block";
+          document.getElementById("details").scrollIntoView({ behavior: "smooth" });
         } else {
           document.getElementById("details").style.display = "none";
         }
@@ -180,25 +168,8 @@
       types.forEach(t => select.add(new Option(t, t)));
     }
 
-    function buildLegend() {
-      const legend = document.getElementById("legend");
-      Object.entries(typeColors).forEach(([type, color]) => {
-        if (type === "default") return;
-        legend.innerHTML += `
-          <div class="legend-item">
-            <div class="legend-color" style="background:${color};"></div>
-            <span>${type}</span>
-          </div>
-        `;
-      });
-    }
-
-    document.getElementById("search").addEventListener("input", () => {
-      buildNetwork(document.getElementById("typeFilter").value, document.getElementById("search").value);
-    });
-    document.getElementById("typeFilter").addEventListener("change", () => {
-      buildNetwork(document.getElementById("typeFilter").value, document.getElementById("search").value);
-    });
+    document.getElementById("search").addEventListener("input", () => buildCountryClusters(document.getElementById("typeFilter").value, document.getElementById("search").value));
+    document.getElementById("typeFilter").addEventListener("change", () => buildCountryClusters(document.getElementById("typeFilter").value, document.getElementById("search").value));
   </script>
 </body>
 </html>
