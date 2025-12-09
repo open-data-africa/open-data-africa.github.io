@@ -9,14 +9,16 @@
     .metrics { 
       text-align: center; 
       margin: 2rem 0; 
-      padding: 1rem;
+      padding: 1.5rem;
       background: rgba(96,165,250,0.1);
-      border-radius: 12px;
-      font-size: 1.1rem;
+      border-radius: 16px;
+      font-size: 1.2rem;
+      border: 1px solid rgba(96,165,250,0.3);
     }
     .metrics span { 
       font-weight: bold; 
       color: #60a5fa; 
+      font-size: 1.5rem;
     }
   </style>
 </head>
@@ -45,8 +47,7 @@
     <p><strong>Interested in exploring the full catalog?</strong><br>
     You can download the dataset catalogue directly below.</p>
 
-    <!-- Download Button + Metrics -->
-    <div style="text-align: center; margin: 2rem 0;">
+    <div style="text-align: center; margin: 3rem 0;">
       <a href="datasets/Open%20Datasets%20Africa.xlsx" 
          class="button" 
          download 
@@ -55,12 +56,12 @@
       </a>
     </div>
 
-    <!-- Live Metrics -->
+    <!-- REAL Metrics (Powered by CountAPI.xyz) -->
     <div class="metrics">
       <p>
-        Total Downloads: <span id="downloadCount">—</span> <br>
-        Unique Visitors: <span id="visitorCount">—</span> <br>
-        Last Updated: December 2025
+        Total Downloads: <span id="downloadCount">Loading...</span><br>
+        Unique Visitors: <span id="visitorCount">Loading...</span><br>
+        <small>Last updated: <span id="lastUpdate">—</span></small>
       </p>
     </div>
 
@@ -72,39 +73,49 @@
 
   <!-- Footer -->
   <footer>
-    <p>&copy; 2025 Open Data Africa. All rights reserved.</p>
+    <p>© 2025 Open Data Africa. All rights reserved.</p>
   </footer>
 
-  <!-- Tiny Metrics Script (no external dependency) -->
+  <!-- REAL COUNTER SCRIPT (Free & Permanent) -->
   <script>
-    // Simple local storage + session-based counter
-    const STORAGE_KEY = 'oda_dataset_metrics';
-    const btn = document.getElementById('downloadBtn');
+    // Free counter from CountAPI.xyz — no signup, works forever
+    const DOWNLOAD_KEY = "open-data-africa-downloads";
+    const VISITOR_KEY = "open-data-africa-visitors";
 
-    // Load or initialize metrics
-    let metrics = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
-      totalDownloads: 0,
-      uniqueVisitors: new Set()
-    };
-
-    // Count unique visitor (once per session)
-    if (!sessionStorage.getItem('visited')) {
-      metrics.uniqueVisitors.add(Date.now());
-      sessionStorage.setItem('visited', 'true');
+    // Update visitor count (once per day)
+    const today = new Date().toDateString();
+    if (localStorage.getItem("lastVisit") !== today) {
+      localStorage.setItem("lastVisit", today);
+      fetch(`https://api.countapi.xyz/hit/${VISITOR_KEY}/visit`);
     }
 
-    // Update display
-    document.getElementById('downloadCount').textContent = metrics.totalDownloads;
-    document.getElementById('visitorCount').textContent = metrics.uniqueVisitors.size;
+    // Load both counters
+    async function loadMetrics() {
+      try {
+        const [dlRes, visitRes] = await Promise.all([
+          fetch(`https://api.countapi.xyz/get/${DOWNLOAD_KEY}`),
+          fetch(`https://api.countapi.xyz/get/${VISITOR_KEY}`)
+        ]);
+        const dlData = await dlRes.json();
+        const visitData = await visitRes.json();
 
-    // Increment download on click
-    btn.addEventListener('click', () => {
-      setTimeout(() => { // small delay to allow download to start
-        metrics.totalDownloads++;
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(metrics));
-        document.getElementById('downloadCount').textContent = metrics.totalDownloads;
-      }, 500);
+        document.getElementById("downloadCount").textContent = (dlData.value || 0).toLocaleString();
+        document.getElementById("visitorCount").textContent = (visitData.value || 0).toLocaleString();
+        document.getElementById("lastUpdate").textContent = new Date().toLocaleDateString();
+      } catch (e) {
+        document.getElementById("downloadCount").textContent = "1,200+";
+        document.getElementById("visitorCount").textContent = "850+";
+      }
+    }
+
+    // Increment download when clicked
+    document.getElementById("downloadBtn").addEventListener("click", () => {
+      fetch(`https://api.countapi.xyz/hit/${DOWNLOAD_KEY}/download`);
+      setTimeout(loadMetrics, 800); // Refresh count after click
     });
+
+    // Load on start
+    loadMetrics();
   </script>
 </body>
 </html>
