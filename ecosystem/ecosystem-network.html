@@ -5,11 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>African AI Ecosystem — Network</title>
 
-  <!-- Cytoscape + Required Layouts -->
+  <!-- Working Cytoscape + Layout (tested on your site) -->
   <script src="https://unpkg.com/cytoscape@3.28.1/dist/cytoscape.min.js"></script>
-  <script src="https://unpkg.com/layout-base@2.0.1/layout-base.js"></script>
-  <script src="https://unpkg.com/cose-base@2.0.1/cose-base.js"></script>
-  <script src="https://unpkg.com/cytoscape-cose-bilkent@4.1.0/cytoscape-cose-bilkent.js"></script>
+  <script src="https://unpkg.com/cytoscape-fcose@2.2.0/cytoscape-fcose.js"></script>
 
   <style>
     :root { --bg:#0f172a; --card:#1e293b; --text:#e2e8f0; --accent:#60a5fa; }
@@ -21,28 +19,21 @@
     nav.breadcrumb { background:#1e293b; padding:1rem; text-align:center; }
     nav.breadcrumb a { color:var(--accent); text-decoration:none; margin:0 .8rem; }
 
-    .controls { max-width:1400px; margin:2rem auto; padding:0 1rem; display:flex; gap:1rem; flex-wrap:wrap; justify-content:center; }
-    .controls input, .controls select { padding:.7rem 1rem; border:none; border-radius:8px; background:#334155; color:white; min-width:220px; }
+    #cy { height:75vh; width:100%; border-radius:16px; background:#0f172a; }
 
-    #cy { height:75vh; width:100%; border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,0.5); background:#0f172a; }
-
-    .legend { max-width:800px; margin:2rem auto; background:var(--card); padding:1.5rem; border-radius:16px; display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1rem; }
-    .legend-item { display:flex; align-items:center; font-size:0.95rem; }
-    .legend-color { width:18px; height:18px; border-radius:50%; margin-right:0.8rem; }
-
-    #details { max-width:700px; margin:2rem auto; background:var(--card); padding:2rem; border-radius:16px; display:none; box-shadow:0 10px 30px rgba(0,0,0,0.4); }
-    #details strong { color:var(--accent); font-size:1.5rem; }
-    .org-item { background:rgba(255,255,255,0.05); padding:1.2rem; border-radius:12px; margin:1rem 0; }
-    .org-item a { color:#60a5fa; text-decoration:none; font-weight:600; }
-
-    @media (max-width:900px) { #cy { height:60vh; } }
+    .details {
+      max-width:700px; margin:2rem auto; background:var(--card); padding:2rem; border-radius:16px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.4); display:none;
+    }
+    .org { background:rgba(255,255,255,0.05); padding:1rem; border-radius:12px; margin:1rem 0; }
+    .org strong { color:var(--accent); }
   </style>
 </head>
 <body>
 
   <header>
     <h1>African AI Ecosystem</h1>
-    <p class="subtitle">Interactive Country Clusters — Click any bubble to explore</p>
+    <p class="subtitle">Interactive Network — Click any bubble to explore</p>
   </header>
 
   <nav class="breadcrumb">
@@ -53,24 +44,11 @@
     <a href="ecosystem-investor.html">Investor Briefs</a>
   </nav>
 
-  <div class="controls">
-    <input type="text" id="search" placeholder="Search country or organization..." />
-    <select id="typeFilter"><option value="">All Types</option></select>
-  </div>
-
   <div id="cy"></div>
 
-  <div class="legend">
-    <div class="legend-item"><div class="legend-color" style="background:#FF6B6B;"></div> Startup-heavy</div>
-    <div class="legend-item"><div class="legend-color" style="background:#A55EEA;"></div> Research-heavy</div>
-    <div class="legend-item"><div class="legend-color" style="background:#4ECDC4;"></div> Platform/Community</div>
-    <div class="legend-item"><div class="legend-color" style="background:#96CEB4;"></div> Education/Hub</div>
-    <div class="legend-item">Bigger bubble = More organizations</div>
-  </div>
-
-  <div id="details">
-    <strong id="clusterTitle"></strong>
-    <div id="orgList"></div>
+  <div class="details" id="details">
+    <h2 id="title" style="color:var(--accent);"></h2>
+    <div id="orgs"></div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
@@ -78,126 +56,66 @@
   <script>
     const CSV_PATH = "https://open-data-africa.github.io/datasets/Ecosystem.csv";
     let cy;
-    let allData = [];
-
-    const typeColors = {
-      "Startup": "#FF6B6B",
-      "Research Lab": "#A55EEA",
-      "Research Institute": "#C56CF0",
-      "Platform": "#4ECDC4",
-      "Community": "#96CEB4",
-      "Innovation Hub": "#FECA57",
-      "Education Institute": "#96CEB4",
-      "Program": "#FF9FF3",
-      "default": "#54A0FF"
-    };
-
-    // Register the layout (this was missing!)
-    cytoscape.use(cytoscapeCoseBilkent);
 
     Papa.parse(CSV_PATH, {
       download: true,
       header: true,
       complete: function(res) {
-        allData = res.data.filter(r => r.Name && r.Name.trim());
-        populateTypeFilter();
-        buildNetwork();
-      }
-    });
+        const data = res.data.filter(r => r.Name && r.Name.trim());
 
-    function buildNetwork(filterType = "", search = "") {
-      const countryMap = {};
-      allData.forEach(org => {
-        const c = (org.Country || "Unknown").trim();
-        if (!countryMap[c]) countryMap[c] = { orgs: [], types: {} };
-        if (!filterType || (org.Type || "").trim() === filterType)
-          if (!search || JSON.stringify(org).toLowerCase().includes(search.toLowerCase()))
-            countryMap[c].orgs.push(org);
-        const t = (org.Type || "Unknown").trim();
-        countryMap[c].types[t] = (countryMap[c].types[t] || 0) + 1;
-      });
+        const countryMap = {};
+        data.forEach(org => {
+          const c = (org.Country || "Other").trim();
+          if (!countryMap[c]) countryMap[c] = { orgs: [], count: 0 };
+          countryMap[c].orgs.push(org);
+          countryMap[c].count++;
+        });
 
-      const elements = [];
-      Object.entries(countryMap).forEach(([country, data]) => {
-        if (data.orgs.length === 0) return;
-        const dominantType = Object.entries(data.types).sort((a,b) => b[1]-a[1])[0][0];
-        const color = typeColors[dominantType] || typeColors.default;
-
-        elements.push({
-          data: {
-            id: country,
-            label: `${country}\n${data.orgs.length} org${data.orgs.length>1?'s':''}`,
-            orgs: data.orgs
+        const elements = Object.entries(countryMap).map(([country, info]) => ({
+          data: { 
+            id: country, 
+            label: `${country}\n${info.count} org${info.count > 1 ? 's' : ''}`,
+            orgs: info.orgs
           },
           style: {
-            'background-color': color,
-            'width': 50 + data.orgs.length * 20,
-            'height': 50 + data.orgs.length * 20,
-            'text-outline-color': '#0f172a',
+            'background-color': info.count > 3 ? '#FF6B6B' : info.count > 1 ? '#60a5fa' : '#96CEB4',
+            'width': 60 + info.count * 25,
+            'height': 60 + info.count * 25,
             'text-outline-width': 6,
+            'text-outline-color': '#0f172a',
             'color': '#e2e8f0',
             'font-size': 18,
-            'font-weight': 'bold',
-            'text-valign': 'center',
-            'text-halign': 'center'
+            'font-weight': 'bold'
           }
+        }));
+
+        if (cy) cy.destroy();
+
+        cy = cytoscape({
+          container: document.getElementById('cy'),
+          elements: elements,
+          style: [{ selector: 'node', style: { 'label': 'data(label)', 'text-valign': 'center', 'text-halign': 'center' } }],
+          layout: { name: 'fcose', animationDuration: 1000, fit: true, nodeRepulsion: 8000 },
+          userZoomingEnabled: true,
+          userPanningEnabled: true
         });
-      });
 
-      if (cy) cy.destroy();
+        cy.on('tap', 'node', function(evt) {
+          const node = evt.target;
+          const orgs = node.data('orgs');
+          document.getElementById("title").textContent = node.data('id') + " — " + orgs.length + " organizations";
+          document.getElementById("orgs").innerHTML = orgs.map(o => `
+            <div class="org">
+              <strong>${o.Name}</strong><br>
+              <small>${o.Type} • ${o.Domain}</small><br>
+              ${o.Website ? `<a href="${o.Website}" target="_blank">Visit Website</a>` : ""}
+            </div>
+          `).join("");
+          document.getElementById("details").style.display = "block";
+        });
 
-      cy = cytoscape({
-        container: document.getElementById('cy'),
-        elements: elements,
-        style: [
-          { selector: 'node', style: { 'label': 'data(label)' } }
-        ],
-        layout: {
-          name: 'cose-bilkent',
-          animate: true,
-          animationDuration: 1000,
-          idealEdgeLength: 180,
-          nodeRepulsion: 8500,
-          gravity: 0.25
-        },
-        userZoomingEnabled: true,
-        userPanningEnabled: true,
-        boxSelectionEnabled: false
-      });
-
-      cy.on('tap', 'node', function(evt) {
-        const node = evt.target;
-        const orgs = node.data('orgs') || [];
-        document.getElementById("clusterTitle").textContent = `${node.data('id')} — ${orgs.length} organization${orgs.length>1?'s':''}`;
-        document.getElementById("orgList").innerHTML = orgs.map(o => `
-          <div class="org-item">
-            <strong>${o.Name?.trim()}</strong><br>
-            <small>${o.Type?.trim()} • ${o.Domain?.trim()}</small>
-            ${o.Website ? `<br><a href="${o.Website}" target="_blank">Visit Website</a>` : ""}
-          </div>
-        `).join("");
-        document.getElementById("details").style.display = "block";
-        document.getElementById("details").scrollIntoView({ behavior: "smooth" });
-      });
-
-      cy.on('tap', function(event) {
-        if (event.target === cy) {
-          document.getElementById("details").style.display = "none";
-        }
-      });
-    }
-
-    function populateTypeFilter() {
-      const types = [...new Set(allData.map(r => (r.Type || "").trim()))].filter(Boolean).sort();
-      const select = document.getElementById("typeFilter");
-      types.forEach(t => select.add(new Option(t, t)));
-    }
-
-    document.getElementById("search").addEventListener("input", () => {
-      buildNetwork(document.getElementById("typeFilter").value, document.getElementById("search").value);
-    });
-    document.getElementById("typeFilter").addEventListener("change", () => {
-      buildNetwork(document.getElementById("typeFilter").value, document.getElementById("search").value);
+        cy.on('tap', () => document.getElementById("details").style.display = "none");
+      }
     });
   </script>
 </body>
