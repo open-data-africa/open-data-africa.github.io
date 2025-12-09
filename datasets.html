@@ -5,9 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Open Data Africa – Datasets</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    .metrics { 
+      text-align: center; 
+      margin: 2rem 0; 
+      padding: 1rem;
+      background: rgba(96,165,250,0.1);
+      border-radius: 12px;
+      font-size: 1.1rem;
+    }
+    .metrics span { 
+      font-weight: bold; 
+      color: #60a5fa; 
+    }
+  </style>
 </head>
 <body>
-
   <!-- Navigation -->
   <nav>
     <ul class="nav-list">
@@ -32,15 +45,28 @@
     <p><strong>Interested in exploring the full catalog?</strong><br>
     You can download the dataset catalogue directly below.</p>
 
+    <!-- Download Button + Metrics -->
     <div style="text-align: center; margin: 2rem 0;">
-      <a href="datasets/Open%20Datasets%20Africa.xlsx" class="button" download>
-        📥 Download Dataset Catalogue (Excel)
+      <a href="datasets/Open%20Datasets%20Africa.xlsx" 
+         class="button" 
+         download 
+         id="downloadBtn">
+        Download Dataset Catalogue (Excel)
       </a>
+    </div>
+
+    <!-- Live Metrics -->
+    <div class="metrics">
+      <p>
+        Total Downloads: <span id="downloadCount">—</span> <br>
+        Unique Visitors: <span id="visitorCount">—</span> <br>
+        Last Updated: December 2025
+      </p>
     </div>
 
     <p>Have a dataset you'd like to contribute to our open data catalogue?</p>
     <div style="text-align: center; margin-top: 1rem;">
-      <a href="contribute.html" class="button-outline">🤝 Share Your Dataset</a>
+      <a href="contribute.html" class="button-outline">Share Your Dataset</a>
     </div>
   </main>
 
@@ -49,5 +75,36 @@
     <p>&copy; 2025 Open Data Africa. All rights reserved.</p>
   </footer>
 
+  <!-- Tiny Metrics Script (no external dependency) -->
+  <script>
+    // Simple local storage + session-based counter
+    const STORAGE_KEY = 'oda_dataset_metrics';
+    const btn = document.getElementById('downloadBtn');
+
+    // Load or initialize metrics
+    let metrics = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
+      totalDownloads: 0,
+      uniqueVisitors: new Set()
+    };
+
+    // Count unique visitor (once per session)
+    if (!sessionStorage.getItem('visited')) {
+      metrics.uniqueVisitors.add(Date.now());
+      sessionStorage.setItem('visited', 'true');
+    }
+
+    // Update display
+    document.getElementById('downloadCount').textContent = metrics.totalDownloads;
+    document.getElementById('visitorCount').textContent = metrics.uniqueVisitors.size;
+
+    // Increment download on click
+    btn.addEventListener('click', () => {
+      setTimeout(() => { // small delay to allow download to start
+        metrics.totalDownloads++;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(metrics));
+        document.getElementById('downloadCount').textContent = metrics.totalDownloads;
+      }, 500);
+    });
+  </script>
 </body>
 </html>
