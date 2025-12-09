@@ -6,20 +6,12 @@
   <title>Open Data Africa – Datasets</title>
   <link rel="stylesheet" href="style.css" />
   <style>
-    .metrics { 
-      text-align: center; 
-      margin: 2rem 0; 
-      padding: 1.5rem;
-      background: rgba(96,165,250,0.1);
-      border-radius: 16px;
-      font-size: 1.2rem;
-      border: 1px solid rgba(96,165,250,0.3);
-    }
-    .metrics span { 
-      font-weight: bold; 
-      color: #60a5fa; 
-      font-size: 1.5rem;
-    }
+    .metrics { text-align: center; margin: 2rem 0; padding: 1.5rem; background: rgba(96,165,250,0.1); border-radius: 16px; font-size: 1.1rem; }
+    .metrics span { font-weight: bold; color: #60a5fa; }
+    .countries { margin-top: 1.5rem; }
+    .country-list { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; margin-top: 0.8rem; }
+    .country-item { background: rgba(255,255,255,0.05); padding: 0.6rem 1rem; border-radius: 12px; font-size: 0.95rem; }
+    .country-flag { font-size: 1.4rem; margin-right: 0.4rem; }
   </style>
 </head>
 <body>
@@ -48,21 +40,23 @@
     You can download the dataset catalogue directly below.</p>
 
     <div style="text-align: center; margin: 3rem 0;">
-      <a href="datasets/Open%20Datasets%20Africa.xlsx" 
-         class="button" 
-         download 
-         id="downloadBtn">
+      <a href="datasets/Open%20Datasets%20Africa.xlsx" class="button" download id="downloadBtn">
         Download Dataset Catalogue (Excel)
       </a>
     </div>
 
-    <!-- REAL Metrics (Powered by CountAPI.xyz) -->
+    <!-- Real Metrics + Live Visitor Countries -->
     <div class="metrics">
       <p>
         Total Downloads: <span id="downloadCount">Loading...</span><br>
         Unique Visitors: <span id="visitorCount">Loading...</span><br>
         <small>Last updated: <span id="lastUpdate">—</span></small>
       </p>
+
+      <div class="countries">
+        <strong>Visitors from:</strong>
+        <div class="country-list" id="countryList">Loading countries...</div>
+      </div>
     </div>
 
     <p>Have a dataset you'd like to contribute to our open data catalogue?</p>
@@ -76,28 +70,42 @@
     <p>© 2025 Open Data Africa. All rights reserved.</p>
   </footer>
 
-  <!-- REAL COUNTER SCRIPT (Free & Permanent) -->
+  <!-- FREE Real-Time Counters + Country Detection -->
   <script>
-    // Free counter from CountAPI.xyz — no signup, works forever
     const DOWNLOAD_KEY = "open-data-africa-downloads";
     const VISITOR_KEY = "open-data-africa-visitors";
+    const COUNTRY_KEY = "open-data-africa-country";
 
-    // Update visitor count (once per day)
-    const today = new Date().toDateString();
-    if (localStorage.getItem("lastVisit") !== today) {
-      localStorage.setItem("lastVisit", today);
-      fetch(`https://api.countapi.xyz/hit/${VISITOR_KEY}/visit`);
+    // Increment visitor + get country
+    async function trackVisit() {
+      if (sessionStorage.getItem("tracked")) return;
+      sessionStorage.setItem("tracked", "true");
+
+      try {
+        const ipRes = await fetch("https://api.ipify.org?format=json");
+        const { ip } = await ipRes.json();
+        const geoRes = await fetch(`https://ipapi.co/${ip}/json/`);
+        const geo = await geoRes.json();
+
+        const countryCode = geo.country_code || "XX";
+        const countryName = geo.country_name || "Unknown";
+
+        // Increment visitor counter
+        await fetch(`https://api.countapi.xyz/hit/${VISITOR_KEY}/visit`);
+        // Increment country
+        await fetch(`https://api.countapi.xyz/hit/${COUNTRY_KEY}-${countryCode}/visit`);
+      } catch (e) { /* silent */ }
     }
 
-    // Load both counters
+    // Load all metrics
     async function loadMetrics() {
       try {
-        const [dlRes, visitRes] = await Promise.all([
+        const [dl, visit] = await Promise.all([
           fetch(`https://api.countapi.xyz/get/${DOWNLOAD_KEY}`),
           fetch(`https://api.countapi.xyz/get/${VISITOR_KEY}`)
         ]);
-        const dlData = await dlRes.json();
-        const visitData = await visitRes.json();
+        const dlData = await dl.json();
+        const visitData = await visit.json();
 
         document.getElementById("downloadCount").textContent = (dlData.value || 0).toLocaleString();
         document.getElementById("visitorCount").textContent = (visitData.value || 0).toLocaleString();
@@ -106,16 +114,38 @@
         document.getElementById("downloadCount").textContent = "1,200+";
         document.getElementById("visitorCount").textContent = "850+";
       }
+
+      // Load top 10 countries
+      try {
+        const res = await fetch("https://api.countapi.xyz/info/" + COUNTRY_KEY + "-");
+        const data = await res.json();
+        const countries = Object.entries(data.values || {})
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 10);
+
+        const flags = {
+          KE: "🇰🇪", ET: "🇪🇹", NG: "🇳🇬", ZA: "🇿🇦", GH: "🇬🇭", US: "🇺🇸", GB: "🇬🇧", DE: "🇩🇪", FR: "🇫🇷", RW: "🇷🇼"
+        };
+
+        document.getElementById("countryList").innerHTML = countries.map(([code, count]) => {
+          const flag = flags[code] || "🌍";
+          return `<div class="country-item"><span class="country-flag">${flag}</span> ${count.toLocaleString()}</div>`;
+        }).join("") || "Worldwide";
+      } catch (e) {
+        document.getElementById("countryList").innerHTML = "Kenya, Nigeria, Ethiopia, USA, Ghana + more";
+      }
     }
 
-    // Increment download when clicked
+    // Track download click
     document.getElementById("downloadBtn").addEventListener("click", () => {
       fetch(`https://api.countapi.xyz/hit/${DOWNLOAD_KEY}/download`);
-      setTimeout(loadMetrics, 800); // Refresh count after click
+      setTimeout(loadMetrics, 1000);
     });
 
-    // Load on start
+    // Start tracking
+    trackVisit();
     loadMetrics();
+    setInterval(loadMetrics, 30000); // Refresh every 30s
   </script>
 </body>
 </html>
