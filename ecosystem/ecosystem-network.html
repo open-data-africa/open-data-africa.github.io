@@ -4,26 +4,21 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>African AI Ecosystem — Network</title>
-
-  <!-- Working Cytoscape + Layout (tested on your site) -->
-  <script src="https://unpkg.com/cytoscape@3.28.1/dist/cytoscape.min.js"></script>
-  <script src="https://unpkg.com/cytoscape-fcose@2.2.0/cytoscape-fcose.js"></script>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
 
   <style>
-    :root { --bg:#0f172a; --card:#1e293b; --text:#e2e8f0; --accent:#60a5fa; }
-    body { margin:0; font-family:'Segoe UI',sans-serif; background:var(--bg); color:var(--text); }
+    :root { --bg:#0f172a; --text:#e2e8f0; --accent:#60a5fa; }
+    body { margin:0; background:var(--bg); color:var(--text); font-family:'Segoe UI',sans-serif; }
     header { background:linear-gradient(135deg,#1e293b,#0f172a); padding:3rem 1rem; text-align:center; }
     h1 { margin:0; font-size:2.8rem; color:var(--accent); }
-    .subtitle { opacity:0.9; font-size:1.2rem; }
-
-    nav.breadcrumb { background:#1e293b; padding:1rem; text-align:center; }
-    nav.breadcrumb a { color:var(--accent); text-decoration:none; margin:0 .8rem; }
-
-    #cy { height:75vh; width:100%; border-radius:16px; background:#0f172a; }
-
+    nav { background:#1e293b; padding:1rem; text-align:center; }
+    nav a { color:var(--accent); margin:0 .8rem; text-decoration:none; }
+    svg { width:100%; height:80vh; background:#0f172a; }
+    .node circle { stroke:#fff; stroke-width:3px; cursor:pointer; }
+    .node text { fill:#e2e8f0; font-size:14px; pointer-events:none; text-anchor:middle; }
     .details {
-      max-width:700px; margin:2rem auto; background:var(--card); padding:2rem; border-radius:16px;
-      box-shadow:0 10px 30px rgba(0,0,0,0.4); display:none;
+      max-width:700px; margin:2rem auto; background:#1e293b; padding:2rem; border-radius:16px;
+      display:none; box-shadow:0 10px 30px rgba(0,0,0,0.5);
     }
     .org { background:rgba(255,255,255,0.05); padding:1rem; border-radius:12px; margin:1rem 0; }
     .org strong { color:var(--accent); }
@@ -33,10 +28,10 @@
 
   <header>
     <h1>African AI Ecosystem</h1>
-    <p class="subtitle">Interactive Network — Click any bubble to explore</p>
+    <p style="opacity:0.9;">Interactive Network — Click any bubble to explore</p>
   </header>
 
-  <nav class="breadcrumb">
+  <nav>
     <a href="ecosystem-overview.html">Overview</a> •
     <a href="ecosystem-map.html">Map</a> •
     <a href="ecosystem-readiness.html">Readiness</a> •
@@ -44,7 +39,7 @@
     <a href="ecosystem-investor.html">Investor Briefs</a>
   </nav>
 
-  <div id="cy"></div>
+  <svg id="graph"></svg>
 
   <div class="details" id="details">
     <h2 id="title" style="color:var(--accent);"></h2>
@@ -55,7 +50,12 @@
 
   <script>
     const CSV_PATH = "https://open-data-africa.github.io/datasets/Ecosystem.csv";
-    let cy;
+    const width = 1200, height = 700;
+
+    const svg = d3.select("#graph")
+      .attr("viewBox", [0, 0, width, height]);
+
+    const g = svg.append("g");
 
     Papa.parse(CSV_PATH, {
       download: true,
@@ -63,6 +63,7 @@
       complete: function(res) {
         const data = res.data.filter(r => r.Name && r.Name.trim());
 
+        // Group by country
         const countryMap = {};
         data.forEach(org => {
           const c = (org.Country || "Other").trim();
@@ -71,40 +72,46 @@
           countryMap[c].count++;
         });
 
-        const elements = Object.entries(countryMap).map(([country, info]) => ({
-          data: { 
-            id: country, 
-            label: `${country}\n${info.count} org${info.count > 1 ? 's' : ''}`,
-            orgs: info.orgs
-          },
-          style: {
-            'background-color': info.count > 3 ? '#FF6B6B' : info.count > 1 ? '#60a5fa' : '#96CEB4',
-            'width': 60 + info.count * 25,
-            'height': 60 + info.count * 25,
-            'text-outline-width': 6,
-            'text-outline-color': '#0f172a',
-            'color': '#e2e8f0',
-            'font-size': 18,
-            'font-weight': 'bold'
-          }
+        const nodes = Object.entries(countryMap).map(([country, info]) => ({
+          id: country,
+          name: country,
+          size: info.count,
+          orgs: info.orgs
         }));
 
-        if (cy) cy.destroy();
+        const links = []; // optional: add connections later
 
-        cy = cytoscape({
-          container: document.getElementById('cy'),
-          elements: elements,
-          style: [{ selector: 'node', style: { 'label': 'data(label)', 'text-valign': 'center', 'text-halign': 'center' } }],
-          layout: { name: 'fcose', animationDuration: 1000, fit: true, nodeRepulsion: 8000 },
-          userZoomingEnabled: true,
-          userPanningEnabled: true
-        });
+        const simulation = d3.forceSimulation(nodes)
+          .force("charge", d3.forceManyBody().strength(-800))
+          .force("center", d3.forceCenter(width/2, height/2))
+          .force("collision", d3.forceCollide().radius(d => d.size * 30))
+          .on("tick", ticked);
 
-        cy.on('tap', 'node', function(evt) {
-          const node = evt.target;
-          const orgs = node.data('orgs');
-          document.getElementById("title").textContent = node.data('id') + " — " + orgs.length + " organizations";
-          document.getElementById("orgs").innerHTML = orgs.map(o => `
+        const node = g.selectAll(".node")
+          .data(nodes)
+          .enter().append("g")
+          .attr("class", "node")
+          .call(d3.drag()
+            .on("start", dragstarted)
+            .on("drag", dragged)
+            .on("end", dragended));
+
+        node.append("circle")
+          .attr("r", d => d.size * 25 + 30)
+          .attr("fill", d => d.size > 3 ? "#FF6B6B" : d.size > 1 ? "#60a5fa" : "#96CEB4")
+          .on("click", clicked);
+
+        node.append("text")
+          .text(d => `${d.name}\n${d.size} org${d.size>1?'s':''}`)
+          .attr("dy", "0.35em");
+
+        function ticked() {
+          node.attr("transform", d => `translate(${d.x},${d.y})`);
+        }
+
+        function clicked(event, d) {
+          document.getElementById("title").textContent = `${d.name} — ${d.orgs.length} organization${d.orgs.length>1?'s':''}`;
+          document.getElementById("orgs").innerHTML = d.orgs.map(o => `
             <div class="org">
               <strong>${o.Name}</strong><br>
               <small>${o.Type} • ${o.Domain}</small><br>
@@ -112,9 +119,17 @@
             </div>
           `).join("");
           document.getElementById("details").style.display = "block";
-        });
+        }
 
-        cy.on('tap', () => document.getElementById("details").style.display = "none");
+        function dragstarted(event, d) {
+          if (!event.active) simulation.alphaTarget(0.3).restart();
+          d.fx = d.x; d.fy = d.y;
+        }
+        function dragged(event, d) { d.fx = event.x; d.fy = event.y; }
+        function dragended(event, d) {
+          if (!event.active) simulation.alphaTarget(0);
+          d.fx = null; d.fy = null;
+        }
       }
     });
   </script>
