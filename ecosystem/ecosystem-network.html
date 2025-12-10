@@ -6,7 +6,7 @@
   <title>African AI Ecosystem — 3D Globe</title>
   <script src="https://unpkg.com/globe.gl"></script>
   <style>
-    body { margin:0; background:#000; overflow:hidden; }
+    body { margin:0; background:#000; overflow:hidden; font-family:'Segoe UI',sans-serif; }
     #globe { width:100vw; height:100vh; }
     
     .title {
@@ -27,14 +27,21 @@
       font-weight:bold; font-size:1rem; margin:0.5rem 0; width:100%;
       box-shadow:0 8px 20px rgba(96,165,250,0.4);
     }
-    .btn:hover { transform:scale(1.05); box-shadow:0 12px 30px rgba(96,165,250,0.6); }
-    
-    .info {
-      position:absolute; bottom:20px; left:20px; background:rgba(0,0,0,0.7);
-      padding:1.5rem 2rem; border-radius:20px; color:#e2e8f0; max-width:420px;
-      backdrop-filter:blur(20px); border:1px solid rgba(96,165,250,0.3);
-      box-shadow:0 10px 30px rgba(0,0,0,0.5);
+    .btn:hover { transform:scale(1.05); }
+
+    .panel {
+      position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+      background:rgba(15,23,42,0.98); padding:2rem 3rem; border-radius:20px;
+      max-width:500px; max-height:80vh; overflow-y:auto;
+      color:#e2e8f0; z-index:100; display:none;
+      box-shadow:0 20px 60px rgba(0,0,0,0.8);
+      border:2px solid #60a5fa;
     }
+    .panel h2 { margin:0 0 1.5rem; color:#60a5fa; text-align:center; font-size:2rem; }
+    .close { position:absolute; top:15px; right:20px; font-size:2rem; cursor:pointer; color:#60a5fa; }
+    .org { background:rgba(255,255,255,0.05); padding:1rem; border-radius:12px; margin:1rem 0; }
+    .org strong { color:#60a5fa; }
+    .org a { color:#a5b4fc; text-decoration:none; font-weight:bold; }
   </style>
 </head>
 <body>
@@ -47,9 +54,11 @@
 
   <div id="globe"></div>
 
-  <div class="info">
-    <strong>Click any glowing dot → Visit startup</strong><br>
-    Drag to explore • Scroll to zoom • Click "Pause" to stop rotation
+  <!-- POPUP PANEL — shows ALL startups in clicked country -->
+  <div class="panel" id="panel">
+    <div class="close" onclick="document.getElementById('panel').style.display='none'">×</div>
+    <h2 id="countryTitle"></h2>
+    <div id="orgList"></div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
@@ -66,71 +75,79 @@
       .atmosphereAltitude(0.25)
       (document.getElementById('globe'));
 
+    // Country coordinates
+    const coords = {
+      "Kenya": [-1.29, 36.82], "Ethiopia": [9.02, 38.75], "Nigeria": [9.08, 7.40],
+      "Ghana": [7.95, -1.02], "South Africa": [-30.56, 22.94], "Rwanda": [-1.94, 29.87],
+      "Cameroon": [3.85, 11.50], "Tunisia": [36.82, 10.17], "Egypt": [26.82, 30.80],
+      "Pan-Africa": [6, 20]
+    };
+
+    // Rainbow colors by Type
+    const typeColor = {
+      "Startup": "#FF6B6B", "Research Lab": "#A55EEA", "Research Institute": "#C56CF0",
+      "Platform": "#4ECDC4", "Community": "#96CEB4", "Innovation Hub": "#FECA57",
+      "Education Institute": "#FF9FF3", "Program": "#54A0FF", "default": "#60A5FA"
+    };
+
+    let allOrgs = [];
+
     Papa.parse(CSV_PATH, {
       download: true,
       header: true,
       complete: function(res) {
-        const data = res.data.filter(r => r.Name && r.Country);
+        allOrgs = res.data.filter(r => r.Name && r.Country);
 
-        const coords = {
-          "Kenya": [-1.29, 36.82], "Ethiopia": [9.02, 38.75], "Nigeria": [9.08, 7.40],
-          "Ghana": [7.95, -1.02], "South Africa": [-30.56, 22.94], "Rwanda": [-1.94, 29.87],
-          "Cameroon": [3.85, 11.50], "Tunisia": [36.82, 10.17], "Egypt": [26.82, 30.80],
-          "Pan-Africa": [6, 20]
-        };
+        // Group by country for popup
+        const countryGroups = {};
+        allOrgs.forEach(org => {
+          const c = (org.Country || "Other").trim();
+          if (!countryGroups[c]) countryGroups[c] = [];
+          countryGroups[c].push(org);
+        });
 
-        // RAINBOW COLORS BY TYPE — small & elegant
-        const typeColor = {
-          "Startup": "#FF6B6B",
-          "Research Lab": "#A55EEA",
-          "Research Institute": "#C56CF0",
-          "Platform": "#4ECDC4",
-          "Community": "#96CEB4",
-          "Innovation Hub": "#FECA57",
-          "Education Institute": "#FF9FF3",
-          "Program": "#54A0FF",
-          "default": "#60A5FA"
-        };
-
-        const points = data.map(org => {
-          const t = (org.Type || "").trim();
+        const points = Object.entries(countryGroups).map(([country, orgs]) => {
+          const t = orgs[0].Type || "default";
           return {
-            lat: coords[org.Country]?.[0] || 6,
-            lng: coords[org.Country]?.[1] || 20,
-            size: 0.8,                    // ← Small & elegant
+            lat: coords[country]?.[0] || 6,
+            lng: coords[country]?.[1] || 20,
+            size: 0.9,
             color: typeColor[t] || typeColor.default,
-            name: org.Name,
-            type: t,
-            domain: org.Domain,
-            website: org.Website,
-            country: org.Country
+            country: country,
+            orgs: orgs
           };
         });
 
         globe
           .pointsData(points)
-          .pointAltitude(0.03)           // ← Lower height = cleaner look
+          .pointAltitude(0.03)
           .pointColor(d => d.color)
-          .pointRadius(d => d.size)      // ← Tiny, beautiful dots
-          .pointLabel(d => `
-            <div style="background:rgba(0,0,0,0.9); padding:12px; border-radius:12px; border:2px solid ${d.color}; min-width:200px; font-size:0.9rem;">
-              <b style="color:${d.color}; font-size:1.1rem;">${d.name}</b><br>
-              ${d.type} • ${d.domain}<br>
-              <i>${d.country}</i>
-            </div>
-          `)
-          .onPointClick(point => window.open(point.website, '_blank'));
+          .pointRadius(d => d.size)
+          .pointLabel(d => `<b>${d.country}</b><br>${d.orgs.length} organization${d.orgs.length>1?'s':''}`)
+          .onPointClick(point => showCountryPanel(point));
 
-        // Auto-rotate + pause button
         globe.controls().autoRotate = true;
         globe.controls().autoRotateSpeed = 0.6;
-
-        document.getElementById('toggleRotate').addEventListener('click', function() {
-          const rotating = globe.controls().autoRotate;
-          globe.controls().autoRotate = !rotating;
-          this.textContent = rotating ? "Resume Rotation" : "Pause Rotation";
-        });
       }
+    });
+
+    function showCountryPanel(point) {
+      const orgs = point.orgs;
+      document.getElementById("countryTitle").textContent = `${point.country} — ${orgs.length} Active AI Organizations`;
+      document.getElementById("orgList").innerHTML = orgs.map(o => `
+        <div class="org">
+          <strong>${o.Name}</strong><br>
+          <small>${o.Type} • ${o.Domain}</small><br>
+          ${o.Website ? `<a href="${o.Website}" target="_blank">Visit Website →</a>` : ""}
+        </div>
+      `).join("");
+      document.getElementById("panel").style.display = "block";
+    }
+
+    document.getElementById('toggleRotate').addEventListener('click', function() {
+      const rotating = globe.controls().autoRotate;
+      globe.controls().autoRotate = !rotating;
+      this.textContent = rotating ? "Resume Rotation" : "Pause Rotation";
     });
   </script>
 </body>
