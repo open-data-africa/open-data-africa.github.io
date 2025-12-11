@@ -2,276 +2,224 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Open Data Africa – Datasets</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Use Case Explorer – Open Data Africa</title>
 <link rel="stylesheet" href="style.css" />
-
 <style>
-/* General layout */
-body {
-  font-family: Arial, sans-serif;
-}
+  body { font-family: 'Segoe UI', Arial, sans-serif; margin:0; background: #f4f4f9; }
+  nav { background-color: #330000; padding: 1em; }
+  .nav-list { display:flex; justify-content:center; list-style:none; margin:0; padding:0; flex-wrap:wrap; gap:1rem; }
+  .nav-list li a { color:white; text-decoration:none; font-weight:bold; padding:0.3rem 0.6rem; border-radius:4px; }
+  .nav-list li a[aria-current="page"] { color:#ffcc00; background:rgba(255,255,255,0.1); }
 
-/* Hero Section */
-.hero {
-  background: linear-gradient(to right, #000, #333);
-  color: white;
-  padding: 4rem 2rem;
-  text-align: center;
-}
-.hero h1 {
-  font-size: 2.4rem;
-  margin-bottom: 1rem;
-}
+  main { max-width: 1300px; margin:0 auto; padding:2rem 1rem; }
+  h1 { text-align:center; color:#330000; margin-bottom:0.5rem; font-size:2.2rem; }
+  p.intro { text-align:center; max-width:900px; margin:0 auto 2rem; color:#555; font-size:1.05rem; }
 
-/* Metrics box */
-.metrics {
-  text-align: center;
-  margin: 2rem auto;
-  padding: 1.5rem;
-  background: rgba(96,165,250,0.1);
-  border-radius: 16px;
-  font-size: 1.1rem;
-  border: 1px solid rgba(96,165,250,0.3);
-  max-width: 700px;
-}
-.metrics span {
-  font-weight: bold;
-  color: #60a5fa;
-  font-size: 1.4rem;
-}
+  /* Summary cards */
+  .summary-wrapper { display:flex; justify-content:center; flex-wrap:wrap; gap:1rem; margin-bottom:2rem; }
+  .summary-card { background:#fff; padding:1.2rem 1.5rem; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.08); font-weight:bold; text-align:center; min-width:160px; font-size:1.1rem; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+  .summary-card:hover { transform:translateY(-5px); box-shadow:0 8px 20px rgba(0,0,0,0.12); }
 
-/* Country Table */
-.stats-table {
-  margin: 2rem auto;
-  width: 80%;
-  border-collapse: collapse;
-}
-.stats-table th,
-.stats-table td {
-  padding: 10px 14px;
-  border: 1px solid #ddd;
-  text-align: center;
-}
-.stats-table th {
-  background: #e9f2ff;
-  color: #333;
-  font-weight: bold;
-}
-.stats-heading {
-  text-align: center;
-  margin-top: 3rem;
-  font-size: 1.4rem;
-  font-weight: bold;
-}
+  /* Filters */
+  .filters { display:flex; flex-wrap:wrap; gap:1rem; justify-content:center; margin-bottom:2rem; }
+  .filters input, .filters select { padding:0.6rem 0.8rem; font-size:1rem; border-radius:6px; border:1px solid #ccc; transition: border-color 0.2s; }
+  .filters input:focus, .filters select:focus { border-color:#330000; outline:none; }
 
-/* Buttons */
-.button {
-  background: #0066ff;
-  color: #fff;
-  padding: 12px 22px;
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: bold;
-}
-.button:hover {
-  background: #004ed6;
-}
-.button-outline {
-  border: 2px solid #0066ff;
-  padding: 12px 22px;
-  border-radius: 8px;
-  color: #0066ff;
-  text-decoration: none;
-  font-weight: bold;
-}
-.button-outline:hover {
-  background: #e6f0ff;
-}
+  /* Cards Grid */
+  .usecase-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(300px,1fr)); gap:1.5rem; }
+  .usecase-card { background:#fff; border-left:6px solid #aa0000; padding:1rem 1.5rem; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.06); transition: transform 0.3s ease, box-shadow 0.3s ease; position:relative; overflow:hidden; }
+  .usecase-card:hover { transform:translateY(-6px); box-shadow:0 10px 25px rgba(0,0,0,0.12); }
+  .usecase-card h3 { margin-top:0; font-size:1.3rem; color:#330000; }
+  .usecase-card p { font-size:0.95rem; color:#555; margin:0.25rem 0; }
+  .dataset-link { display:inline-block; margin-top:0.5rem; color:#0066cc; font-weight:600; text-decoration:none; transition: color 0.2s; }
+  .dataset-link:hover { text-decoration:underline; color:#003366; }
 
-/* Side-by-side buttons */
-.button-row {
-  display: flex;
-  justify-content: center;
-  gap: 1.5rem;
-  margin: 2.5rem 0;
-  flex-wrap: wrap;
-}
-.button-row a {
-  min-width: 260px;
-  text-align: center;
-}
+  /* Domain label colors and tooltip */
+  .domain-label { display:inline-block; padding:0.25rem 0.5rem; border-radius:4px; color:#fff; font-size:0.8rem; margin-right:0.3rem; position:relative; cursor:default; }
+  .domain-label:hover::after {
+    content: attr(data-tooltip);
+    position:absolute;
+    bottom:125%; left:50%;
+    transform:translateX(-50%);
+    background:rgba(0,0,0,0.75);
+    color:#fff; font-size:0.75rem;
+    padding:0.2rem 0.4rem;
+    border-radius:4px;
+    white-space:nowrap;
+    z-index:10;
+  }
 
-/* Footer */
-footer {
-  text-align: center;
-  margin-top: 3rem;
-  padding: 1.5rem 0;
-  background: #000;
-  color: white;
-}
+  /* Domain Colors */
+  .domain-NLP { background:#9b59b6; }
+  .domain-Agriculture { background:#2ecc71; }
+  .domain-Healthcare { background:#e74c3c; }
+  .domain-Environment { background:#3498db; }
+  .domain-EnergyClimateGeospatial { background:#f39c12; }
+  .domain-Socioeconomic { background:#1abc9c; }
+  .domain-Genomics { background:#8e44ad; }
+  .domain-PublicOpinion { background:#d35400; }
+  .domain-PeaceSecurity { background:#c0392b; }
+  .domain-Mobility { background:#16a085; }
+  .domain-Education { background:#f1c40f; }
+  .domain-Demographics { background:#7f8c8d; }
+  .domain-Multiple { background:#34495e; }
+  .domain-DigitalInfrastructure { background:#e67e22; }
+  .domain-Other { background:#7f8c8d; }
+
+  /* Footer */
+  footer { text-align:center; padding:1.5rem 0; border-top:1px solid #ddd; font-size:0.9rem; color:#666; background:#f9f9f9; margin-top:3rem; }
+
+  /* Card fade-in animation */
+  .fade-in { animation: fadeIn 0.4s ease forwards; opacity:0; }
+  @keyframes fadeIn { to { opacity:1; } }
 </style>
 </head>
-
 <body>
 
 <!-- Navigation -->
 <nav>
-<ul class="nav-list">
-<li><a href="index.html">Home</a></li>
-<li><a href="about.html">About</a></li>
-<li><a href="datasets.html" aria-current="page">Datasets</a></li>
-<li><a href="use-cases.html">Use Cases</a></li>
-<li><a href="resources.html">Resources</a></li>
-<li><a href="contribute.html">Contribute</a></li>
-<li><a href="contact.html">Contact</a></li>
-</ul>
+  <ul class="nav-list">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="datasets.html">Datasets</a></li>
+    <li><a href="use-cases.html" aria-current="page">Use Cases</a></li>
+    <li><a href="resources.html">Resources</a></li>
+    <li><a href="contribute.html">Contribute</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
 </nav>
 
-<!-- Hero -->
-<section class="hero">
-<h1>Access Our Dataset Catalogue</h1>
-<p>
-We collect and catalogue openly licensed datasets relevant to Africa that support the development of AI solutions across the continent. These datasets cover agriculture, health, language, climate, environment, and more, all focused on accessibility and responsible reuse.
-</p>
-</section>
+<main>
+  <h1>🌍 Use Case Explorer</h1>
+  <p class="intro">
+    Explore AI and open data use cases across Africa. Filter by country, domain, or dataset type to discover how datasets are powering innovation.
+  </p>
 
-<main class="container">
-<p><strong>Explore our full dataset catalogue:</strong></p>
+  <!-- Summary Stats -->
+  <div class="summary-wrapper">
+    <div class="summary-card" id="totalDatasets">Datasets: 0</div>
+    <div class="summary-card" id="totalCountries">Countries: 0</div>
+    <div class="summary-card" id="totalDomains">Domains: 0</div>
+    <div class="summary-card" id="totalTypes">Data Types: 0</div>
+  </div>
 
-<!-- DOWNLOAD + CONTRIBUTE SIDE-BY-SIDE -->
-<div class="button-row">
-  <a href="datasets/Open%20Datasets%20Africa.xlsx"
-     class="button"
-     download
-     id="downloadBtn">
-     📥 Download Dataset Catalogue (Excel)
-  </a>
+  <!-- Filters -->
+  <div class="filters">
+    <input type="text" id="searchInput" placeholder="Search by use case name..." />
+    <select id="countryFilter"><option value="">All Countries</option></select>
+    <select id="domainFilter"><option value="">All Domains</option></select>
+    <select id="typeFilter"><option value="">All Data Types</option></select>
+  </div>
 
-  <a href="contribute.html" class="button-outline">
-     🤝 Share Your Dataset
-  </a>
-</div>
-
-<!-- Metrics -->
-<div class="metrics">
-  <p>Total Downloads: <span id="downloadCount">Loading...</span></p>
-  <p>Unique Visitors: <span id="visitorCount">Loading...</span></p>
-  <p><small>Last updated: <span id="lastUpdate">—</span></small></p>
-</div>
-
-<h3 class="stats-heading">🌍 Downloads & Visits by Country</h3>
-
-<table class="stats-table">
-<thead>
-<tr>
-<th>Country</th>
-<th>Visits</th>
-<th>Downloads</th>
-</tr>
-</thead>
-<tbody id="countryStats"></tbody>
-</table>
-
+  <!-- Use Case Cards -->
+  <div class="usecase-grid" id="usecaseGrid"></div>
 </main>
 
 <footer>
-<p>© 2025 Open Data Africa. Powered by AI Made in Africa.</p>
+  &copy; 2025 Open Data Africa – Powered by AI Made in Africa
 </footer>
 
-<!-- 📊 LIVE METRICS SCRIPT -->
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <script>
-const BIN_ID = "693a77f7d0ea881f40216983";
-const API_KEY = "$2a$10$OX/sVa0zzJhjrVuZ7Ntdn.vR1l3";
+  const usecaseGrid = document.getElementById("usecaseGrid");
+  const searchInput = document.getElementById("searchInput");
+  const countryFilter = document.getElementById("countryFilter");
+  const domainFilter = document.getElementById("domainFilter");
+  const typeFilter = document.getElementById("typeFilter");
 
-// Get user country via IP
-async function getCountry() {
-  try {
-    const res = await fetch("https://ipapi.co/json/");
-    const data = await res.json();
-    return data.country_name || "Unknown";
-  } catch {
-    return "Unknown";
+  const totalDatasets = document.getElementById("totalDatasets");
+  const totalCountries = document.getElementById("totalCountries");
+  const totalDomains = document.getElementById("totalDomains");
+  const totalTypes = document.getElementById("totalTypes");
+
+  let usecases = [];
+
+  // Animate summary counters
+  function animateValue(element, start, end, duration) {
+    let range = end - start;
+    let current = start;
+    let increment = end > start ? 1 : -1;
+    let stepTime = Math.abs(Math.floor(duration / range));
+    let timer = setInterval(function() {
+      current += increment;
+      element.textContent = element.id === 'totalDatasets' ? `Datasets: ${current}` :
+                            element.id === 'totalCountries' ? `Countries: ${current}` :
+                            element.id === 'totalDomains' ? `Domains: ${current}` :
+                            `Data Types: ${current}`;
+      if(current == end) clearInterval(timer);
+    }, stepTime);
   }
-}
 
-// Load all stats
-async function getStats() {
-  const res = await fetch(
-    `https://api.jsonbin.io/v3/b/${BIN_ID}/latest`,
-    { headers: { "X-Master-Key": API_KEY } }
-  );
-  const json = await res.json();
-  return json.record;
-}
-
-// Update stats
-async function updateStats(updated) {
-  await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      "X-Master-Key": API_KEY
-    },
-    body: JSON.stringify(updated)
+  // Load CSV
+  Papa.parse("datasets/catalog.csv", {
+    download: true,
+    header: true,
+    complete: function(results) {
+      usecases = results.data.filter(d => d["Dataset Name"]);
+      populateFilters();
+      renderUsecases();
+      animateSummary();
+    }
   });
-}
 
-// Track visitor
-async function trackVisitor() {
-  const country = await getCountry();
-  const stats = await getStats();
+  function populateFilters() {
+    const countries = [...new Set(usecases.map(u => u.Country).filter(Boolean))].sort();
+    const domains = [...new Set(usecases.map(u => u.Domain).filter(Boolean))].sort();
+    const types = [...new Set(usecases.map(u => u["Data Type"]).filter(Boolean))].sort();
 
-  stats.visitors += 1;
-
-  if (!stats.countries[country]) {
-    stats.countries[country] = { visits: 0, downloads: 0 };
+    countries.forEach(c => countryFilter.innerHTML += `<option value="${c}">${c}</option>`);
+    domains.forEach(d => domainFilter.innerHTML += `<option value="${d}">${d}</option>`);
+    types.forEach(t => typeFilter.innerHTML += `<option value="${t}">${t}</option>`);
   }
-  stats.countries[country].visits += 1;
 
-  await updateStats(stats);
-  renderStats(stats);
-}
-
-// Track download
-async function trackDownload() {
-  const country = await getCountry();
-  const stats = await getStats();
-
-  stats.downloads += 1;
-
-  if (!stats.countries[country]) {
-    stats.countries[country] = { visits: 0, downloads: 0 };
+  function animateSummary() {
+    animateValue(totalDatasets, 0, usecases.length, 800);
+    animateValue(totalCountries, 0, [...new Set(usecases.map(u=>u.Country))].length, 800);
+    animateValue(totalDomains, 0, [...new Set(usecases.map(u=>u.Domain))].length, 800);
+    animateValue(totalTypes, 0, [...new Set(usecases.map(u=>u["Data Type"]))].length, 800);
   }
-  stats.countries[country].downloads += 1;
 
-  await updateStats(stats);
-  renderStats(stats);
-}
+  function renderUsecases() {
+    const search = searchInput.value.toLowerCase();
+    const country = countryFilter.value;
+    const domain = domainFilter.value;
+    const type = typeFilter.value;
 
-// Render table + totals
-function renderStats(stats) {
-  document.getElementById("downloadCount").textContent = stats.downloads;
-  document.getElementById("visitorCount").textContent = stats.visitors;
-  document.getElementById("lastUpdate").textContent = new Date().toLocaleString();
+    const filtered = usecases.filter(u => {
+      return (!search || u["Dataset Name"].toLowerCase().includes(search)) &&
+             (!country || u.Country === country) &&
+             (!domain || u.Domain === domain) &&
+             (!type || u["Data Type"] === type);
+    });
 
-  let rows = "";
-  for (const [country, data] of Object.entries(stats.countries)) {
-    rows += `
-      <tr>
-        <td>${country}</td>
-        <td>${data.visits}</td>
-        <td>${data.downloads}</td>
-      </tr>`;
+    usecaseGrid.innerHTML = filtered.map(u => {
+      let domainName = u.Domain ? u.Domain.trim() : 'Other';
+
+      // Normalize for CSS class
+      let domainClass = domainName.replace(/[, &]/g,'').replace(/\s+/g,'');
+      const validDomains = ["NLP","Agriculture","Healthcare","Environment","EnergyClimateGeospatial","Socioeconomic","Genomics","PublicOpinion","PeaceSecurity","Mobility","Education","Demographics","Multiple","DigitalInfrastructure"];
+      if(!validDomains.includes(domainClass)) domainClass = 'Other';
+
+      const tooltipText = `Domain: ${domainName}`;
+      return `
+        <div class="usecase-card fade-in">
+          <h3>${u["Dataset Name"]}</h3>
+          <p><strong>Country:</strong> ${u.Country}</p>
+          <p><strong>Domain:</strong> <span class="domain-label ${'domain-'+domainClass}" data-tooltip="${tooltipText}">${domainName}</span></p>
+          <p><strong>Data Type:</strong> ${u["Data Type"]}</p>
+          <p><strong>License:</strong> ${u.License}</p>
+          <p><strong>Use Case:</strong> ${u["Use Cases"] || 'N/A'}</p>
+          ${u.Link ? `<a href="${u.Link}" target="_blank" class="dataset-link">View Dataset</a>` : ""}
+        </div>
+      `;
+    }).join("") || `<p style="text-align:center; color:#777; font-size:1.05rem;">No use cases found.</p>`;
   }
-  document.getElementById("countryStats").innerHTML = rows;
-}
 
-// Bind download click
-document.getElementById("downloadBtn").addEventListener("click", trackDownload);
-
-// Initialize on load
-trackVisitor();
+  searchInput.addEventListener("input", renderUsecases);
+  countryFilter.addEventListener("change", renderUsecases);
+  domainFilter.addEventListener("change", renderUsecases);
+  typeFilter.addEventListener("change", renderUsecases);
 </script>
 
 </body>
