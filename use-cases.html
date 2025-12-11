@@ -1,220 +1,226 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Use Cases – Open Data Africa</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-  <style>
-    .hero {
-      background-color: #f4f4f4;
-      padding: 3rem 1rem;
-      text-align: center;
-      border-bottom: 1px solid #ddd;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Use Case Explorer – Open Data Africa</title>
+<link rel="stylesheet" href="style.css" />
+<style>
+  body { font-family: 'Segoe UI', Arial, sans-serif; margin:0; background: #f4f4f9; }
+  nav { background-color: #330000; padding: 1em; }
+  .nav-list { display:flex; justify-content:center; list-style:none; margin:0; padding:0; flex-wrap:wrap; gap:1rem; }
+  .nav-list li a { color:white; text-decoration:none; font-weight:bold; padding:0.3rem 0.6rem; border-radius:4px; }
+  .nav-list li a[aria-current="page"] { color:#ffcc00; background:rgba(255,255,255,0.1); }
 
-    .hero h1 {
-      font-size: 2.5rem;
-      margin-bottom: 0.5rem;
-    }
+  main { max-width: 1300px; margin:0 auto; padding:2rem 1rem; }
+  h1 { text-align:center; color:#330000; margin-bottom:0.5rem; font-size:2.2rem; }
+  p.intro { text-align:center; max-width:900px; margin:0 auto 2rem; color:#555; font-size:1.05rem; }
 
-    .hero p {
-      font-size: 1.1rem;
-      max-width: 700px;
-      margin: 0 auto;
-      color: #555;
-    }
+  /* Summary cards */
+  .summary-wrapper { display:flex; justify-content:center; flex-wrap:wrap; gap:1rem; margin-bottom:2rem; }
+  .summary-card { background:#fff; padding:1.2rem 1.5rem; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.08); font-weight:bold; text-align:center; min-width:160px; font-size:1.1rem; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+  .summary-card:hover { transform:translateY(-5px); box-shadow:0 8px 20px rgba(0,0,0,0.12); }
 
-    .filters {
-      margin: 2rem auto;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      align-items: center;
-      max-width: 800px;
-      padding: 0 1rem;
-    }
+  /* Filters */
+  .filters { display:flex; flex-wrap:wrap; gap:1rem; justify-content:center; margin-bottom:2rem; }
+  .filters input, .filters select { padding:0.6rem 0.8rem; font-size:1rem; border-radius:6px; border:1px solid #ccc; transition: border-color 0.2s; }
+  .filters input:focus, .filters select:focus { border-color:#330000; outline:none; }
 
-    .filters input {
-      padding: 12px;
-      font-size: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      width: 100%;
-      max-width: 600px;
-    }
+  /* Cards Grid */
+  .usecase-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(300px,1fr)); gap:1.5rem; }
+  .usecase-card { background:#fff; border-left:6px solid #aa0000; padding:1rem 1.5rem; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.06); transition: transform 0.3s ease, box-shadow 0.3s ease; position:relative; overflow:hidden; }
+  .usecase-card:hover { transform:translateY(-6px); box-shadow:0 10px 25px rgba(0,0,0,0.12); }
+  .usecase-card h3 { margin-top:0; font-size:1.3rem; color:#330000; }
+  .usecase-card p { font-size:0.95rem; color:#555; margin:0.25rem 0; }
+  .dataset-link { display:inline-block; margin-top:0.5rem; color:#0066cc; font-weight:600; text-decoration:none; transition: color 0.2s; }
+  .dataset-link:hover { text-decoration:underline; color:#003366; }
 
-    .filter-selects {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      justify-content: center;
-      width: 100%;
-    }
+  /* Domain label colors and tooltip */
+  .domain-label { display:inline-block; padding:0.25rem 0.5rem; border-radius:4px; color:#fff; font-size:0.8rem; margin-right:0.3rem; position:relative; cursor:default; }
+  .domain-label:hover::after {
+    content: attr(data-tooltip);
+    position:absolute;
+    bottom:125%; left:50%;
+    transform:translateX(-50%);
+    background:rgba(0,0,0,0.75);
+    color:#fff; font-size:0.75rem;
+    padding:0.2rem 0.4rem;
+    border-radius:4px;
+    white-space:nowrap;
+    z-index:10;
+  }
 
-    .filter-selects select {
-      padding: 10px;
-      font-size: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      min-width: 200px;
-      flex: 1;
-      max-width: 300px;
-    }
+  /* Domain Colors */
+  .domain-NLP { background:#9b59b6; }
+  .domain-Agriculture { background:#2ecc71; }
+  .domain-Healthcare { background:#e74c3c; }
+  .domain-Environment { background:#3498db; }
+  .domain-EnergyClimateGeospatial { background:#f39c12; }
+  .domain-Socioeconomic { background:#1abc9c; }
+  .domain-Genomics { background:#8e44ad; }
+  .domain-PublicOpinion { background:#d35400; }
+  .domain-PeaceSecurity { background:#c0392b; }
+  .domain-Mobility { background:#16a085; }
+  .domain-Education { background:#f1c40f; }
+  .domain-Demographics { background:#7f8c8d; }
+  .domain-Multiple { background:#34495e; }
+  .domain-DigitalInfrastructure { background:#e67e22; }
+  .domain-Other { background:#7f8c8d; }
 
-    .card-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 1.5rem;
-      margin-bottom: 3rem;
-      padding: 0 1rem;
-    }
+  /* Footer */
+  footer { text-align:center; padding:1.5rem 0; border-top:1px solid #ddd; font-size:0.9rem; color:#666; background:#f9f9f9; margin-top:3rem; }
 
-    .card {
-      background: #ffffff;
-      border: 1px solid #ddd;
-      border-left: 5px solid #aa0000;
-      border-radius: 8px;
-      padding: 1rem;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    }
-
-    .card h3 {
-      margin-top: 0;
-    }
-
-    footer {
-      text-align: center;
-      padding: 1.5rem 0;
-      border-top: 1px solid #ddd;
-      font-size: 0.9rem;
-      color: #666;
-      background-color: #f9f9f9;
-    }
-  </style>
+  /* Card fade-in animation */
+  .fade-in { animation: fadeIn 0.4s ease forwards; opacity:0; }
+  @keyframes fadeIn { to { opacity:1; } }
+</style>
 </head>
 <body>
 
-  <!-- Navigation -->
-  <nav>
-    <ul class="nav-list">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="datasets.html">Datasets</a></li>
-      <li><a href="use-cases.html" aria-current="page">Use Cases</a></li>
-      <li><a href="resources.html">Resources</a></li>
-      <li><a href="contribute.html">Contribute</a></li>
-      <li><a href="contact.html">Contact</a></li>
-    </ul>
-  </nav>
+<!-- Navigation -->
+<nav>
+  <ul class="nav-list">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="datasets.html">Datasets</a></li>
+    <li><a href="use-cases.html" aria-current="page">Use Cases</a></li>
+    <li><a href="resources.html">Resources</a></li>
+    <li><a href="contribute.html">Contribute</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+</nav>
 
-<!-- Hero Section -->
-<section class="hero">
-  <h1>Explore Use Cases</h1>
-  <p>
-    Dive into a comprehensive collection of real-world examples showcasing how open data is transforming domains and communities across Africa. From boosting agricultural productivity and enhancing healthcare delivery to fostering smart city initiatives and advancing artificial intelligence research, these use cases illustrate the powerful impact of data transparency and accessibility. Use the search function or apply filters by domain or country to quickly find case studies that inspire innovation and demonstrate the practical benefits of open data in your area of interest.
+<main>
+  <h1>🌍 Use Case Explorer</h1>
+  <p class="intro">
+    Explore AI and open data use cases across Africa. Filter by country, domain, or dataset type to discover how datasets are powering innovation.
   </p>
-</section>
-<style>
-  .hero p {
-    text-align: justify;
+
+  <!-- Summary Stats -->
+  <div class="summary-wrapper">
+    <div class="summary-card" id="totalDatasets">Datasets: 0</div>
+    <div class="summary-card" id="totalCountries">Countries: 0</div>
+    <div class="summary-card" id="totalDomains">Domains: 0</div>
+    <div class="summary-card" id="totalTypes">Data Types: 0</div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters">
+    <input type="text" id="searchInput" placeholder="Search by use case name..." />
+    <select id="countryFilter"><option value="">All Countries</option></select>
+    <select id="domainFilter"><option value="">All Domains</option></select>
+    <select id="typeFilter"><option value="">All Data Types</option></select>
+  </div>
+
+  <!-- Use Case Cards -->
+  <div class="usecase-grid" id="usecaseGrid"></div>
+</main>
+
+<footer>
+  &copy; 2025 Open Data Africa – Powered by AI Made in Africa
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+<script>
+  const usecaseGrid = document.getElementById("usecaseGrid");
+  const searchInput = document.getElementById("searchInput");
+  const countryFilter = document.getElementById("countryFilter");
+  const domainFilter = document.getElementById("domainFilter");
+  const typeFilter = document.getElementById("typeFilter");
+
+  const totalDatasets = document.getElementById("totalDatasets");
+  const totalCountries = document.getElementById("totalCountries");
+  const totalDomains = document.getElementById("totalDomains");
+  const totalTypes = document.getElementById("totalTypes");
+
+  let usecases = [];
+
+  // Animate summary counters
+  function animateValue(element, start, end, duration) {
+    let range = end - start;
+    let current = start;
+    let increment = end > start ? 1 : -1;
+    let stepTime = Math.abs(Math.floor(duration / range));
+    let timer = setInterval(function() {
+      current += increment;
+      element.textContent = element.id === 'totalDatasets' ? `Datasets: ${current}` :
+                            element.id === 'totalCountries' ? `Countries: ${current}` :
+                            element.id === 'totalDomains' ? `Domains: ${current}` :
+                            `Data Types: ${current}`;
+      if(current == end) clearInterval(timer);
+    }, stepTime);
   }
-</style>
-  <main class="wrapper">
 
-    <!-- Filters -->
-    <div class="filters">
-      <input type="text" id="searchInput" placeholder="🔍 Search use cases by keywords..." />
-      <div class="filter-selects">
-        <select id="domainFilter">
-          <option value="">All Domains</option>
-        </select>
-        <select id="countryFilter">
-          <option value="">All Countries</option>
-        </select>
-      </div>
-    </div>
+  // Load CSV
+  Papa.parse("datasets/catalog.csv", {
+    download: true,
+    header: true,
+    complete: function(results) {
+      usecases = results.data.filter(d => d["Dataset Name"]);
+      populateFilters();
+      renderUsecases();
+      animateSummary();
+    }
+  });
 
-    <!-- Cards -->
-    <div id="useCasesContainer" class="card-grid">
-      <!-- Cards will be dynamically inserted here -->
-    </div>
-  </main>
+  function populateFilters() {
+    const countries = [...new Set(usecases.map(u => u.Country).filter(Boolean))].sort();
+    const domains = [...new Set(usecases.map(u => u.Domain).filter(Boolean))].sort();
+    const types = [...new Set(usecases.map(u => u["Data Type"]).filter(Boolean))].sort();
 
-  <footer>
-    &copy; 2025 Open Data Africa. All rights reserved.
-  </footer>
+    countries.forEach(c => countryFilter.innerHTML += `<option value="${c}">${c}</option>`);
+    domains.forEach(d => domainFilter.innerHTML += `<option value="${d}">${d}</option>`);
+    types.forEach(t => typeFilter.innerHTML += `<option value="${t}">${t}</option>`);
+  }
 
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      Papa.parse("datasets/catalog.csv", {
-        download: true,
-        header: true,
-        complete: function (results) {
-          const data = results.data;
+  function animateSummary() {
+    animateValue(totalDatasets, 0, usecases.length, 800);
+    animateValue(totalCountries, 0, [...new Set(usecases.map(u=>u.Country))].length, 800);
+    animateValue(totalDomains, 0, [...new Set(usecases.map(u=>u.Domain))].length, 800);
+    animateValue(totalTypes, 0, [...new Set(usecases.map(u=>u["Data Type"]))].length, 800);
+  }
 
-          const domainSet = new Set();
-          const countrySet = new Set();
+  function renderUsecases() {
+    const search = searchInput.value.toLowerCase();
+    const country = countryFilter.value;
+    const domain = domainFilter.value;
+    const type = typeFilter.value;
 
-          data.forEach(row => {
-            if (row.Domain) domainSet.add(row.Domain.trim());
-            if (row.Country) countrySet.add(row.Country.trim());
-          });
-
-          const domainFilter = document.getElementById("domainFilter");
-          const countryFilter = document.getElementById("countryFilter");
-
-          [...domainSet].sort().forEach(domain => {
-            domainFilter.innerHTML += `<option value="${domain}">${domain}</option>`;
-          });
-
-          [...countrySet].sort().forEach(country => {
-            countryFilter.innerHTML += `<option value="${country}">${country}</option>`;
-          });
-
-          function renderCards(filterText = "", domain = "", country = "") {
-            const container = document.getElementById("useCasesContainer");
-            container.innerHTML = "";
-
-            data.forEach(row => {
-              const matchesSearch = row["Use Cases"]?.toLowerCase().includes(filterText.toLowerCase());
-              const matchesDomain = !domain || row.Domain === domain;
-              const matchesCountry = !country || row.Country === country;
-
-              if (matchesSearch && matchesDomain && matchesCountry) {
-                const card = document.createElement("div");
-                card.className = "card";
-                card.innerHTML = `
-                  <h3>${row["Dataset Name"] || "Unnamed Dataset"}</h3>
-                  <p><strong>Use Case:</strong> ${row["Use Cases"] || "N/A"}</p>
-                  <p><strong>Domain:</strong> ${row.Domain || "N/A"}</p>
-                  <p><strong>Country:</strong> ${row.Country || "N/A"}</p>
-                  <p><strong>Data Type:</strong> ${row["Data Type"] || "N/A"}</p>
-                  <p><strong>Access:</strong> ${row["License"] || "N/A"}</p>
-                `;
-                container.appendChild(card);
-              }
-            });
-          }
-
-          renderCards();
-
-          document.getElementById("searchInput").addEventListener("input", e => {
-            renderCards(e.target.value, domainFilter.value, countryFilter.value);
-          });
-
-          domainFilter.addEventListener("change", () => {
-            renderCards(searchInput.value, domainFilter.value, countryFilter.value);
-          });
-
-          countryFilter.addEventListener("change", () => {
-            renderCards(searchInput.value, domainFilter.value, countryFilter.value);
-          });
-        }
-      });
+    const filtered = usecases.filter(u => {
+      return (!search || u["Dataset Name"].toLowerCase().includes(search)) &&
+             (!country || u.Country === country) &&
+             (!domain || u.Domain === domain) &&
+             (!type || u["Data Type"] === type);
     });
-  </script>
+
+    usecaseGrid.innerHTML = filtered.map(u => {
+      let domainName = u.Domain ? u.Domain.trim() : 'Other';
+
+      // Normalize for CSS class
+      let domainClass = domainName.replace(/[, &]/g,'').replace(/\s+/g,'');
+      const validDomains = ["NLP","Agriculture","Healthcare","Environment","EnergyClimateGeospatial","Socioeconomic","Genomics","PublicOpinion","PeaceSecurity","Mobility","Education","Demographics","Multiple","DigitalInfrastructure"];
+      if(!validDomains.includes(domainClass)) domainClass = 'Other';
+
+      const tooltipText = `Domain: ${domainName}`;
+      return `
+        <div class="usecase-card fade-in">
+          <h3>${u["Dataset Name"]}</h3>
+          <p><strong>Country:</strong> ${u.Country}</p>
+          <p><strong>Domain:</strong> <span class="domain-label ${'domain-'+domainClass}" data-tooltip="${tooltipText}">${domainName}</span></p>
+          <p><strong>Data Type:</strong> ${u["Data Type"]}</p>
+          <p><strong>License:</strong> ${u.License}</p>
+          <p><strong>Use Case:</strong> ${u["Use Cases"] || 'N/A'}</p>
+          ${u.Link ? `<a href="${u.Link}" target="_blank" class="dataset-link">View Dataset</a>` : ""}
+        </div>
+      `;
+    }).join("") || `<p style="text-align:center; color:#777; font-size:1.05rem;">No use cases found.</p>`;
+  }
+
+  searchInput.addEventListener("input", renderUsecases);
+  countryFilter.addEventListener("change", renderUsecases);
+  domainFilter.addEventListener("change", renderUsecases);
+  typeFilter.addEventListener("change", renderUsecases);
+</script>
 
 </body>
 </html>
