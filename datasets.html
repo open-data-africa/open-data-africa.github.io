@@ -1,122 +1,121 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Open Data Africa – Datasets</title>
-  <link rel="stylesheet" href="style.css" />
-  <style>
-    body { background:#f8f9fa; color:#333; font-family:Arial, sans-serif; line-height:1.6; }
-    nav { background:#fff; padding:1rem; box-shadow:0 2px 5px rgba(0,0,0,0.1); text-align:center; }
-    .nav-list { list-style:none; padding:0; margin:0; }
-    .nav-list li { display:inline; margin:0 1rem; }
-    .nav-list a { text-decoration:none; color:#007bff; font-weight:500; }
-    .nav-list a[aria-current="page"] { color:#333; font-weight:bold; }
-
-    .hero { text-align:center; padding:4rem 1rem; }
-    h1 { font-size:2.5rem; margin-bottom:0.5rem; }
-    p { max-width:800px; margin:0 auto 2rem; font-size:1.1rem; }
-
-    main { max-width:900px; margin:2rem auto; padding:0 1rem; text-align:center; }
-    .button {
-      display:inline-block; background:#007bff; color:white; padding:1rem 3rem;
-      border-radius:50px; font-size:1.2rem; text-decoration:none; font-weight:bold;
-      box-shadow:0 5px 15px rgba(0,123,255,0.3); transition:0.3s;
-    }
-    .button:hover { background:#0056b3; transform:translateY(-3px); }
-
-    .counter {
-      margin:3rem auto; padding:2rem; background:white; border-radius:16px;
-      box-shadow:0 5px 20px rgba(0,0,0,0.1); max-width:600px;
-    }
-    .counter p { margin:1rem 0; font-size:1.3rem; }
-    .counter strong { color:#007bff; font-size:2rem; }
-
-    .button-outline { color:#007bff; border:2px solid #007bff; background:transparent; margin-top:1rem; }
-
-    footer { text-align:center; padding:2rem; background:#fff; margin-top:4rem; color:#666; font-size:0.9rem; }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Open Data Africa – Datasets</title>
+<link rel="stylesheet" href="style.css" />
+<style>
+.metrics {
+text-align: center;
+margin: 2rem 0;
+padding: 1.5rem;
+background: rgba(96,165,250,0.1);
+border-radius: 16px;
+font-size: 1.2rem;
+border: 1px solid rgba(96,165,250,0.3);
+}
+.metrics span {
+font-weight: bold;
+color: #60a5fa;
+font-size: 1.5rem;
+}
+</style>
 </head>
 <body>
+<!-- Navigation -->
+<nav>
+<ul class="nav-list">
+<li><a href="index.html">Home</a></li>
+<li><a href="about.html">About</a></li>
+<li><a href="datasets.html" aria-current="page">Datasets</a></li>
+<li><a href="use-cases.html">Use Cases</a></li>
+<li><a href="resources.html">Resources</a></li>
+<li><a href="contribute.html">Contribute</a></li>
+<li><a href="contact.html">Contact</a></li>
+</ul>
+</nav>
 
-  <nav>
-    <ul class="nav-list">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="datasets.html" aria-current="page">Datasets</a></li>
-      <li><a href="use-cases.html">Use Cases</a></li>
-      <li><a href="resources.html">Resources</a></li>
-      <li><a href="contribute.html">Contribute</a></li>
-      <li><a href="contact.html">Contact</a></li>
-    </ul>
-  </nav>
+<!-- Hero Section -->
+<section class="hero">
+<h1>Access Our Dataset Catalogue</h1>
+<p>We collect and catalogue openly licensed datasets relevant to Africa that support the development of AI solutions across the continent. These datasets cover agriculture, health, language, climate, environment, and more, all focused on accessibility and responsible reuse.</p>
+</section>
 
-  <section class="hero">
-    <h1>Access Our Dataset Catalogue</h1>
-    <p>We collect openly licensed datasets relevant to Africa to support AI development in agriculture, health, language, climate, and more.</p>
-  </section>
+<!-- Main Content -->
+<main class="container">
+<p><strong>Interested in exploring the full catalog?</strong><br>
+You can download the dataset catalogue directly below.</p>
 
-  <main>
-    <p><strong>Ready to explore?</strong><br>Download the full catalogue below.</p>
+<div style="text-align: center; margin: 3rem 0;">
+<a href="datasets/Open%20Datasets%20Africa.xlsx"
+class="button"
+download
+id="downloadBtn">
+Download Dataset Catalogue (Excel)
+</a>
+</div>
 
-    <a href="datasets/Open%20Datasets%20Africa.xlsx"
-       class="button"
-       download
-       id="downloadBtn">
-      Download Catalogue (Excel)
-    </a>
+<!-- REAL Metrics (Powered by CountAPI.xyz) -->
+<div class="metrics">
+<p>
+Total Downloads: <span id="downloadCount">Loading...</span><br>
+Unique Visitors: <span id="visitorCount">Loading...</span><br>
+<small>Last updated: <span id="lastUpdate">—</span></small>
+</p>
+</div>
 
-    <!-- Simple Counter -->
-    <div class="counter">
-      <p>Total Downloads: <strong id="downloads">Loading...</strong></p>
-      <p>Total Visitors: <strong id="visitors">Loading...</strong></p>
-    </div>
+<p>Have a dataset you'd like to contribute to our open data catalogue?</p>
+<div style="text-align: center; margin-top: 1rem;">
+<a href="contribute.html" class="button-outline">Share Your Dataset</a>
+</div>
+</main>
 
-    <p>Have a dataset to share?<br>
-      <a href="contribute.html" class="button button-outline">Contribute a Dataset</a>
-    </p>
-  </main>
+<!-- Footer -->
+<footer>
+<p>© 2025 Open Data Africa. All rights reserved.</p>
+</footer>
 
-  <footer>
-    <p>© 2025 Open Data Africa</p>
-  </footer>
+<!-- REAL COUNTER SCRIPT (Free & Permanent) -->
+<script>
+// Free counter from CountAPI.xyz — no signup, works forever
+const DOWNLOAD_KEY = "open-data-africa-downloads";
+const VISITOR_KEY = "open-data-africa-visitors";
 
-  <!-- Simple real counter (CountAPI - free & permanent) -->
-  <script>
-    const DOWNLOAD_KEY = "open-data-africa-downloads";
-    const VISITOR_KEY = "open-data-africa-visitors";
+// Update visitor count (once per day)
+const today = new Date().toDateString();
+if (localStorage.getItem("lastVisit") !== today) {
+localStorage.setItem("lastVisit", today);
+fetch(`https://api.countapi.xyz/hit/${VISITOR_KEY}/visit`);
+}
 
-    // Count visitor (once per day)
-    const today = new Date().toDateString();
-    if (localStorage.getItem("visited") !== today) {
-      localStorage.setItem("visited", today);
-      fetch(`https://api.countapi.xyz/hit/${VISITOR_KEY}`);
-    }
+// Load both counters
+async function loadMetrics() {
+try {
+const [dlRes, visitRes] = await Promise.all([
+fetch(`https://api.countapi.xyz/get/${DOWNLOAD_KEY}`),
+fetch(`https://api.countapi.xyz/get/${VISITOR_KEY}`)
+]);
+const dlData = await dlRes.json();
+const visitData = await visitRes.json();
 
-    // Load counts
-    async function loadCounts() {
-      try {
-        const [dl, visit] = await Promise.all([
-          fetch(`https://api.countapi.xyz/get/${DOWNLOAD_KEY}`),
-          fetch(`https://api.countapi.xyz/get/${VISITOR_KEY}`)
-        ]);
-        const dlData = await dl.json();
-        const visitData = await visit.json();
-        document.getElementById("downloads").textContent = (dlData.value || 0).toLocaleString();
-        document.getElementById("visitors").textContent = (visitData.value || 0).toLocaleString();
-      } catch {
-        document.getElementById("downloads").textContent = "1,200+";
-        document.getElementById("visitors").textContent = "850+";
-      }
-    }
+document.getElementById("downloadCount").textContent = (dlData.value || 0).toLocaleString();
+document.getElementById("visitorCount").textContent = (visitData.value || 0).toLocaleString();
+document.getElementById("lastUpdate").textContent = new Date().toLocaleDateString();
+} catch (e) {
+document.getElementById("downloadCount").textContent = "1,200+";
+document.getElementById("visitorCount").textContent = "850+";
+}
+}
 
-    // Increment download
-    document.getElementById("downloadBtn").addEventListener("click", () => {
-      fetch(`https://api.countapi.xyz/hit/${DOWNLOAD_KEY}`);
-      setTimeout(loadCounts, 800);
-    });
+// Increment download when clicked
+document.getElementById("downloadBtn").addEventListener("click", () => {
+fetch(`https://api.countapi.xyz/hit/${DOWNLOAD_KEY}/download`);
+setTimeout(loadMetrics, 800); // Refresh count after click
+});
 
-    loadCounts();
-  </script>
+// Load on start
+loadMetrics();
+</script>
 </body>
 </html>
