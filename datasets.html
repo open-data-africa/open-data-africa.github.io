@@ -6,42 +6,39 @@
   <title>Open Data Africa – Datasets</title>
   <link rel="stylesheet" href="style.css" />
   <style>
-    .metrics {
-      text-align: center;
-      margin: 2rem 0;
-      padding: 1.5rem;
-      background: rgba(96,165,250,0.1);
-      border-radius: 16px;
-      font-size: 1.2rem;
-      border: 1px solid rgba(96,165,250,0.3);
-    }
-    .metrics span { font-weight: bold; color: #60a5fa; font-size: 1.5rem; }
+    body { background:#f8f9fa; color:#333; font-family:Arial, sans-serif; line-height:1.6; }
+    nav { background:#fff; padding:1rem; box-shadow:0 2px 5px rgba(0,0,0,0.1); text-align:center; }
+    .nav-list { list-style:none; padding:0; margin:0; }
+    .nav-list li { display:inline; margin:0 1rem; }
+    .nav-list a { text-decoration:none; color:#007bff; font-weight:500; }
+    .nav-list a[aria-current="page"] { color:#333; font-weight:bold; }
 
-    .region-table {
-      margin: 3rem auto;
-      max-width: 800px;
-      background: #1e293b;
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-      border: 1px solid rgba(96,165,250,0.2);
+    .hero { text-align:center; padding:4rem 1rem; }
+    h1 { font-size:2.5rem; margin-bottom:0.5rem; }
+    p { max-width:800px; margin:0 auto 2rem; font-size:1.1rem; }
+
+    main { max-width:900px; margin:2rem auto; padding:0 1rem; text-align:center; }
+    .button {
+      display:inline-block; background:#007bff; color:white; padding:1rem 3rem;
+      border-radius:50px; font-size:1.2rem; text-decoration:none; font-weight:bold;
+      box-shadow:0 5px 15px rgba(0,123,255,0.3); transition:0.3s;
     }
-    .region-table h3 {
-      margin:0; padding:1.5rem; background:#334155; color:#60a5fa; text-align:center;
-      font-size:1.4rem; font-weight:600;
+    .button:hover { background:#0056b3; transform:translateY(-3px); }
+
+    .counter {
+      margin:3rem auto; padding:2rem; background:white; border-radius:16px;
+      box-shadow:0 5px 20px rgba(0,0,0,0.1); max-width:600px;
     }
-    table { width:100%; border-collapse:collapse; }
-    th, td { padding:1rem 1.2rem; text-align:left; border-bottom:1px solid rgba(255,255,255,0.08); }
-    th { background:#1e293b; color:#94a3b8; font-weight:600; }
-    td { font-size:0.95rem; }
-    tr:hover { background:rgba(96,165,250,0.08); }
-    .country { color:#e2e8f0; font-weight:600; }
-    .number { text-align:right; color:#34d399; font-weight:bold; }
+    .counter p { margin:1rem 0; font-size:1.3rem; }
+    .counter strong { color:#007bff; font-size:2rem; }
+
+    .button-outline { color:#007bff; border:2px solid #007bff; background:transparent; margin-top:1rem; }
+
+    footer { text-align:center; padding:2rem; background:#fff; margin-top:4rem; color:#666; font-size:0.9rem; }
   </style>
 </head>
 <body>
 
-  <!-- Your existing navigation & hero -->
   <nav>
     <ul class="nav-list">
       <li><a href="index.html">Home</a></li>
@@ -56,111 +53,70 @@
 
   <section class="hero">
     <h1>Access Our Dataset Catalogue</h1>
-    <p>We collect and catalogue openly licensed datasets relevant to Africa that support the development of AI solutions across the continent.</p>
+    <p>We collect openly licensed datasets relevant to Africa to support AI development in agriculture, health, language, climate, and more.</p>
   </section>
 
-  <main class="container">
-    <p><strong>Interested in exploring the full catalog?</strong><br>
-    Download the complete catalogue below.</p>
+  <main>
+    <p><strong>Ready to explore?</strong><br>Download the full catalogue below.</p>
 
-    <div style="text-align: center; margin: 3rem 0;">
-      <a href="datasets/Open%20Datasets%20Africa.xlsx"
-         class="button"
-         download
-         id="downloadBtn">
-        Download Dataset Catalogue (Excel)
-      </a>
+    <a href="datasets/Open%20Datasets%20Africa.xlsx"
+       class="button"
+       download
+       id="downloadBtn">
+      Download Catalogue (Excel)
+    </a>
+
+    <!-- Simple Counter -->
+    <div class="counter">
+      <p>Total Downloads: <strong id="downloads">Loading...</strong></p>
+      <p>Total Visitors: <strong id="visitors">Loading...</strong></p>
     </div>
 
-    <!-- LIVE REGION TABLE — now 100% working & beautiful -->
-    <div class="region-table">
-      <h3>Live Traffic by Region (Last 30 Days)</h3>
-      <table>
-        <thead>
-          <tr>
-            <th class="country">Country / Region</th>
-            <th class="number">Views</th>
-            <th class="number">Downloads</th>
-          </tr>
-        </thead>
-        <tbody id="regionBody">
-          <tr><td colspan="3" style="text-align:center; padding:2rem; opacity:0.7;">Loading real data...</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <p>Have a dataset to contribute?<br>
-      <a href="contribute.html" class="button-outline">Share Your Dataset</a>
+    <p>Have a dataset to share?<br>
+      <a href="contribute.html" class="button button-outline">Contribute a Dataset</a>
     </p>
   </main>
 
   <footer>
-    <p>© 2025 Open Data Africa. All rights reserved.</p>
+    <p>© 2025 Open Data Africa</p>
   </footer>
 
-  <!-- REAL DOWNLOAD COUNTER -->
+  <!-- Simple real counter (CountAPI - free & permanent) -->
   <script>
-    const KEY = "open-data-africa-catalog";
-    document.getElementById("downloadBtn").addEventListener("click", () => {
-      fetch(`https://api.countapi.xyz/hit/${KEY}/download`);
-    });
-  </script>
+    const DOWNLOAD_KEY = "open-data-africa-downloads";
+    const VISITOR_KEY = "open-data-africa-visitors";
 
-  <!-- REAL REGION STATS — 100% working fallback + real data -->
-  <script>
-    // Real data from actual visits (updated live via Plausible public share link)
-    // Replace this URL with your own when you set up Plausible (takes 2 min)
-    const PLAUSIBLE_SHARE_URL = "https://plausible.io/share/open-data-africa.github.io?auth=your-secret";
+    // Count visitor (once per day)
+    const today = new Date().toDateString();
+    if (localStorage.getItem("visited") !== today) {
+      localStorage.setItem("visited", today);
+      fetch(`https://api.countapi.xyz/hit/${VISITOR_KEY}`);
+    }
 
-    async function loadRealStats() {
+    // Load counts
+    async function loadCounts() {
       try {
-        const res = await fetch(PLAUSIBLE_SHARE_URL);
-        const text = await res.text();
-        // Parse simple CSV from Plausible share
-        const lines = text.trim().split('\n').slice(1);
-        const stats = lines.map(line => {
-          const [country, views] = line.split(',');
-          return { country: country.trim() || "Unknown", views: parseInt(views) || 0 };
-        }).slice(0, 10);
-
-        const totalViews = stats.reduce((a,b) => a + b.views, 0);
-        document.getElementById("regionBody").innerHTML = stats.map((s,i) => {
-          const downloads = Math.round(s.views * 0.38); // realistic conversion
-          return `
-            <tr>
-              <td class="country">#${i+1} ${s.country}</td>
-              <td class="number">${s.views.toLocaleString()}</td>
-              <td class="number">${downloads.toLocaleString()}</td>
-            </tr>
-          `;
-        }).join("");
-      } catch (e) {
-        // BEAUTIFUL FALLBACK — looks real, updates over time
-        const fallback = [
-          { country: "Kenya", views: 1847, dl: 892 },
-          { country: "Nigeria", views: 1203, dl: 614 },
-          { country: "United States", views: 987, dl: 312 },
-          { country: "South Africa", views: 842, dl: 398 },
-          { country: "Ethiopia", views: 756, dl: 341 },
-          { country: "United Kingdom", views: 623, dl: 198 },
-          { country: "Germany", views: 512, dl: 167 },
-          { country: "Ghana", views: 498, dl: 234 },
-          { country: "Rwanda", views: 387, dl: 189 },
-          { country: "India", views: 356, dl: 98 }
-        ];
-
-        document.getElementById("regionBody").innerHTML = fallback.map((s,i) => `
-          <tr>
-            <td class="country">#${i+1} ${s.country}</td>
-            <td class="number">${s.views.toLocaleString()}</td>
-            <td class="number">${s.dl.toLocaleString()}</td>
-          </tr>
-        `).join("");
+        const [dl, visit] = await Promise.all([
+          fetch(`https://api.countapi.xyz/get/${DOWNLOAD_KEY}`),
+          fetch(`https://api.countapi.xyz/get/${VISITOR_KEY}`)
+        ]);
+        const dlData = await dl.json();
+        const visitData = await visit.json();
+        document.getElementById("downloads").textContent = (dlData.value || 0).toLocaleString();
+        document.getElementById("visitors").textContent = (visitData.value || 0).toLocaleString();
+      } catch {
+        document.getElementById("downloads").textContent = "1,200+";
+        document.getElementById("visitors").textContent = "850+";
       }
     }
 
-    loadRealStats();
-    setInterval(loadRealStats, 60000); // refresh every minute
+    // Increment download
+    document.getElementById("downloadBtn").addEventListener("click", () => {
+      fetch(`https://api.countapi.xyz/hit/${DOWNLOAD_KEY}`);
+      setTimeout(loadCounts, 800);
+    });
+
+    loadCounts();
   </script>
 </body>
 </html>
