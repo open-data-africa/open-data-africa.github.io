@@ -1,46 +1,80 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
+<html lang="en"><head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Companies & Startups Already Using These Open Datasets</title>
+  <title>Companies & Startups Using These Open Datasets</title>
+
+  <!-- Icons & PDF library -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
   <style>
-    :root { --primary:#0066cc; --green:#0d7b0d; }
-    body { font-family: system-ui, sans-serif; background:#f8f9fa; margin:0; color:#333; line-height:1.6; }
-    .container { max-width:1300px; margin:0 auto; padding:2rem 1rem; }
-    header { text-align:center; margin-bottom:3rem; }
-    h1 { font-size:2.8rem; margin:0; color:#1a1a1a; }
-    .subtitle { font-size:1.25rem; color:#555; }
-    .controls { display:flex; flex-wrap:wrap; gap:1rem; justify-content:center; margin-bottom:2.5rem; }
-    select, input[type=text] { padding:0.8rem 1rem; border:1px solid #ddd; border-radius:8px; font-size:1rem; min-width:200px; }
-    .gallery { display:grid; grid-template-columns:repeat(auto-fill, minmax(380px,1fr)); gap:2rem; }
+    :root { --primary:#0066cc; --green:#0d7b0d; --red:#d32f2f; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background:#f9fbfc; margin:0; color:#2d3748; line-height:1.6; }
+    .container { max-width:1400px; margin:0 auto; padding:2.5rem 1rem; }
+    header { text-align:center; margin-bottom:3.5rem; }
+    h1 { font-size:3rem; margin:0; color:#1a202c; font-weight:800; }
+    .subtitle { font-size:1.35rem; color:#4a5568; margin-top:0.8rem; }
+
+    .controls { display:flex; flex-wrap:wrap; gap:1.2rem; justify-content:center; margin-bottom:3rem; align-items:center; }
+    select, input[type=text] { padding:0.9rem 1.2rem; border:1px solid #e2e8f0; border-radius:12px; font-size:1rem; min-width:220px; background:white; }
+    select:focus, input:focus { outline:none; border-color:var(--primary); box-shadow:0 0 0 3px rgba(0,102,204,0.1); }
+
+    .gallery { 
+      display:grid; 
+      grid-template-columns:repeat(auto-fill, minmax(400px,1fr)); 
+      gap:2rem; 
+      margin-top:2rem;
+    }
     .card {
-      background:#fff; border-radius:12px; overflow:hidden;
-      box-shadow:0 5px 20px rgba(0,0,0,0.1); transition:0.3s all;
+      background:white; border-radius:16px; overflow:hidden;
+      box-shadow:0 8px 25px rgba(0,0,0,0.08); 
+      transition:all 0.35s ease;
+      border:1px solid #edf2f7;
     }
-    .card:hover { transform:translateY(-10px); box-shadow:0 20px 40px rgba(0,0,0,0.18); }
+    .card:hover { transform:translateY(-12px); box-shadow:0 20px 40px rgba(0,0,0,0.15); }
     .card img {
-      width:90px; height:90px; object-fit:contain; background:#f8f8f8;
-      padding:15px; border-bottom:1px solid #eee;
+      width:100px; height:height:100px; object-fit:contain; background:#f7fafc;
+      padding:20px; border-bottom:1px solid #e2e8f0;
     }
-    .info { padding:1.4rem; }
-    .info h3 a { color:var(--primary); text-decoration:none; font-size:1.35rem; }
+    .info { padding:1.6rem; }
+    .info h3 a { color:var(--primary); text-decoration:none; font-size:1.45rem; font-weight:700; }
     .info h3 a:hover { text-decoration:underline; }
-    .meta { font-size:0.95rem; color:#555; margin:0.4rem 0; }
-    .domain { color:var(--green); font-weight:bold; }
+    .meta { font-size:0.98rem; color:#718096; margin:0.5rem 0; }
+    .domain { color:var(--green); font-weight:700; font-size:1rem; }
     .funding {
-      display:inline-block; background:#e6f4ea; color:var(--green);
-      padding:0.5rem 1rem; border-radius:30px; font-weight:bold; margin:0.7rem 0;
+      display:inline-block; background:#e6fff2; color:var(--green);
+      padding:0.6rem 1.2rem; border-radius:30px; font-weight:800; font-size:0.9rem;
+      margin:0.8rem 0 1.2rem;
     }
-    .tags { margin:1rem 0; }
+    .tags { margin:1.2rem 0; }
     .tag {
-      display:inline-block; background:#e3f2fd; color:#1565c0;
-      padding:0.4rem 0.9rem; border-radius:30px; font-size:0.85rem;
-      text-decoration:none; margin-right:0.5rem; margin-bottom:0.5rem;
+      display:inline-block; background:#ebf8ff; color:#2b6cb0;
+      padding:0.45rem 1rem; border-radius:30px; font-size:0.88rem;
+      text-decoration:none; margin:0 0.6rem 0.6rem 0;
+      transition:0.2s;
     }
-    .tag:hover { background:#bbdefb; }
-    footer { text-align:center; margin-top:5rem; padding:2rem; color:#666; font-size:0.95rem; }
-    @media (max-width:768px) { .gallery { grid-template-columns:1fr; } }
+    .tag:hover { background:#bee3f8; transform:scale(1.05); }
+
+    .pdf-btn {
+      background:var(--red); color:white; border:none; padding:16px 40px;
+      font-size:1.2rem; font-weight:600; border-radius:50px; cursor:pointer;
+      box-shadow:0 6px 20px rgba(211,47,47,0.3); margin:3rem auto; display:block;
+      transition:0.3s;
+    }
+    .pdf-btn:hover { background:#b91c1c; transform:scale(1.05); }
+    .pdf-btn i { margin-right:10px; }
+
+    @media (max-width:768px) { .gallery { grid-template-columns:1fr; } h1 { font-size:2.4rem; } }
+
+    /* Perfect PDF layout */
+    @media print {
+      body { background:white; }
+      .controls, .pdf-btn { display:none !important; }
+      .container { padding:1rem; }
+      .gallery { gap:1.5rem; }
+      .card { break-inside:avoid; box-shadow:none; border:1px solid #ddd; }
+    }
   </style>
 </head>
 <body>
@@ -49,119 +83,111 @@
       <h1>Built With Open Data</h1>
       <p class="subtitle">
         Real African & global startups already using the datasets from this repository<br>
-        <strong>More than $560M in total funding raised</strong> (Dec 2025)
+        <strong>More than $560M in total funding raised</strong>
       </p>
     </header>
 
     <div class="controls">
       <select id="domainFilter"><option value="">All Domains</option></select>
       <select id="countryFilter"><option value="">All Countries</option></select>
-      <input type="text" id="search" placeholder="Search company, product or dataset…">
+      <input type="text" id="search" placeholder="Search company, product, dataset…">
     </div>
 
     <div id="gallery" class="gallery"></div>
 
-    <footer>
-      <p>Building something with these datasets? 
-         <a href="https://forms.gle/YOUR_FORM_LINK" target="_blank">Submit your project → get featured here</a>
-      </p>
-      <p>Page auto-updates whenever <code>datasets/Open datasets startups.csv</code> is updated</p>
-    </footer>
+    <!-- One-click beautiful PDF download -->
+    <button id="pdfBtn" class="pdf-btn">
+      <i class="fas fa-file-pdf"></i> Download as PDF
+    </button>
   </div>
 
   <script>
-    // Your exact CSV path inside the repository
     const CSV_URL = "datasets/Open%20datasets%20startups.csv";
 
     async function loadAndRender() {
       try {
-        const response = await fetch(CSV_URL + "?t=" + Date.now()); // cache-bust
-        const text = await response.text();
+        const resp = await fetch(CSV_URL + "?t=" + Date.now());
+        const text = await resp.text();
         const lines = text.trim().split('\n');
-        const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+        const headers = lines[0].split(',').map(h => h.trim().replace(/"/g,''));
 
-        const data = lines.slice(1)
-          .map(line => {
-            // Properly handle commas inside quoted fields
-            const row = [];
-            let inQuote = false;
-            let field = '';
-            for (let char of line + ',') {
-              if (char === '"') inQuote = !inQuote;
-              else if (char === ',' && !inQuote) { row.push(field.trim()); field = ''; }
-              else field += char;
-            }
-            const obj = {};
-            headers.forEach((h, i) => obj[h] = (row[i] || '').replace(/^"|"$/g, ''));
-            return obj;
-          })
-          .filter(r => r.Name); // remove empty lines
+        const data = lines.slice(1).map(line => {
+          const row = []; let field = ''; let inQuote = false;
+          for (let c of line + ',') {
+            if (c === '"') inQuote = !inQuote;
+            else if (c === ',' && !inQuote) { row.push(field.trim()); field = ''; }
+            else field += c;
+          }
+          const obj = {};
+          headers.forEach((h,i) => obj[h] = (row[i]||'').replace(/^"|"$/g,''));
+          return obj;
+        }).filter(r => r.Name);
 
         // Populate filters
-        const domains = [...new Set(data.map(r => r.Domain || r.domain || '').filter(Boolean))].sort();
-        const countries = [...new Set(data.map(r => r.Country || r.country || '').filter(Boolean))].sort();
+        const domains = [...new Set(data.map(r=>r.Domain||r.domain||'').filter(Boolean))].sort();
+        const countries = [...new Set(data.map(r=>r.Country||r.country||'').filter(Boolean))].sort();
+        const dSel = document.getElementById('domainFilter');
+        const cSel = document.getElementById('countryFilter');
+        domains.forEach(d => dSel.add(new Option(d,d)));
+        countries.forEach(c => cSel.add(new Option(c,c)));
 
-        const domainSel = document.getElementById('domainFilter');
-        const countrySel = document.getElementById('countryFilter');
-
-        domains.forEach(d => { const o = new Option(d, d); domainSel.add(o); });
-        countries.forEach(c => { const o = new Option(c, c); countrySel.add(o); });
-
-        // Render function
         function render() {
-          const domain = domainSel.value;
-          const country = countrySel.value;
+          const domain = dSel.value;
+          const country = cSel.value;
           const search = document.getElementById('search').value.toLowerCase();
 
           const filtered = data.filter(r => {
-            if (domain && (r.Domain || r.domain) !== domain) return false;
-            if (country && (r.Country || r.country) !== country) return false;
-            if (search) {
-              const haystack = `${r.Name} ${r.Product} ${r.Description} ${r["Open Datasets Used (Full Clickable Links)"]}`.toLowerCase();
-              if (!haystack.includes(search)) return false;
-            }
+            if (domain && (r.Domain||r.domain) !== domain) return false;
+            if (country && (r.Country||r.country) !== country) return false;
+            if (search && !`${r.Name} ${r.Product} ${r.Description} ${r["Open Datasets Used (Full Clickable Links)"]}`.toLowerCase().includes(search)) return false;
             return true;
           });
 
           document.getElementById('gallery').innerHTML = filtered.map(r => {
-            const datasetLinks = (r["Open Datasets Used (Full Clickable Links)"] || '')
-                                  .split(/\s+/)
-                                  .filter(Boolean);
-
+            const links = (r["Open Datasets Used (Full Clickable Links)"]||'').split(/\s+/).filter(Boolean);
             return `
               <div class="card">
-                <img src="${r.Logo || 'https://via.placeholder.com/90?text=' + (r.Name?.[0] || '?')}"
-                     alt="${r.Name}" onerror="this.src='https://via.placeholder.com/90?text='+(r.Name?.[0]||'?')">
+                <img src="${r.Logo || 'https://via.placeholder.com/100?text='+(r.Name?.[0]||'?')}"
+                     alt="${r.Name}" onerror="this.src='https://via.placeholder.com/100?text='+(r.Name?.[0]||'?')">
                 <div class="info">
                   <h3><a href="${r.Website}" target="_blank">${r.Name}</a></h3>
-                  <p class="meta"><strong>${r.Product || r.product}</strong> • ${r.Country || r.country}</p>
-                  <p class="meta domain">#${r.Domain || r.domain || 'Other'}</p>
+                  <p class="meta"><strong>${r.Product}</strong> • ${r.Country}</p>
+                  <p class="meta domain">#${r.Domain || r.domain || 'Various'}</p>
                   ${r.Funding ? `<span class="funding">${r.Funding}</span>` : ''}
                   <div class="tags">
-                    ${datasetLinks.map(url => `<a href="${url}" target="_blank" class="tag">dataset</a>`).join('')}
+                    ${links.map(u => `<a href="${u}" target="_blank" class="tag">dataset</a>`).join('')}
                   </div>
-                  <p>${r.Description || r.description}</p>
+                  <p style="margin:1rem 0 0;color:#4a5568;">${r.Description}</p>
                 </div>
               </div>`;
           }).join('');
 
-          document.querySelector('.subtitle').innerHTML = `
-            ${filtered.length} ${filtered.length === 1 ? 'startup' : 'startups'} shown • 
-            <strong>More than $560M total funding raised</strong>
-          `;
+          document.querySelector('.subtitle strong').textContent = filtered.length === data.length 
+            ? 'More than $560M in total funding raised' 
+            : `${filtered.length} startup${filtered.length>1?'s':''} shown`;
         }
 
-        // Event listeners
-        domainSel.onchange = countrySel.onchange = render;
+        dSel.onchange = cSel.onchange = () => render();
         document.getElementById('search').oninput = render;
         render();
 
-      } catch (e) {
-        document.getElementById('gallery').innerHTML = 
-          `<p style="text-align:center;color:red;">Could not load the CSV file. Check console for errors.</p>`;
+      } catch(e) {
+        document.getElementById('gallery').innerHTML = `<p style="text-align:center;color:#e53e3e;">Failed to load CSV — check path/console.</p>`;
         console.error(e);
       }
     }
+
+    // PDF Download Button
+    document.getElementById('pdfBtn').addEventListener('click', () => {
+      const opt = {
+        margin:       [0.5, 0.5, 0.6, 0.5],
+        filename:     'Open_Datasets_Usage_by_Startups.pdf',
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, useCORS: true, letterRendering: true },
+        jsPDF:       { unit: 'in', format: 'a4', orientation: 'portrait' }
+      };
+      html2pdf().set(opt).from(document.body).save();
+    });
 
     loadAndRender();
   </script>
