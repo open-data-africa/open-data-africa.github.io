@@ -10,14 +10,15 @@
     #globe { width:100vw; height:100vh; }
     
     .title {
-      position:absolute; top:20px; left:50%; transform:translateX(-50%);
-      color:#60a5fa; font-size:3.5rem; font-weight:bold; z-index:10;
-      text-shadow:0 0 30px #60a5fa, 0 0 60px #60a5fa;
+      position:absolute; top:15px; left:50%; transform:translateX(-50%);
+      color:#60a5fa; font-size:2.4rem; font-weight:bold; z-index:10;
+      text-shadow:0 0 20px #60a5fa;
+      letter-spacing:1.5px;
     }
     
     .controls {
-      position:absolute; top:20px; right:20px; background:rgba(0,0,0,0.7);
-      padding:1.2rem; border-radius:20px; z-index:10; backdrop-filter:blur(20px);
+      position:absolute; top:15px; right:15px; background:rgba(0,0,0,0.7);
+      padding:1rem; border-radius:18px; z-index:10; backdrop-filter:blur(20px);
       border:1px solid rgba(96,165,250,0.3);
     }
     .btn {
@@ -47,12 +48,11 @@
       display:inline-block; margin-top:0.8rem; background:#60a5fa; color:#000;
       padding:0.6rem 1.2rem; border-radius:10px; text-decoration:none; font-weight:bold;
     }
-    .dataset a:hover { background:#a5b4fc; }
   </style>
 </head>
 <body>
 
-  <div class="title">OPEN DATASETS 3D MAP</div>
+  <div class="title">Open Datasets 3D Map</div>
 
   <div class="controls">
     <button class="btn" id="toggleRotate">Pause Rotation</button>
@@ -60,7 +60,6 @@
 
   <div id="globe"></div>
 
-  <!-- SIDE PANEL — Shows ALL datasets for clicked country -->
   <div class="panel" id="panel">
     <div class="close" onclick="document.getElementById('panel').style.display='none'">×</div>
     <h2 id="countryTitle">Select a country</h2>
@@ -105,7 +104,6 @@
       complete: function(res) {
         allDatasets = res.data.filter(r => r["Dataset Name"] && r.Country);
 
-        // Group by country
         countryGroups = {};
         allDatasets.forEach(d => {
           const c = (d.Country || "Other").trim();
@@ -113,13 +111,12 @@
           countryGroups[c].push(d);
         });
 
-        // One small dot per country with datasets
         const points = Object.entries(countryGroups).map(([country, datasets]) => {
           const color = domainColor[datasets[0].Domain] || domainColor.default;
           return {
             lat: coords[country]?.[0] || 6,
             lng: coords[country]?.[1] || 20,
-            size: 0.8,                    // ← Small & elegant
+            size: 0.8,
             color: color,
             country: country,
             datasets: datasets
@@ -128,14 +125,24 @@
 
         globe
           .pointsData(points)
-          .pointAltitude(0.02)          // ← Very low = flat on surface
+          .pointAltitude(0.02)
           .pointColor(d => d.color)
-          .pointRadius(d => d.size)     // ← Tiny, clear dots
-          .pointLabel(d => `<b style="font-size:1.2rem;">${d.country}</b><br>${d.datasets.length} dataset${d.datasets.length>1?'s':''}`)
+          .pointRadius(d => d.size)
+          .pointLabel(d => `<b>${d.country}</b><br>${d.datasets.length} dataset${d.datasets.length>1?'s':''}`)
           .onPointClick(point => showCountryPanel(point));
 
-        globe.controls().autoRotate = true;
-        globe.controls().autoRotateSpeed = 0.6;
+        // Start rotating + manual control
+        const controls = globe.controls();
+        controls.autoRotate = true;
+        controls.autoRotateSpeed = 0.6;
+        controls.enableZoom = true;
+        controls.enablePan = true;
+
+        document.getElementById('toggleRotate').addEventListener('click', function() {
+          const rotating = controls.autoRotate;
+          controls.autoRotate = !rotating;
+          this.textContent = rotating ? "Resume Rotation" : "Pause Rotation";
+        });
       }
     });
 
@@ -155,12 +162,6 @@
 
       document.getElementById("panel").style.display = "block";
     }
-
-    document.getElementById('toggleRotate').addEventListener('click', function() {
-      const rotating = globe.controls().autoRotate;
-      globe.controls().autoRotate = !rotating;
-      this.textContent = rotating ? "Resume Rotation" : "Pause Rotation";
-    });
   </script>
 </body>
 </html>
