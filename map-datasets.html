@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Open Data Africa — Dataset Network</title>
+  <script src="https://unpkg.com/cytoscape@3.28.1/dist/cytoscape.min.js"></script>
+  <script src="https://unpkg.com/cytoscape-fcose@2.2.0/cytoscape-fcose.js"></script>
+
+  <style>
+    :root { --bg:#0f172a; --card:#1e293b; --text:#e2e8f0; --accent:#60a5fa; }
+    body { margin:0; font-family:'Segoe UI',sans-serif; background:var(--bg); color:var(--text); }
+    header { background:linear-gradient(135deg,#1e293b,#0f172a); padding:3rem 1rem; text-align:center; }
+    h1 { margin:0; font-size:2.8rem; color:var(--accent); }
+    nav { background:#1e293b; padding:1rem; text-align:center; }
+    nav a { color:var(--accent); margin:0 .8rem; text-decoration:none; }
+
+    .controls { max-width:1400px; margin:2rem auto; padding:0 1rem; display:flex; gap:1rem; flex-wrap:wrap; justify-content:center; }
+    .controls input, .controls select { padding:.7rem 1rem; border:none; border-radius:8px; background:#334155; color:white; min-width:220px; }
+
+    #cy { height:75vh; width:100%; border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,0.5); background:#0f172a; }
+
+    .details { max-width:700px; margin:2rem auto; background:var(--card); padding:2rem; border-radius:16px; display:none; box-shadow:0 10px 30px rgba(0,0,0,0.4); }
+    .details strong { color:var(--accent); font-size:1.5rem; }
+    .org { background:rgba(255,255,255,0.05); padding:1.2rem; border-radius:12px; margin:1rem 0; }
+    .org a { color:#60a5fa; text-decoration:none; font-weight:600; }
+
+    .legend { max-width:800px; margin:2rem auto; background:var(--card); padding:1.5rem; border-radius:16px; display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1rem; }
+    .legend-item { display:flex; align-items:center; font-size:0.95rem; }
+    .legend-color { width:18px; height:18px; border-radius:50%; margin-right:0.8rem; }
+
+    @media (max-width:900px) { #cy { height:60vh; } }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Open Data Africa</h1>
+    <p style="opacity:0.9;">Interactive Open Dataset Network — Click any bubble to explore</p>
+  </header>
+
+  <nav>
+    <a href="index.html">Home</a> •
+    <a href="datasets.html">Datasets</a> •
+    <a href="ecosystem-overview.html">Ecosystem</a> •
+    <a href="ecosystem-open-datasets.html">Open Dataset Network</a>
+  </nav>
+
+  <div class="controls">
+    <input type="text" id="search" placeholder="Search dataset, source, category..." />
+    <select id="categoryFilter"><option value="">All Categories</option></select>
+  </div>
+
+  <div id="cy"></div>
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-color" style="background:#34d399;"></div> Agriculture</div>
+    <div class="legend-item"><div class="legend-color" style="background:#f87171;"></div> Health</div>
+    <div class="legend-item"><div class="legend-color" style="background:#60a5fa;"></div> Climate/Environment</div>
+    <div class="legend-item"><div class="legend-color" style="background:#a78bfa;"></div> Language/NLP</div>
+    <div class="legend-item"><div class="legend-color" style="background:#f59e0b;"></div> Finance/Economy</div>
+    <div class="legend-item">Bigger bubble = More downloads/impact</div>
+  </div>
+
+  <div class="details" id="details">
+    <strong id="datasetTitle"></strong>
+    <div id="datasetInfo"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
+  <script>
+    const CSV_PATH = "https://open-data-africa.github.io/datasets/catalog.csv";
+    let cy;
+    let allData = [];
+
+    // Register layout
+    cytoscape.use(cytoscapeFcose);
+
+    Papa.parse(CSV_PATH, {
+      download: true,
+      header: true,
+      complete: function(res) {
+        allData = res.data.filter(r => r.Name && r.Category);
+        populateCategoryFilter();
+        buildNetwork();
+      }
+    });
+
+    function buildNetwork(filterCategory = "", search = "") {
+      const filtered = allData.filter(d => {
+        const match = !search || Object.values(d).some(v => v && v.toLowerCase().includes(search.toLowerCase()));
+        return match && (!filterCategory || d.Category === filterCategory);
+      });
+
+      const elements = filtered.map(d => {
+        const colorMap = {
+          "Agriculture": "#34d399",
+          "Health": "#f87171",
+          "Climate": "#60a5fa",
+          "Environment": "#60a5fa",
+          "Language": "#a78bfa",
+          "NLP": "#a78bfa",
+          "Finance": "#f59e0b",
+          "Economy": "#f59e0b",
+          "default": "#94a3b8"
+        };
+        const color = colorMap[d.Category] || colorMap.default;
+
+        return {
+          data: {
+            id: d.Name,
+            label: d.Name,
+            size: Math.max(2, Math.log((d.Downloads || 100) + 1) * 3),
+            info: d
+          },
+          style: {
+            'background-color': color,
+            'width': data => data.size * 20,
+            'height': data => data.size * 20,
+            'text-outline-width': 6,
+            'text-outline-color': '#0f172a',
+            'color': '#e2e8f0',
+            'font-size': 16,
+            'font-weight': 'bold'
+          }
+        };
+      });
+
+      if (cy) cy.destroy();
+
+      cy = cytoscape({
+        container: document.getElementById('cy'),
+        elements: elements,
+        style: [{ selector: 'node', style: { 'label': 'data(label)', 'text-valign': 'center', 'text-halign': 'center' } }],
+        layout: { name: 'fcose', animationDuration: 1000, fit: true, nodeRepulsion: 8000 },
+        userZoomingEnabled: true,
+        userPanningEnabled: true
+      });
+
+      cy.on('tap', 'node', function(evt) {
+        const node = evt.target;
+        const d = node.data('info');
+        document.getElementById("datasetTitle").textContent = d.Name;
+        document.getElementById("datasetInfo").innerHTML = `
+          <div class="org">
+            <p><strong>Category:</strong> ${d.Category}</p>
+            <p><strong>Source:</strong> ${d.Source}</p>
+            <p><strong>Country/Region:</strong> ${d.Country || "Global"}</p>
+            <p><strong>Downloads:</strong> ${d.Downloads || "N/A"}</p>
+            <p><strong>Description:</strong> ${d.Description}</p>
+            <a href="${d.Link}" target="_blank">Download Dataset</a>
+          </div>
+        `;
+        document.getElementById("details").style.display = "block";
+      });
+
+      cy.on('tap', () => document.getElementById("details").style.display = "none");
+    }
+
+    function populateCategoryFilter() {
+      const categories = [...new Set(allData.map(r => r.Category))].filter(Boolean).sort();
+      const select = document.getElementById("categoryFilter");
+      categories.forEach(c => select.add(new Option(c, c)));
+    }
+
+    document.getElementById("search").addEventListener("input", () => buildNetwork(document.getElementById("categoryFilter").value, document.getElementById("search").value));
+    document.getElementById("categoryFilter").addEventListener("change", () => buildNetwork(document.getElementById("categoryFilter").value, document.getElementById("search").value));
+  </script>
+</body>
+</html>
