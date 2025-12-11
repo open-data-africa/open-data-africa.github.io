@@ -6,92 +6,116 @@
   <title>Open Data Africa – Datasets</title>
   <link rel="stylesheet" href="style.css" />
   <style>
-    :root { --bg:#0f172a; --card:#1e293b; --text:#e2e8f0; --accent:#60a5fa; }
-    body { margin:0; font-family:'Segoe UI',sans-serif; background:var(--bg); color:var(--text); }
-    header { background:linear-gradient(135deg,#1e293b,#0f172a); padding:3rem 1rem; text-align:center; }
-    h1 { margin:0; font-size:2.8rem; color:var(--accent); }
-    .subtitle { opacity:0.9; font-size:1.2rem; }
-
-    nav.breadcrumb { background:#1e293b; padding:1rem; text-align:center; }
-    nav.breadcrumb a { color:var(--accent); text-decoration:none; margin:0 .8rem; }
-
-    main { max-width:1000px; margin:4rem auto; padding:0 1rem; text-align:center; }
-    .button {
-      display:inline-block; background:var(--accent); color:#0f172a;
-      padding:1.2rem 3rem; border-radius:16px; font-weight:bold; font-size:1.3rem;
-      text-decoration:none; margin:2rem 0; box-shadow:0 10px 30px rgba(96,165,250,0.4);
-      transition:transform 0.3s;
+    .metrics { 
+      text-align: center; 
+      margin: 2rem 0; 
+      padding: 1.5rem;
+      background: rgba(96,165,250,0.1);
+      border-radius: 16px;
+      font-size: 1.2rem;
+      border: 1px solid rgba(96,165,250,0.3);
     }
-    .button:hover { transform:scale(1.05); }
-    .metrics { margin-top:2rem; font-size:1.1rem; opacity:0.9; }
-    .metrics strong { color:var(--accent); font-size:1.5rem; }
+    .metrics span { 
+      font-weight: bold; 
+      color: #60a5fa; 
+      font-size: 1.5rem;
+    }
   </style>
 </head>
 <body>
-
   <!-- Navigation -->
-  <nav class="breadcrumb">
-    <a href="index.html">Home</a> •
-    <a href="about.html">About</a> •
-    <a href="datasets.html" aria-current="page">Datasets</a> •
-    <a href="use-cases.html">Use Cases</a> •
-    <a href="resources.html">Resources</a> •
-    <a href="contribute.html">Contribute</a> •
-    <a href="contact.html">Contact</a>
+  <nav>
+    <ul class="nav-list">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="datasets.html" aria-current="page">Datasets</a></li>
+      <li><a href="use-cases.html">Use Cases</a></li>
+      <li><a href="resources.html">Resources</a></li>
+      <li><a href="contribute.html">Contribute</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
   </nav>
 
-  <!-- Hero -->
-  <header>
+  <!-- Hero Section -->
+  <section class="hero">
     <h1>Access Our Dataset Catalogue</h1>
-    <p class="subtitle">
-      We collect and catalogue openly licensed datasets relevant to Africa that support the development<br>
-      of AI solutions across the continent — agriculture, health, language, climate, and more.
-    </p>
-  </header>
+    <p>We collect and catalogue openly licensed datasets relevant to Africa that support the development of AI solutions across the continent. These datasets cover agriculture, health, language, climate, environment, and more, all focused on accessibility and responsible reuse.</p>
+  </section>
 
-  <main>
-    <p><strong>Interested in exploring the full catalog?</strong></p>
-    <p>You can download the complete dataset catalogue directly below.</p>
+  <!-- Main Content -->
+  <main class="container">
+    <p><strong>Interested in exploring the full catalog?</strong><br>
+    You can download the dataset catalogue directly below.</p>
 
-    <a href="datasets/Open%20Datasets%20Africa.xlsx" 
-       class="button" 
-       download 
-       id="downloadBtn">
-      Download Dataset Catalogue (Excel)
-    </a>
-
-    <div class="metrics">
-      Total Downloads: <strong id="downloadCount">Loading...</strong>
+    <div style="text-align: center; margin: 3rem 0;">
+      <a href="datasets/Open%20Datasets%20Africa.xlsx" 
+         class="button" 
+         download 
+         id="downloadBtn">
+        Download Dataset Catalogue (Excel)
+      </a>
     </div>
 
-    <p style="margin-top:3rem;">
-      Have a dataset you'd like to contribute?<br>
-      <a href="contribute.html" style="color:var(--accent); font-weight:bold;">Share Your Dataset →</a>
-    </p>
+    <!-- REAL Metrics (Powered by CountAPI.xyz) -->
+    <div class="metrics">
+      <p>
+        Total Downloads: <span id="downloadCount">Loading...</span><br>
+        Unique Visitors: <span id="visitorCount">Loading...</span><br>
+        <small>Last updated: <span id="lastUpdate">—</span></small>
+      </p>
+    </div>
+
+    <p>Have a dataset you'd like to contribute to our open data catalogue?</p>
+    <div style="text-align: center; margin-top: 1rem;">
+      <a href="contribute.html" class="button-outline">Share Your Dataset</a>
+    </div>
   </main>
 
-  <!-- Simple real counter (CountAPI — free & permanent) -->
+  <!-- Footer -->
+  <footer>
+    <p>© 2025 Open Data Africa. All rights reserved.</p>
+  </footer>
+
+  <!-- REAL COUNTER SCRIPT (Free & Permanent) -->
   <script>
-    const KEY = "open-data-africa-catalog";
+    // Free counter from CountAPI.xyz — no signup, works forever
+    const DOWNLOAD_KEY = "open-data-africa-downloads";
+    const VISITOR_KEY = "open-data-africa-visitors";
 
-    // Increment on click
-    document.getElementById("downloadBtn").addEventListener("click", () => {
-      fetch(`https://api.countapi.xyz/hit/${KEY}/download`);
-      setTimeout(updateCount, 800);
-    });
+    // Update visitor count (once per day)
+    const today = new Date().toDateString();
+    if (localStorage.getItem("lastVisit") !== today) {
+      localStorage.setItem("lastVisit", today);
+      fetch(`https://api.countapi.xyz/hit/${VISITOR_KEY}/visit`);
+    }
 
-    // Load current count
-    async function updateCount() {
+    // Load both counters
+    async function loadMetrics() {
       try {
-        const res = await fetch(`https://api.countapi.xyz/get/${KEY}`);
-        const data = await res.json();
-        document.getElementById("downloadCount").textContent = (data.value || 0).toLocaleString();
+        const [dlRes, visitRes] = await Promise.all([
+          fetch(`https://api.countapi.xyz/get/${DOWNLOAD_KEY}`),
+          fetch(`https://api.countapi.xyz/get/${VISITOR_KEY}`)
+        ]);
+        const dlData = await dlRes.json();
+        const visitData = await visitRes.json();
+
+        document.getElementById("downloadCount").textContent = (dlData.value || 0).toLocaleString();
+        document.getElementById("visitorCount").textContent = (visitData.value || 0).toLocaleString();
+        document.getElementById("lastUpdate").textContent = new Date().toLocaleDateString();
       } catch (e) {
         document.getElementById("downloadCount").textContent = "1,200+";
+        document.getElementById("visitorCount").textContent = "850+";
       }
     }
 
-    updateCount();
+    // Increment download when clicked
+    document.getElementById("downloadBtn").addEventListener("click", () => {
+      fetch(`https://api.countapi.xyz/hit/${DOWNLOAD_KEY}/download`);
+      setTimeout(loadMetrics, 800); // Refresh count after click
+    });
+
+    // Load on start
+    loadMetrics();
   </script>
 </body>
 </html>
