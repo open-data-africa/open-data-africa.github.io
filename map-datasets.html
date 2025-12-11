@@ -90,17 +90,10 @@
     };
 
     const domainColor = {
-      "Agriculture": "#34d399",
-      "Health": "#f87171",
-      "Climate": "#60a5fa",
-      "Environment": "#34d399",
-      "Language": "#a78bfa",
-      "NLP": "#a78bfa",
-      "Finance": "#f59e0b",
-      "Economy": "#f59e0b",
-      "Geospatial": "#f472b6",
-      "Education": "#fbbf24",
-      "default": "#94a3b8"
+      "Agriculture": "#34d399", "Health": "#f87171", "Climate": "#60a5fa",
+      "Environment": "#34d399", "Language": "#a78bfa", "NLP": "#a78bfa",
+      "Finance": "#f59e0b", "Economy": "#f59e0b", "Geospatial": "#f472b6",
+      "Education": "#fbbf24", "default": "#94a3b8"
     };
 
     let allDatasets = [];
@@ -120,13 +113,13 @@
           countryGroups[c].push(d);
         });
 
-        // Create one point per country
+        // One small dot per country with datasets
         const points = Object.entries(countryGroups).map(([country, datasets]) => {
-          const color = domainColor[datasets[0].Domain] || "default";
+          const color = domainColor[datasets[0].Domain] || domainColor.default;
           return {
             lat: coords[country]?.[0] || 6,
             lng: coords[country]?.[1] || 20,
-            size: Math.min(4, 1 + datasets.length * 0.6),
+            size: 0.8,                    // ← Small & elegant
             color: color,
             country: country,
             datasets: datasets
@@ -135,10 +128,10 @@
 
         globe
           .pointsData(points)
-          .pointAltitude(d => d.size * 0.15)
+          .pointAltitude(0.02)          // ← Very low = flat on surface
           .pointColor(d => d.color)
-          .pointRadius(d => d.size)
-          .pointLabel(d => `<b>${d.country}</b><br>${d.datasets.length} dataset${d.datasets.length>1?'s':''}`)
+          .pointRadius(d => d.size)     // ← Tiny, clear dots
+          .pointLabel(d => `<b style="font-size:1.2rem;">${d.country}</b><br>${d.datasets.length} dataset${d.datasets.length>1?'s':''}`)
           .onPointClick(point => showCountryPanel(point));
 
         globe.controls().autoRotate = true;
