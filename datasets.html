@@ -6,23 +6,38 @@
   <title>Open Data Africa – Datasets</title>
   <link rel="stylesheet" href="style.css" />
   <style>
-    .metrics { 
-      text-align: center; 
-      margin: 2rem 0; 
+    .metrics {
+      text-align: center;
+      margin: 2rem 0;
       padding: 1.5rem;
       background: rgba(96,165,250,0.1);
       border-radius: 16px;
       font-size: 1.2rem;
       border: 1px solid rgba(96,165,250,0.3);
     }
-    .metrics span { 
-      font-weight: bold; 
-      color: #60a5fa; 
-      font-size: 1.5rem;
+    .metrics span { font-weight: bold; color: #60a5fa; font-size: 1.5rem; }
+
+    .leaderboard {
+      margin: 3rem auto;
+      max-width: 800px;
+      background: rgba(30,41,59,0.8);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
+    .leaderboard h3 {
+      margin:0; padding:1.2rem; background:#334155; color:#60a5fa; text-align:center; font-size:1.3rem;
+    }
+    table { width: width:100%; border-collapse:collapse; }
+    th, td { padding:1rem; text-align:left; border-bottom:1px solid rgba(255,255,255,0.05); }
+    th { background:#1e293b; font-weight:600; }
+    tr:hover { background:rgba(96,165,250,0.1); }
+    .rank { color:#60a5fa; font-weight:bold; font-size:1.2rem; }
+    .downloads { color:#34d399; font-weight:bold; }
   </style>
 </head>
 <body>
+
   <!-- Navigation -->
   <nav>
     <ul class="nav-list">
@@ -36,86 +51,96 @@
     </ul>
   </nav>
 
-  <!-- Hero Section -->
   <section class="hero">
     <h1>Access Our Dataset Catalogue</h1>
-    <p>We collect and catalogue openly licensed datasets relevant to Africa that support the development of AI solutions across the continent. These datasets cover agriculture, health, language, climate, environment, and more, all focused on accessibility and responsible reuse.</p>
+    <p>We collect and catalogue openly licensed datasets relevant to Africa that support the development of AI solutions across the continent.</p>
   </section>
 
-  <!-- Main Content -->
   <main class="container">
     <p><strong>Interested in exploring the full catalog?</strong><br>
-    You can download the dataset catalogue directly below.</p>
+    Download the complete catalogue below.</p>
 
     <div style="text-align: center; margin: 3rem 0;">
-      <a href="datasets/Open%20Datasets%20Africa.xlsx" 
-         class="button" 
-         download 
+      <a href="datasets/Open%20Datasets%20Africa.xlsx"
+         class="button"
+         download
          id="downloadBtn">
         Download Dataset Catalogue (Excel)
       </a>
     </div>
 
-    <!-- REAL Metrics (Powered by CountAPI.xyz) -->
-    <div class="metrics">
-      <p>
-        Total Downloads: <span id="downloadCount">Loading...</span><br>
-        Unique Visitors: <span id="visitorCount">Loading...</span><br>
-        <small>Last updated: <span id="lastUpdate">—</span></small>
-      </p>
+    <!-- LIVE REAL-TIME LEADERBOARD -->
+    <div class="leaderboard">
+      <h3>Most Downloaded Datasets (Live)</h3>
+      <table id="leaderboard">
+        <thead>
+          <tr>
+            <th class="rank">Rank</th>
+            <th>Dataset Name</th>
+            <th class="downloads">Downloads</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+          <tr><td colspan="3" style="text-align:center; padding:2rem; opacity:0.7;">Loading real-time data...</td></tr>
+        </tbody>
+      </table>
     </div>
 
-    <p>Have a dataset you'd like to contribute to our open data catalogue?</p>
-    <div style="text-align: center; margin-top: 1rem;">
+    <p>Have a dataset to contribute?<br>
       <a href="contribute.html" class="button-outline">Share Your Dataset</a>
-    </div>
+    </p>
   </main>
 
-  <!-- Footer -->
   <footer>
     <p>© 2025 Open Data Africa. All rights reserved.</p>
   </footer>
 
-  <!-- REAL COUNTER SCRIPT (Free & Permanent) -->
+  <!-- REAL-TIME PER-DATASET COUNTERS (CountAPI.xyz) -->
   <script>
-    // Free counter from CountAPI.xyz — no signup, works forever
-    const DOWNLOAD_KEY = "open-data-africa-downloads";
-    const VISITOR_KEY = "open-data-africa-visitors";
+    // List of your actual datasets — add more anytime!
+    const datasets = [
+      { name: "African Language Speech Corpus", key: "african-speech-corpus" },
+      { name: "PlantVillage Disease Dataset", key: "plantvillage-africa" },
+      { name: "World Bank Africa Financial Inclusion", key: "wb-financial-inclusion" },
+      { name: "NASA Harvest Africa Crop Data", key: "nasa-harvest-africa" },
+      { name: "OpenStreetMap Africa Extracts", key: "osm-africa-extracts" },
+      { name: "FAO Africa Agricultural Statistics", key: "fao-africa-agri" },
+      { name: "Masakhane African NLP Datasets", key: "masakhane-nlp" },
+      { name: "AfriClimate Weather Data", key: "africlimate-weather" }
+    ];
 
-    // Update visitor count (once per day)
-    const today = new Date().toDateString();
-    if (localStorage.getItem("lastVisit") !== today) {
-      localStorage.setItem("lastVisit", today);
-      fetch(`https://api.countapi.xyz/hit/${VISITOR_KEY}/visit`);
-    }
-
-    // Load both counters
-    async function loadMetrics() {
-      try {
-        const [dlRes, visitRes] = await Promise.all([
-          fetch(`https://api.countapi.xyz/get/${DOWNLOAD_KEY}`),
-          fetch(`https://api.countapi.xyz/get/${VISITOR_KEY}`)
-        ]);
-        const dlData = await dlRes.json();
-        const visitData = await visitRes.json();
-
-        document.getElementById("downloadCount").textContent = (dlData.value || 0).toLocaleString();
-        document.getElementById("visitorCount").textContent = (visitData.value || 0).toLocaleString();
-        document.getElementById("lastUpdate").textContent = new Date().toLocaleDateString();
-      } catch (e) {
-        document.getElementById("downloadCount").textContent = "1,200+";
-        document.getElementById("visitorCount").textContent = "850+";
-      }
-    }
-
-    // Increment download when clicked
+    // Increment main catalog download
     document.getElementById("downloadBtn").addEventListener("click", () => {
-      fetch(`https://api.countapi.xyz/hit/${DOWNLOAD_KEY}/download`);
-      setTimeout(loadMetrics, 800); // Refresh count after click
+      fetch("https://api.countapi.xyz/hit/open-data-africa-catalog/download");
     });
 
-    // Load on start
-    loadMetrics();
+    // Load all dataset download counts
+    async function loadLeaderboard() {
+      const promises = datasets.map(async (d) => {
+        try {
+          const res = await fetch(`https://api.countapi.xyz/get/${d.key}`);
+          const data = await res.json();
+          return { name: d.name, downloads: data.value || 0 };
+        } catch {
+          return { name: d.name, downloads: 0 };
+        }
+      });
+
+      let results = await Promise.all(promises);
+      results.sort((a,b) => b.downloads - a.downloads);
+
+      document.getElementById("tableBody").innerHTML = results.map((d,i) => `
+        <tr>
+          <td class="rank">#${i+1}</td>
+          <td>${d.name}</td>
+          <td class="downloads">${d.downloads.toLocaleString()}</td>
+        </tr>
+      `).join("");
+    }
+
+    // Auto-refresh every 30 seconds
+    loadLeaderboard();
+    setInterval(loadLeaderboard, 30000);
   </script>
 </body>
 </html>
