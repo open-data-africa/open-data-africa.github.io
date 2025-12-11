@@ -3,169 +3,168 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Open Data Africa — Dataset Network</title>
-  <script src="https://unpkg.com/cytoscape@3.28.1/dist/cytoscape.min.js"></script>
-  <script src="https://unpkg.com/cytoscape-fcose@2.2.0/cytoscape-fcose.js"></script>
-
+  <title>Open Data Africa — 3D Dataset Map</title>
+  <script src="https://unpkg.com/globe.gl"></script>
   <style>
-    :root { --bg:#0f172a; --card:#1e293b; --text:#e2e8f0; --accent:#60a5fa; }
-    body { margin:0; font-family:'Segoe UI',sans-serif; background:var(--bg); color:var(--text); }
-    header { background:linear-gradient(135deg,#1e293b,#0f172a); padding:3rem 1rem; text-align:center; }
-    h1 { margin:0; font-size:2.8rem; color:var(--accent); }
-    nav { background:#1e293b; padding:1rem; text-align:center; }
-    nav a { color:var(--accent); margin:0 .8rem; text-decoration:none; }
-
-    .controls { max-width:1400px; margin:2rem auto; padding:0 1rem; display:flex; gap:1rem; flex-wrap:wrap; justify-content:center; }
-    .controls input, .controls select { padding:.7rem 1rem; border:none; border-radius:8px; background:#334155; color:white; min-width:220px; }
-
-    #cy { height:75vh; width:100%; border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,0.5); background:#0f172a; }
-
-    .details { max-width:700px; margin:2rem auto; background:var(--card); padding:2rem; border-radius:16px; display:none; box-shadow:0 10px 30px rgba(0,0,0,0.4); }
-    .details strong { color:var(--accent); font-size:1.5rem; }
-    .org { background:rgba(255,255,255,0.05); padding:1.2rem; border-radius:12px; margin:1rem 0; }
-    .org a { color:#60a5fa; text-decoration:none; font-weight:600; }
-
-    .legend { max-width:800px; margin:2rem auto; background:var(--card); padding:1.5rem; border-radius:16px; display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1rem; }
-    .legend-item { display:flex; align-items:center; font-size:0.95rem; }
-    .legend-color { width:18px; height:18px; border-radius:50%; margin-right:0.8rem; }
-
-    @media (max-width:900px) { #cy { height:60vh; } }
+    body { margin:0; background:#000; overflow:hidden; font-family:'Segoe UI',sans-serif; }
+    #globe { width:100vw; height:100vh; }
+    .title {
+      position:absolute; top:20px; left:50%; transform:translateX(-50%);
+      color:#60a5fa; font-size:3.5rem; font-weight:bold; z-index:10;
+      text-shadow:0 0 30px #60a5fa, 0 0 60px #60a5fa;
+    }
+    .controls {
+      position:absolute; top:20px; right:20px; background:rgba(0,0,0,0.7);
+      padding:1.2rem; border-radius:20px; z-index:10; backdrop-filter:blur(20px);
+      border:1px solid rgba(96,165,250,0.3);
+    }
+    .btn {
+      background:linear-gradient(45deg,#60a5fa,#a5b4fc); color:#000;
+      border:none; padding:0.9rem 1.8rem; border-radius:15px; cursor:pointer;
+      font-weight:bold; font-size:1rem; margin:0.5rem 0; width:100%;
+      box-shadow:0 8px 20px rgba(96,165,250,0.4);
+    }
+    .btn:hover { transform:scale(1.05); }
+    .filter {
+      padding:0.8rem; border-radius:12px; background:#334155; color:white; border:none;
+      margin:0.5rem 0; width:100%; font-size:0.95rem;
+    }
+    .info {
+      position:absolute; bottom:20px; left:20px; background:rgba(0,0,0,0.7);
+      padding:1.5rem 2rem; border-radius:20px; color:#e2e8f0; max-width:420px;
+      backdrop-filter:blur(20px); border:1px solid rgba(96,165,250,0.3);
+    }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>Open Data Africa</h1>
-    <p style="opacity:0.9;">Interactive Open Dataset Network — Click any bubble to explore</p>
-  </header>
-
-  <nav>
-    <a href="index.html">Home</a> •
-    <a href="datasets.html">Datasets</a> •
-    <a href="ecosystem-overview.html">Ecosystem</a> •
-    <a href="ecosystem-open-datasets.html">Open Dataset Network</a>
-  </nav>
+  <div class="title">OPEN DATASETS 3D MAP</div>
 
   <div class="controls">
-    <input type="text" id="search" placeholder="Search dataset, source, category..." />
-    <select id="categoryFilter"><option value="">All Categories</option></select>
+    <input type="text" id="search" class="filter" placeholder="Search dataset..." />
+    <select id="domainFilter" class="filter"><option value="">All Domains</option></select>
+    <select id="countryFilter" class="filter"><option value="">All Countries</option></select>
+    <button class="btn" id="toggleRotate">Pause Rotation</button>
   </div>
 
-  <div id="cy"></div>
+  <div id="globe"></div>
 
-  <div class="legend">
-    <div class="legend-item"><div class="legend-color" style="background:#34d399;"></div> Agriculture</div>
-    <div class="legend-item"><div class="legend-color" style="background:#f87171;"></div> Health</div>
-    <div class="legend-item"><div class="legend-color" style="background:#60a5fa;"></div> Climate/Environment</div>
-    <div class="legend-item"><div class="legend-color" style="background:#a78bfa;"></div> Language/NLP</div>
-    <div class="legend-item"><div class="legend-color" style="background:#f59e0b;"></div> Finance/Economy</div>
-    <div class="legend-item">Bigger bubble = More downloads/impact</div>
-  </div>
-
-  <div class="details" id="details">
-    <strong id="datasetTitle"></strong>
-    <div id="datasetInfo"></div>
+  <div class="info">
+    <strong>Click any glowing point → View full dataset</strong><br>
+    Drag • Zoom • Explore Africa's open data universe
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
   <script>
     const CSV_PATH = "https://open-data-africa.github.io/datasets/catalog.csv";
-    let cy;
-    let allData = [];
 
-    // Register layout
-    cytoscape.use(cytoscapeFcose);
+    // Bright, beautiful Earth
+    const globe = Globe()
+      .globeImageUrl('//unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
+      .bumpImageUrl('//unpkg.com/three-globe/example/img/earth-topology.png')
+      .backgroundImageUrl('//unpkg.com/three-globe/example/img/night-sky.png')
+      .showAtmosphere(true)
+      .atmosphereColor('#60a5fa')
+      .atmosphereAltitude(0.25)
+      (document.getElementById('globe'));
+
+    // Coordinates for countries
+    const coords = {
+      "Kenya": [-1.29, 36.82], "Ethiopia": [9.02, 38.75], "Nigeria": [9.08, 7.40],
+      "Ghana": [7.95, -1.02], "South Africa": [-30.56, 22.94], "Rwanda": [-1.94, 29.87],
+      "Uganda": [1.37, 32.29], "Tanzania": [-6.79, 34.89], "Egypt": [26.82, 30.80],
+      "Morocco": [31.79, -7.09], "Algeria": [28.03, 1.66], "Tunisia": [36.82, 10.17],
+      "Senegal": [14.50, -14.45], "Côte d'Ivoire": [7.54, -5.55], "Cameroon": [3.85, 11.50],
+      "Pan-Africa": [6, 20], "Global": [20, 0]
+    };
+
+    // Color by Domain
+    const domainColor = {
+      "Agriculture": "#34d399",
+      "Health": "#f87171",
+      "Climate": "#60a5fa",
+      "Environment": "#34d399",
+      "Language": "#a78bfa",
+      "NLP": "#a78bfa",
+      "Finance": "#f59e0b",
+      "Economy": "#f59e0b",
+      "Geospatial": "#f472b6",
+      "Education": "#fbbf24",
+      "default": "#94a3b8"
+    };
+
+    let allDatasets = [];
 
     Papa.parse(CSV_PATH, {
       download: true,
       header: true,
       complete: function(res) {
-        allData = res.data.filter(r => r.Name && r.Category);
-        populateCategoryFilter();
-        buildNetwork();
+        allDatasets = res.data.filter(r => r["Dataset Name"] && r.Country);
+
+        // Populate filters
+        const domains = [...new Set(allDatasets.map(r => r.Domain))].filter(Boolean).sort();
+        const countries = [...new Set(allDatasets.map(r => r.Country))].filter(Boolean).sort();
+        document.getElementById("domainFilter").innerHTML += domains.map(d => `<option>${d}</option>`).join("");
+        document.getElementById("countryFilter").innerHTML += countries.map(c => `<option>${c}</option>`).join("");
+
+        updateGlobe();
       }
     });
 
-    function buildNetwork(filterCategory = "", search = "") {
-      const filtered = allData.filter(d => {
-        const match = !search || Object.values(d).some(v => v && v.toLowerCase().includes(search.toLowerCase()));
-        return match && (!filterCategory || d.Category === filterCategory);
+    function updateGlobe() {
+      const search = document.getElementById("search").value.toLowerCase();
+      const domain = document.getElementById("domainFilter").value;
+      const country = document.getElementById("countryFilter").value;
+
+      const filtered = allDatasets.filter(d => {
+        const match = !search || Object.values(d).some(v => v && v.toLowerCase().includes(search));
+        return match && (!domain || d.Domain === domain) && (!country || d.Country === country);
       });
 
-      const elements = filtered.map(d => {
-        const colorMap = {
-          "Agriculture": "#34d399",
-          "Health": "#f87171",
-          "Climate": "#60a5fa",
-          "Environment": "#60a5fa",
-          "Language": "#a78bfa",
-          "NLP": "#a78bfa",
-          "Finance": "#f59e0b",
-          "Economy": "#f59e0b",
-          "default": "#94a3b8"
-        };
-        const color = colorMap[d.Category] || colorMap.default;
+      const points = filtered.map(d => ({
+        lat: coords[d.Country]?.[0] || coords["Pan-Africa"][0],
+        lng: coords[d.Country]?.[1] || coords["Pan-Africa"][1],
+        size: 1.2,
+        color: domainColor[d.Domain] || domainColor.default,
+        dataset: d
+      }));
 
-        return {
-          data: {
-            id: d.Name,
-            label: d.Name,
-            size: Math.max(2, Math.log((d.Downloads || 100) + 1) * 3),
-            info: d
-          },
-          style: {
-            'background-color': color,
-            'width': data => data.size * 20,
-            'height': data => data.size * 20,
-            'text-outline-width': 6,
-            'text-outline-color': '#0f172a',
-            'color': '#e2e8f0',
-            'font-size': 16,
-            'font-weight': 'bold'
-          }
-        };
-      });
-
-      if (cy) cy.destroy();
-
-      cy = cytoscape({
-        container: document.getElementById('cy'),
-        elements: elements,
-        style: [{ selector: 'node', style: { 'label': 'data(label)', 'text-valign': 'center', 'text-halign': 'center' } }],
-        layout: { name: 'fcose', animationDuration: 1000, fit: true, nodeRepulsion: 8000 },
-        userZoomingEnabled: true,
-        userPanningEnabled: true
-      });
-
-      cy.on('tap', 'node', function(evt) {
-        const node = evt.target;
-        const d = node.data('info');
-        document.getElementById("datasetTitle").textContent = d.Name;
-        document.getElementById("datasetInfo").innerHTML = `
-          <div class="org">
-            <p><strong>Category:</strong> ${d.Category}</p>
-            <p><strong>Source:</strong> ${d.Source}</p>
-            <p><strong>Country/Region:</strong> ${d.Country || "Global"}</p>
-            <p><strong>Downloads:</strong> ${d.Downloads || "N/A"}</p>
-            <p><strong>Description:</strong> ${d.Description}</p>
-            <a href="${d.Link}" target="_blank">Download Dataset</a>
+      globe
+        .pointsData(points)
+        .pointAltitude(0.05)
+        .pointColor(d => d.color)
+        .pointRadius(d => d.size)
+        .pointLabel(d => `
+          <div style="background:rgba(0,0,0,0.95); padding:16px; border-radius:16px; border:2px solid ${d.color}; max-width:300px; font-size:14px;">
+            <b style="color:${d.color};">${d.dataset["Dataset Name"]}</b><br><br>
+            <strong>Domain:</strong> ${d.dataset.Domain}<br>
+            <strong>Source:</strong> ${d.dataset.Source}<br>
+            <strong>Country:</strong> ${d.dataset.Country}<br>
+            <strong>Type:</strong> ${d.dataset["Data Type"]}<br>
+            <strong>License:</strong> ${d.dataset.License}<br>
+            <strong>Use Cases:</strong> ${d.dataset["Use Cases"]}<br>
+            <strong>Last Updated:</strong> ${d.dataset["Last Updated"]}<br>
+            ${d.dataset["Challenges/Notes"] ? `<strong>Notes:</strong> ${d.dataset["Challenges/Notes"]}<br>` : ""}
+            <a href="${d.dataset.Link}" target="_blank" style="color:${d.color}; font-weight:bold; margin-top:10px; display:block;">Download Dataset</a>
           </div>
-        `;
-        document.getElementById("details").style.display = "block";
-      });
-
-      cy.on('tap', () => document.getElementById("details").style.display = "none");
+        `)
+        .onPointClick(point => window.open(point.dataset.Link, '_blank'));
     }
 
-    function populateCategoryFilter() {
-      const categories = [...new Set(allData.map(r => r.Category))].filter(Boolean).sort();
-      const select = document.getElementById("categoryFilter");
-      categories.forEach(c => select.add(new Option(c, c)));
-    }
+    // Filters
+    document.getElementById("search").addEventListener("input", updateGlobe);
+    document.getElementById("domainFilter").addEventListener("change", updateGlobe);
+    document.getElementById("countryFilter").addEventListener("change", updateGlobe);
 
-    document.getElementById("search").addEventListener("input", () => buildNetwork(document.getElementById("categoryFilter").value, document.getElementById("search").value));
-    document.getElementById("categoryFilter").addEventListener("change", () => buildNetwork(document.getElementById("categoryFilter").value, document.getElementById("search").value));
+    // Rotation control
+    globe.controls().autoRotate = true;
+    globe.controls().autoRotateSpeed = 0.6;
+    document.getElementById('toggleRotate').addEventListener('click', function() {
+      const rotating = globe.controls().autoRotate;
+      globe.controls().autoRotate = !rotating;
+      this.textContent = rotating ? "Resume Rotation" : "Pause Rotation";
+    });
   </script>
 </body>
 </html>
