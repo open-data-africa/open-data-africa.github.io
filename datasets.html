@@ -12,12 +12,16 @@ body {
   font-family: Arial, sans-serif;
 }
 
-/* Hero paragraph update */
-.hero p {
-  max-width: 800px;
-  margin: auto;
-  font-size: 1.1rem;
-  line-height: 1.6;
+/* Hero Section */
+.hero {
+  background: linear-gradient(to right, #000, #333);
+  color: white;
+  padding: 4rem 2rem;
+  text-align: center;
+}
+.hero h1 {
+  font-size: 2.4rem;
+  margin-bottom: 1rem;
 }
 
 /* Metrics box */
@@ -31,10 +35,9 @@ body {
   border: 1px solid rgba(96,165,250,0.3);
   max-width: 700px;
 }
-
 .metrics span {
   font-weight: bold;
-  color: #0070ff;
+  color: #60a5fa;
   font-size: 1.4rem;
 }
 
@@ -44,20 +47,17 @@ body {
   width: 80%;
   border-collapse: collapse;
 }
-
 .stats-table th,
 .stats-table td {
   padding: 10px 14px;
   border: 1px solid #ddd;
   text-align: center;
 }
-
 .stats-table th {
   background: #e9f2ff;
   color: #333;
   font-weight: bold;
 }
-
 .stats-heading {
   text-align: center;
   margin-top: 3rem;
@@ -65,46 +65,50 @@ body {
   font-weight: bold;
 }
 
-/* Buttons brighter and more visible */
+/* Buttons */
 .button {
-  background: #ff0000;    /* Strong red (Germany flag color) */
+  background: #0066ff;
   color: #fff;
-  padding: 14px 26px;
-  border-radius: 10px;
+  padding: 12px 22px;
+  border-radius: 8px;
   text-decoration: none;
-  font-size: 1.1rem;
   font-weight: bold;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
-
 .button:hover {
-  background: #cc0000;
+  background: #004ed6;
 }
-
-/* Outline button – more visible */
 .button-outline {
-  border: 2px solid #ffcc00;  /* Yellow (Germany flag) */
-  padding: 12px 24px;
-  border-radius: 10px;
-  color: #ffcc00;
+  border: 2px solid #0066ff;
+  padding: 12px 22px;
+  border-radius: 8px;
+  color: #0066ff;
   text-decoration: none;
   font-weight: bold;
-  font-size: 1.1rem;
 }
-
 .button-outline:hover {
-  background: #ffcc00;
-  color: #000;
+  background: #e6f0ff;
 }
 
-/* Black footer */
+/* Side-by-side buttons */
+.button-row {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin: 2.5rem 0;
+  flex-wrap: wrap;
+}
+.button-row a {
+  min-width: 260px;
+  text-align: center;
+}
+
+/* Footer */
 footer {
   text-align: center;
   margin-top: 3rem;
   padding: 1.5rem 0;
   background: #000;
-  color: #fff;
-  font-size: 0.95rem;
+  color: white;
 }
 </style>
 </head>
@@ -135,14 +139,18 @@ We collect and catalogue openly licensed datasets relevant to Africa that suppor
 <main class="container">
 <p><strong>Explore our full dataset catalogue:</strong></p>
 
-<!-- Download Button -->
-<div style="text-align: center; margin: 3rem 0;">
-<a href="datasets/Open%20Datasets%20Africa.xlsx"
-   class="button"
-   download
-   id="downloadBtn">
-📥 Download Dataset Catalogue (Excel)
-</a>
+<!-- DOWNLOAD + CONTRIBUTE SIDE-BY-SIDE -->
+<div class="button-row">
+  <a href="datasets/Open%20Datasets%20Africa.xlsx"
+     class="button"
+     download
+     id="downloadBtn">
+     📥 Download Dataset Catalogue (Excel)
+  </a>
+
+  <a href="contribute.html" class="button-outline">
+     🤝 Share Your Dataset
+  </a>
 </div>
 
 <!-- Metrics -->
@@ -165,11 +173,6 @@ We collect and catalogue openly licensed datasets relevant to Africa that suppor
 <tbody id="countryStats"></tbody>
 </table>
 
-<p>Want to contribute a dataset to support African AI innovation?</p>
-<div style="text-align: center; margin-top: 1rem;">
-<a class="button-outline" href="contribute.html">Share Your Dataset</a>
-</div>
-
 </main>
 
 <footer>
@@ -179,8 +182,9 @@ We collect and catalogue openly licensed datasets relevant to Africa that suppor
 <!-- 📊 LIVE METRICS SCRIPT -->
 <script>
 const BIN_ID = "693a77f7d0ea881f40216983";
-const API_KEY = "$2a$10$OX/sVa0zzJhjrVuZ7Ntdn.vR1lJmoipoZ/2xxFrnc16mCaDHzw5m2";
+const API_KEY = "$2a$10$OX/sVa0zzJhjrVuZ7Ntdn.vR1l3";
 
+// Get user country via IP
 async function getCountry() {
   try {
     const res = await fetch("https://ipapi.co/json/");
@@ -191,6 +195,7 @@ async function getCountry() {
   }
 }
 
+// Load all stats
 async function getStats() {
   const res = await fetch(
     `https://api.jsonbin.io/v3/b/${BIN_ID}/latest`,
@@ -200,6 +205,7 @@ async function getStats() {
   return json.record;
 }
 
+// Update stats
 async function updateStats(updated) {
   await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
     method: "PUT",
@@ -211,6 +217,7 @@ async function updateStats(updated) {
   });
 }
 
+// Track visitor
 async function trackVisitor() {
   const country = await getCountry();
   const stats = await getStats();
@@ -226,6 +233,7 @@ async function trackVisitor() {
   renderStats(stats);
 }
 
+// Track download
 async function trackDownload() {
   const country = await getCountry();
   const stats = await getStats();
@@ -241,6 +249,7 @@ async function trackDownload() {
   renderStats(stats);
 }
 
+// Render table + totals
 function renderStats(stats) {
   document.getElementById("downloadCount").textContent = stats.downloads;
   document.getElementById("visitorCount").textContent = stats.visitors;
@@ -255,11 +264,13 @@ function renderStats(stats) {
         <td>${data.downloads}</td>
       </tr>`;
   }
-
   document.getElementById("countryStats").innerHTML = rows;
 }
 
+// Bind download click
 document.getElementById("downloadBtn").addEventListener("click", trackDownload);
+
+// Initialize on load
 trackVisitor();
 </script>
 
