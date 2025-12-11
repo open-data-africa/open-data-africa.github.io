@@ -8,11 +8,13 @@
   <style>
     body { margin:0; background:#000; overflow:hidden; font-family:'Segoe UI',sans-serif; }
     #globe { width:100vw; height:100vh; }
+    
     .title {
       position:absolute; top:20px; left:50%; transform:translateX(-50%);
       color:#60a5fa; font-size:3.5rem; font-weight:bold; z-index:10;
       text-shadow:0 0 30px #60a5fa, 0 0 60px #60a5fa;
     }
+    
     .controls {
       position:absolute; top:20px; right:20px; background:rgba(0,0,0,0.7);
       padding:1.2rem; border-radius:20px; z-index:10; backdrop-filter:blur(20px);
@@ -25,15 +27,27 @@
       box-shadow:0 8px 20px rgba(96,165,250,0.4);
     }
     .btn:hover { transform:scale(1.05); }
-    .filter {
-      padding:0.8rem; border-radius:12px; background:#334155; color:white; border:none;
-      margin:0.5rem 0; width:100%; font-size:0.95rem;
+
+    .panel {
+      position:absolute; top:50%; right:20px; transform:translateY(-50%);
+      width:420px; max-height:85vh; overflow-y:auto;
+      background:rgba(15,23,42,0.98); padding:2rem; border-radius:20px;
+      color:#e2e8f0; z-index:100; display:none;
+      box-shadow:0 20px 60px rgba(0,0,0,0.8);
+      border:2px solid #60a5fa;
     }
-    .info {
-      position:absolute; bottom:20px; left:20px; background:rgba(0,0,0,0.7);
-      padding:1.5rem 2rem; border-radius:20px; color:#e2e8f0; max-width:420px;
-      backdrop-filter:blur(20px); border:1px solid rgba(96,165,250,0.3);
+    .panel h2 { margin:0 0 1.5rem; color:#60a5fa; text-align:center; font-size:1.8rem; }
+    .close { position:absolute; top:15px; right:25px; font-size:2rem; cursor:pointer; color:#60a5fa; }
+    .dataset {
+      background:rgba(255,255,255,0.05); padding:1.2rem; border-radius:12px; margin:1rem 0;
+      border-left:4px solid #60a5fa;
     }
+    .dataset strong { color:#60a5fa; }
+    .dataset a {
+      display:inline-block; margin-top:0.8rem; background:#60a5fa; color:#000;
+      padding:0.6rem 1.2rem; border-radius:10px; text-decoration:none; font-weight:bold;
+    }
+    .dataset a:hover { background:#a5b4fc; }
   </style>
 </head>
 <body>
@@ -41,17 +55,16 @@
   <div class="title">OPEN DATASETS 3D MAP</div>
 
   <div class="controls">
-    <input type="text" id="search" class="filter" placeholder="Search dataset..." />
-    <select id="domainFilter" class="filter"><option value="">All Domains</option></select>
-    <select id="countryFilter" class="filter"><option value="">All Countries</option></select>
     <button class="btn" id="toggleRotate">Pause Rotation</button>
   </div>
 
   <div id="globe"></div>
 
-  <div class="info">
-    <strong>Click any glowing point → View full dataset</strong><br>
-    Drag • Zoom • Explore Africa's open data universe
+  <!-- SIDE PANEL — Shows ALL datasets for clicked country -->
+  <div class="panel" id="panel">
+    <div class="close" onclick="document.getElementById('panel').style.display='none'">×</div>
+    <h2 id="countryTitle">Select a country</h2>
+    <div id="datasetList"></div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
@@ -59,7 +72,6 @@
   <script>
     const CSV_PATH = "https://open-data-africa.github.io/datasets/catalog.csv";
 
-    // Bright, beautiful Earth
     const globe = Globe()
       .globeImageUrl('//unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
       .bumpImageUrl('//unpkg.com/three-globe/example/img/earth-topology.png')
@@ -69,17 +81,14 @@
       .atmosphereAltitude(0.25)
       (document.getElementById('globe'));
 
-    // Coordinates for countries
     const coords = {
       "Kenya": [-1.29, 36.82], "Ethiopia": [9.02, 38.75], "Nigeria": [9.08, 7.40],
       "Ghana": [7.95, -1.02], "South Africa": [-30.56, 22.94], "Rwanda": [-1.94, 29.87],
       "Uganda": [1.37, 32.29], "Tanzania": [-6.79, 34.89], "Egypt": [26.82, 30.80],
-      "Morocco": [31.79, -7.09], "Algeria": [28.03, 1.66], "Tunisia": [36.82, 10.17],
-      "Senegal": [14.50, -14.45], "Côte d'Ivoire": [7.54, -5.55], "Cameroon": [3.85, 11.50],
-      "Pan-Africa": [6, 20], "Global": [20, 0]
+      "Morocco": [31.79, -7.09], "Tunisia": [36.82, 10.17], "Senegal": [14.50, -14.45],
+      "Côte d'Ivoire": [7.54, -5.55], "Cameroon": [3.85, 11.50], "Pan-Africa": [6, 20], "Global": [20, 0]
     };
 
-    // Color by Domain
     const domainColor = {
       "Agriculture": "#34d399",
       "Health": "#f87171",
@@ -95,6 +104,7 @@
     };
 
     let allDatasets = [];
+    let countryGroups = {};
 
     Papa.parse(CSV_PATH, {
       download: true,
@@ -102,64 +112,57 @@
       complete: function(res) {
         allDatasets = res.data.filter(r => r["Dataset Name"] && r.Country);
 
-        // Populate filters
-        const domains = [...new Set(allDatasets.map(r => r.Domain))].filter(Boolean).sort();
-        const countries = [...new Set(allDatasets.map(r => r.Country))].filter(Boolean).sort();
-        document.getElementById("domainFilter").innerHTML += domains.map(d => `<option>${d}</option>`).join("");
-        document.getElementById("countryFilter").innerHTML += countries.map(c => `<option>${c}</option>`).join("");
+        // Group by country
+        countryGroups = {};
+        allDatasets.forEach(d => {
+          const c = (d.Country || "Other").trim();
+          if (!countryGroups[c]) countryGroups[c] = [];
+          countryGroups[c].push(d);
+        });
 
-        updateGlobe();
+        // Create one point per country
+        const points = Object.entries(countryGroups).map(([country, datasets]) => {
+          const color = domainColor[datasets[0].Domain] || "default";
+          return {
+            lat: coords[country]?.[0] || 6,
+            lng: coords[country]?.[1] || 20,
+            size: Math.min(4, 1 + datasets.length * 0.6),
+            color: color,
+            country: country,
+            datasets: datasets
+          };
+        });
+
+        globe
+          .pointsData(points)
+          .pointAltitude(d => d.size * 0.15)
+          .pointColor(d => d.color)
+          .pointRadius(d => d.size)
+          .pointLabel(d => `<b>${d.country}</b><br>${d.datasets.length} dataset${d.datasets.length>1?'s':''}`)
+          .onPointClick(point => showCountryPanel(point));
+
+        globe.controls().autoRotate = true;
+        globe.controls().autoRotateSpeed = 0.6;
       }
     });
 
-    function updateGlobe() {
-      const search = document.getElementById("search").value.toLowerCase();
-      const domain = document.getElementById("domainFilter").value;
-      const country = document.getElementById("countryFilter").value;
+    function showCountryPanel(point) {
+      const datasets = point.datasets;
+      document.getElementById("countryTitle").textContent = 
+        `${point.country} — ${datasets.length} Open Dataset${datasets.length>1?'s':''}`;
 
-      const filtered = allDatasets.filter(d => {
-        const match = !search || Object.values(d).some(v => v && v.toLowerCase().includes(search));
-        return match && (!domain || d.Domain === domain) && (!country || d.Country === country);
-      });
+      document.getElementById("datasetList").innerHTML = datasets.map(d => `
+        <div class="dataset">
+          <strong>${d["Dataset Name"]}</strong><br>
+          <small>${d.Domain} • ${d["Data Type"]} • ${d.License}</small><br>
+          ${d["Use Cases"] ? `<p><em>${d["Use Cases"]}</em></p>` : ""}
+          <a href="${d.Link}" target="_blank">Download Dataset</a>
+        </div>
+      `).join("");
 
-      const points = filtered.map(d => ({
-        lat: coords[d.Country]?.[0] || coords["Pan-Africa"][0],
-        lng: coords[d.Country]?.[1] || coords["Pan-Africa"][1],
-        size: 1.2,
-        color: domainColor[d.Domain] || domainColor.default,
-        dataset: d
-      }));
-
-      globe
-        .pointsData(points)
-        .pointAltitude(0.05)
-        .pointColor(d => d.color)
-        .pointRadius(d => d.size)
-        .pointLabel(d => `
-          <div style="background:rgba(0,0,0,0.95); padding:16px; border-radius:16px; border:2px solid ${d.color}; max-width:300px; font-size:14px;">
-            <b style="color:${d.color};">${d.dataset["Dataset Name"]}</b><br><br>
-            <strong>Domain:</strong> ${d.dataset.Domain}<br>
-            <strong>Source:</strong> ${d.dataset.Source}<br>
-            <strong>Country:</strong> ${d.dataset.Country}<br>
-            <strong>Type:</strong> ${d.dataset["Data Type"]}<br>
-            <strong>License:</strong> ${d.dataset.License}<br>
-            <strong>Use Cases:</strong> ${d.dataset["Use Cases"]}<br>
-            <strong>Last Updated:</strong> ${d.dataset["Last Updated"]}<br>
-            ${d.dataset["Challenges/Notes"] ? `<strong>Notes:</strong> ${d.dataset["Challenges/Notes"]}<br>` : ""}
-            <a href="${d.dataset.Link}" target="_blank" style="color:${d.color}; font-weight:bold; margin-top:10px; display:block;">Download Dataset</a>
-          </div>
-        `)
-        .onPointClick(point => window.open(point.dataset.Link, '_blank'));
+      document.getElementById("panel").style.display = "block";
     }
 
-    // Filters
-    document.getElementById("search").addEventListener("input", updateGlobe);
-    document.getElementById("domainFilter").addEventListener("change", updateGlobe);
-    document.getElementById("countryFilter").addEventListener("change", updateGlobe);
-
-    // Rotation control
-    globe.controls().autoRotate = true;
-    globe.controls().autoRotateSpeed = 0.6;
     document.getElementById('toggleRotate').addEventListener('click', function() {
       const rotating = globe.controls().autoRotate;
       globe.controls().autoRotate = !rotating;
