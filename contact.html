@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Contact – Open Data Africa</title>
+  <title>Contact & Feedback – Open Data Africa</title>
   <link rel="stylesheet" href="style.css" />
+
   <style>
     body {
       font-family: Arial, sans-serif;
       margin: 0;
-      padding: 0;
       background: #f9f9f9;
     }
 
@@ -28,41 +28,47 @@
       flex-wrap: wrap;
     }
 
-    .nav-list li a {
+    .nav-list a {
       text-decoration: none;
       color: #333;
       font-weight: bold;
     }
 
-    .nav-list li a[aria-current="page"] {
+    .nav-list a[aria-current="page"] {
       color: #0077cc;
     }
 
     main {
-      max-width: 800px;
+      max-width: 1000px;
       margin: 0 auto;
-      padding: 2rem;
-      text-align: center;
+      padding: 2.5rem 1.5rem;
     }
 
     h1 {
-      font-size: 2rem;
+      text-align: center;
       margin-bottom: 0.5rem;
-      color: #222;
+      font-size: 2.2rem;
     }
 
-    p {
+    .intro {
+      text-align: center;
       font-size: 1.1rem;
-      color: #333;
-      line-height: 1.6;
+      color: #444;
+      margin-bottom: 3rem;
     }
 
+    /* Sections */
+    .section {
+      margin-bottom: 3rem;
+    }
+
+    /* Social Links */
     .social-links {
-      margin-top: 2rem;
       display: flex;
       justify-content: center;
       gap: 2rem;
       flex-wrap: wrap;
+      margin-top: 1.5rem;
     }
 
     .social-links a {
@@ -83,13 +89,27 @@
       height: 28px;
     }
 
-    /* Brand colors */
     .linkedin svg { fill: #0077b5; }
     .instagram svg { fill: #E1306C; }
 
+    /* Feedback Form */
+    .form-container {
+      background: #fff;
+      border-radius: 14px;
+      padding: 1.5rem;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+    }
+
+    .form-container iframe {
+      width: 100%;
+      height: 700px;
+      border: none;
+    }
+
+    /* Map */
     .map-container {
       margin-top: 2rem;
-      border-radius: 12px;
+      border-radius: 14px;
       overflow: hidden;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
     }
@@ -103,14 +123,14 @@
     footer {
       text-align: center;
       padding: 1.5rem;
-      margin-top: 3rem;
-      background: #fff;
-      color: #666;
+      margin-top: 4rem;
+      background: #000;
+      color: #ccc;
       font-size: 0.9rem;
-      border-top: 1px solid #eee;
     }
   </style>
 </head>
+
 <body>
 
   <!-- Navigation -->
@@ -122,38 +142,71 @@
       <li><a href="use-cases.html">Use Cases</a></li>
       <li><a href="resources.html">Resources</a></li>
       <li><a href="contribute.html">Contribute</a></li>
-      <li><a href="contact.html" aria-current="page">Contact</a></li>
+      <li><a href="contact.html" aria-current="page">Contact & Feedback</a></li>
     </ul>
   </nav>
 
-  <!-- Main Content -->
+  <!-- Main -->
   <main>
-    <h1>Contact Us</h1>
-    <p>We’d love to hear from you. Reach out for collaborations, partnerships, or to contribute datasets.</p>
 
-    <div class="social-links">
-      <a href="https://www.linkedin.com/company/giz-african-union/posts/?feedView=all" target="_blank" class="linkedin">
-        <svg viewBox="0 0 24 24"><path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM0 8h5v16H0V8zm7.5 0h4.8v2.2h.1c.7-1.3 2.4-2.6 4.9-2.6 5.2 0 6.2 3.4 6.2 7.8V24h-5v-7c0-1.7 0-3.9-2.4-3.9-2.4 0-2.8 1.9-2.8 3.8V24h-5V8z"/></svg>
-        LinkedIn
-      </a>
-      <a href="https://www.instagram.com/gizafricanunion/" target="_blank" class="instagram">
-        <svg viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.9.1 1.2.1 1.9.3 2.3.5.6.3 1 .6 1.5 1.1.5.5.8.9 1.1 1.5.2.4.4 1 .5 2.3.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c-.1 1.2-.3 1.9-.5 2.3-.3.6-.6 1-1.1 1.5-.5.5-.9.8-1.5 1.1-.4.2-1 .4-2.3.5-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-1.2-.1-1.9-.3-2.3-.5-.6-.3-1-.6-1.5-1.1-.5-.5-.8-.9-1.1-1.5-.2-.4-.4-1-.5-2.3C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.9c.1-1.2.3-1.9.5-2.3.3-.6.6-1 1.1-1.5.5-.5.9-.8 1.5-1.1.4-.2 1-.4 2.3-.5C8.4 2.2 8.8 2.2 12 2.2zm0-2.2C8.7 0 8.3 0 7 .1 5.7.2 4.6.5 3.8.9c-.8.4-1.5.9-2.2 1.6-.7.7-1.2 1.4-1.6 2.2-.4.8-.7 1.9-.8 3.2C0 8.3 0 8.7 0 12c0 3.3 0 3.7.1 5 .1 1.3.4 2.4.8 3.2.4.8.9 1.5 1.6 2.2.7.7 1.4 1.2 2.2 1.6.8.4 1.9.7 3.2.8 1.3.1 1.7.1 5 .1s3.7 0 5-.1c1.3-.1 2.4-.4 3.2-.8.8-.4 1.5-.9 2.2-1.6.7-.7 1.2-1.4 1.6-2.2.4-.8.7-1.9.8-3.2.1-1.3.1-1.7.1-5s0-3.7-.1-5c-.1-1.3-.4-2.4-.8-3.2-.4-.8-.9-1.5-1.6-2.2-.7-.7-1.4-1.2-2.2-1.6-.8-.4-1.9-.7-3.2-.8C15.7 0 15.3 0 12 0zM12 5.8a6.2 6.2 0 1 0 0 12.4 6.2 6.2 0 0 0 0-12.4zm0 10.2a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.4-11.8a1.44 1.44 0 1 0 0-2.88 1.44 1.44 0 0 0 0 2.88z"/></svg>
-        Instagram
-      </a>
-    </div>
+    <h1>Contact & Feedback</h1>
+    <p class="intro">
+      We value collaboration, ideas, and feedback.  
+      Reach out to us or share your thoughts to help strengthen Africa’s open data and AI ecosystem.
+    </p>
 
-    <div class="map-container">
-      <iframe 
-        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2827.1842270196253!2d38.760862073143706!3d9.00775718932492!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x164b858a298f5da7%3A0x5c55ef38f1e42596!2sGIZ%20African%20Union!5e1!3m2!1sen!2set!4v1753948918126!5m2!1sen!2set" 
-        allowfullscreen 
-        loading="lazy" 
-        referrerpolicy="no-referrer-when-downgrade">
-      </iframe>
-    </div>
+    <!-- Feedback Section -->
+    <section class="section">
+      <h2>📝 Share Your Feedback</h2>
+      <p>
+        Help us improve Open Data Africa by sharing your feedback, dataset suggestions, or use cases.
+      </p>
+
+      <div class="form-container">
+        <iframe 
+          src="https://docs.google.com/forms/d/e/1FAIpQLScxr2qkkhMfq7d6haY7/viewform?embedded=true"
+          loading="lazy">
+        </iframe>
+      </div>
+    </section>
+
+    <!-- Social & Contact -->
+    <section class="section">
+      <h2>🤝 Connect With Us</h2>
+
+      <div class="social-links">
+        <a href="https://www.linkedin.com/company/giz-african-union/posts/?feedView=all" target="_blank" class="linkedin">
+          <svg viewBox="0 0 24 24">
+            <path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM0 8h5v16H0V8zm7.5 0h4.8v2.2h.1c.7-1.3 2.4-2.6 4.9-2.6 5.2 0 6.2 3.4 6.2 7.8V24h-5v-7c0-1.7 0-3.9-2.4-3.9-2.4 0-2.8 1.9-2.8 3.8V24h-5V8z"/>
+          </svg>
+          LinkedIn
+        </a>
+
+        <a href="https://www.instagram.com/gizafricanunion/" target="_blank" class="instagram">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 0c3.3 0 3.7 0 5 .1 1.3.1 2.4.4 3.2.8.8.4 1.5.9 2.2 1.6.7.7 1.2 1.4 1.6 2.2.4.8.7 1.9.8 3.2.1 1.3.1 1.7.1 5s0 3.7-.1 5c-.1 1.3-.4 2.4-.8 3.2-.4.8-.9 1.5-1.6 2.2-.7.7-1.4 1.2-2.2 1.6-.8.4-1.9.7-3.2.8-1.3.1-1.7.1-5 .1s-3.7 0-5-.1c-1.3-.1-2.4-.4-3.2-.8-.8-.4-1.5-.9-2.2-1.6-.7-.7-1.2-1.4-1.6-2.2-.4-.8-.7-1.9-.8-3.2C0 15.7 0 15.3 0 12s0-3.7.1-5c.1-1.3.4-2.4.8-3.2.4-.8.9-1.5 1.6-2.2.7-.7 1.4-1.2 2.2-1.6.8-.4 1.9-.7 3.2-.8C8.3 0 8.7 0 12 0z"/>
+          </svg>
+          Instagram
+        </a>
+      </div>
+    </section>
+
+    <!-- Map -->
+    <section class="section">
+      <h2>📍 Our Location</h2>
+      <div class="map-container">
+        <iframe 
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2827.1842270196253!2d38.760862073143706!3d9.00775718932492"
+          loading="lazy">
+        </iframe>
+      </div>
+    </section>
+
   </main>
 
+  <!-- Footer -->
   <footer>
-    <p>&copy; 2025 Open Data Africa – Powered by AI Made in Africa </p>
+    <p>&copy; 2025 Open Data Africa – Powered by AI Made in Africa</p>
   </footer>
 
 </body>
