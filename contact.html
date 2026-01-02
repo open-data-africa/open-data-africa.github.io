@@ -9,74 +9,70 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      margin: 0;
       background: #f9f9f9;
+      margin: 0;
     }
 
+    /* Navigation */
     nav {
-      background-color: #fff;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      background: #fff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
     }
 
     .nav-list {
       display: flex;
       justify-content: center;
-      list-style: none;
+      gap: 1.5rem;
       padding: 1rem 0;
       margin: 0;
-      gap: 1.5rem;
+      list-style: none;
       flex-wrap: wrap;
     }
 
     .nav-list a {
       text-decoration: none;
-      color: #333;
       font-weight: bold;
+      color: #333;
     }
 
     .nav-list a[aria-current="page"] {
-      color: #0077cc;
+      color: #0066ff;
     }
 
+    /* Main */
     main {
       max-width: 1000px;
       margin: 0 auto;
       padding: 2.5rem 1.5rem;
+      text-align: center;
     }
 
     h1 {
-      text-align: center;
-      margin-bottom: 0.5rem;
       font-size: 2.2rem;
+      margin-bottom: 0.5rem;
     }
 
-    .intro {
-      text-align: center;
+    p {
       font-size: 1.1rem;
       color: #444;
-      margin-bottom: 3rem;
+      line-height: 1.6;
     }
 
-    /* Sections */
-    .section {
-      margin-bottom: 3rem;
-    }
-
-    /* Social Links */
+    /* Social */
     .social-links {
       display: flex;
       justify-content: center;
       gap: 2rem;
+      margin: 2rem 0;
       flex-wrap: wrap;
-      margin-top: 1.5rem;
     }
 
     .social-links a {
-      text-decoration: none;
-      font-weight: bold;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.6rem;
+      font-weight: bold;
+      text-decoration: none;
       transition: transform 0.2s ease;
     }
 
@@ -92,40 +88,47 @@
     .linkedin svg { fill: #0077b5; }
     .instagram svg { fill: #E1306C; }
 
-    /* Feedback Form */
-    .form-container {
-      background: #fff;
-      border-radius: 14px;
-      padding: 1.5rem;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+    /* Sections */
+    .section {
+      margin-top: 3.5rem;
+      text-align: left;
     }
 
+    .section h2 {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    /* Form */
     .form-container iframe {
       width: 100%;
-      height: 700px;
+      height: 720px;
       border: none;
+      border-radius: 12px;
+      background: #fff;
     }
 
     /* Map */
     .map-container {
       margin-top: 2rem;
-      border-radius: 14px;
+      border-radius: 12px;
       overflow: hidden;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
 
-    iframe {
+    iframe.map {
       width: 100%;
       height: 450px;
       border: none;
     }
 
+    /* Footer */
     footer {
-      text-align: center;
-      padding: 1.5rem;
       margin-top: 4rem;
+      padding: 1.5rem 0;
       background: #000;
-      color: #ccc;
+      color: #fff;
+      text-align: center;
       font-size: 0.9rem;
     }
   </style>
@@ -133,81 +136,83 @@
 
 <body>
 
-  <!-- Navigation -->
-  <nav>
-    <ul class="nav-list">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="datasets.html">Datasets</a></li>
-      <li><a href="use-cases.html">Use Cases</a></li>
-      <li><a href="resources.html">Resources</a></li>
-      <li><a href="contribute.html">Contribute</a></li>
-      <li><a href="contact.html" aria-current="page">Contact & Feedback</a></li>
-    </ul>
-  </nav>
+<!-- Navigation -->
+<nav>
+  <ul class="nav-list">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="datasets.html">Datasets</a></li>
+    <li><a href="use-cases.html">Use Cases</a></li>
+    <li><a href="resources.html">Resources</a></li>
+    <li><a href="contribute.html">Contribute</a></li>
+    <li><a href="contact.html" aria-current="page">Contact & Feedback</a></li>
+  </ul>
+</nav>
 
-  <!-- Main -->
-  <main>
+<!-- Main Content -->
+<main>
 
-    <h1>Contact & Feedback</h1>
-    <p class="intro">
-      We value collaboration, ideas, and feedback.  
-      Reach out to us or share your thoughts to help strengthen Africa’s open data and AI ecosystem.
+  <h1>Contact & Feedback</h1>
+  <p>
+    We welcome collaboration, feedback, and ideas that strengthen Africa’s open data and AI ecosystem.
+    Please connect with us or share your thoughts using the form below.
+  </p>
+
+  <!-- Social Links -->
+  <div class="social-links">
+    <a href="https://www.linkedin.com/company/giz-african-union/posts/?feedView=all"
+       target="_blank"
+       class="linkedin">
+      <svg viewBox="0 0 24 24">
+        <path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM0 8h5v16H0V8zm7.5 0h4.8v2.2h.1c.7-1.3 2.4-2.6 4.9-2.6 5.2 0 6.2 3.4 6.2 7.8V24h-5v-7c0-1.7 0-3.9-2.4-3.9-2.4 0-2.8 1.9-2.8 3.8V24h-5V8z"/>
+      </svg>
+      LinkedIn
+    </a>
+
+    <a href="https://www.instagram.com/gizafricanunion/"
+       target="_blank"
+       class="instagram">
+      <svg viewBox="0 0 24 24">
+        <path d="M12 2.2c3.2 0 3.6 0 4.9.1 1.2.1 1.9.3 2.3.5.6.3 1 .6 1.5 1.1.5.5.8.9 1.1 1.5.2.4.4 1 .5 2.3.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c-.1 1.2-.3 1.9-.5 2.3-.3.6-.6 1-1.1 1.5-.5.5-.9.8-1.5 1.1-.4.2-1 .4-2.3.5-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-1.2-.1-1.9-.3-2.3-.5-.6-.3-1-.6-1.5-1.1-.5-.5-.8-.9-1.1-1.5-.2-.4-.4-1-.5-2.3C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.9c.1-1.2.3-1.9.5-2.3.3-.6.6-1 1.1-1.5.5-.5.9-.8 1.5-1.1.4-.2 1-.4 2.3-.5C8.4 2.2 8.8 2.2 12 2.2z"/>
+      </svg>
+      Instagram
+    </a>
+  </div>
+
+  <!-- Feedback Form -->
+  <section class="section">
+    <h2>📝 Share Your Feedback</h2>
+    <p style="text-align:center;">
+      Your feedback helps improve the Open Data Africa platform and guides future development.
     </p>
 
-    <!-- Feedback Section -->
-    <section class="section">
-      <h2>📝 Share Your Feedback</h2>
-      <p>
-        Help us improve Open Data Africa by sharing your feedback, dataset suggestions, or use cases.
-      </p>
+    <div class="form-container">
+      <iframe
+        src="https://docs.google.com/forms/d/e/1FAIpQLScxr2qkkhMfq7d6haY7/viewform?embedded=true">
+        Loading…
+      </iframe>
+    </div>
+  </section>
 
-      <div class="form-container">
-        <iframe 
-          src="https://docs.google.com/forms/d/e/1FAIpQLScxr2qkkhMfq7d6haY7/viewform?embedded=true"
-          loading="lazy">
-        </iframe>
-      </div>
-    </section>
+  <!-- Map -->
+  <section class="section">
+    <h2>📍 Our Location</h2>
+    <div class="map-container">
+      <iframe
+        class="map"
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3941.063203244321!2d38.760862073143706!3d9.00775718932492!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x164b858a298f5da7%3A0x5c55ef38f1e42596!2sGIZ%20African%20Union!5e0!3m2!1sen!2set!4v1753948918126"
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
+    </div>
+  </section>
 
-    <!-- Social & Contact -->
-    <section class="section">
-      <h2>🤝 Connect With Us</h2>
+</main>
 
-      <div class="social-links">
-        <a href="https://www.linkedin.com/company/giz-african-union/posts/?feedView=all" target="_blank" class="linkedin">
-          <svg viewBox="0 0 24 24">
-            <path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM0 8h5v16H0V8zm7.5 0h4.8v2.2h.1c.7-1.3 2.4-2.6 4.9-2.6 5.2 0 6.2 3.4 6.2 7.8V24h-5v-7c0-1.7 0-3.9-2.4-3.9-2.4 0-2.8 1.9-2.8 3.8V24h-5V8z"/>
-          </svg>
-          LinkedIn
-        </a>
-
-        <a href="https://www.instagram.com/gizafricanunion/" target="_blank" class="instagram">
-          <svg viewBox="0 0 24 24">
-            <path d="M12 0c3.3 0 3.7 0 5 .1 1.3.1 2.4.4 3.2.8.8.4 1.5.9 2.2 1.6.7.7 1.2 1.4 1.6 2.2.4.8.7 1.9.8 3.2.1 1.3.1 1.7.1 5s0 3.7-.1 5c-.1 1.3-.4 2.4-.8 3.2-.4.8-.9 1.5-1.6 2.2-.7.7-1.4 1.2-2.2 1.6-.8.4-1.9.7-3.2.8-1.3.1-1.7.1-5 .1s-3.7 0-5-.1c-1.3-.1-2.4-.4-3.2-.8-.8-.4-1.5-.9-2.2-1.6-.7-.7-1.2-1.4-1.6-2.2-.4-.8-.7-1.9-.8-3.2C0 15.7 0 15.3 0 12s0-3.7.1-5c.1-1.3.4-2.4.8-3.2.4-.8.9-1.5 1.6-2.2.7-.7 1.4-1.2 2.2-1.6.8-.4 1.9-.7 3.2-.8C8.3 0 8.7 0 12 0z"/>
-          </svg>
-          Instagram
-        </a>
-      </div>
-    </section>
-
-    <!-- Map -->
-    <section class="section">
-      <h2>📍 Our Location</h2>
-      <div class="map-container">
-        <iframe 
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2827.1842270196253!2d38.760862073143706!3d9.00775718932492"
-          loading="lazy">
-        </iframe>
-      </div>
-    </section>
-
-  </main>
-
-  <!-- Footer -->
-  <footer>
-    <p>&copy; 2025 Open Data Africa – Powered by AI Made in Africa</p>
-  </footer>
+<!-- Footer -->
+<footer>
+  <p>© 2025 Open Data Africa – Powered by AI Made in Africa</p>
+</footer>
 
 </body>
 </html>
