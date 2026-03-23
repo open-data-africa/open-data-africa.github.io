@@ -228,38 +228,65 @@ footer a {
 
 
 /*for ARDI*/
+/* RESET */
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: #222;
+  background: #fafafa;
+  line-height: 1.6;
+}
 
 /* TOP NAV */
 .top-nav {
-  padding: 10px 20px;
+  padding: 12px 20px;
 }
 
 .back-btn {
   text-decoration: none;
-  color: #0d3b66;
-  font-weight: 600;
+  color: #333;
+  font-weight: 500;
 }
 
-/* HERO */
+.back-btn:hover {
+  text-decoration: underline;
+}
+
+/* HERO (clean, no strong color) */
 .hero {
-  background: #0d3b66;
-  color: white;
-  padding: 60px 20px; /* reduced from 80px */
+  background: #ffffff;
+  padding: 50px 20px;
   text-align: center;
+  border-bottom: 1px solid #eee;
+}
+
+.hero h1 {
+  margin-bottom: 10px;
+  font-size: 2rem;
+}
+
+.subtitle {
+  color: #666;
+  font-size: 1rem;
+}
+
+.meta {
+  color: #999;
+  font-size: 0.9rem;
 }
 
 /* SECTIONS */
 .section {
-  padding: 40px 20px; /* reduced from 60px */
+  padding: 40px 20px;
 }
 
 .section.light {
-  background: #f5f7fa;
+  background: #ffffff;
 }
 
 /* CONTAINER */
 .container {
-  max-width: 1000px; /* slightly tighter */
+  max-width: 950px;
   margin: auto;
 }
 
@@ -267,23 +294,30 @@ footer a {
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 15px; /* reduced gap */
+  gap: 15px;
 }
 
 /* CARDS */
 .card {
-  background: white;
-  padding: 15px; /* reduced */
+  background: #ffffff;
+  padding: 15px;
   border-radius: 8px;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+  border: 1px solid #eee;
+  transition: 0.2s ease;
 }
 
-/* FORMULA */
+.card:hover {
+  border-color: #ddd;
+  transform: translateY(-2px);
+}
+
+/* FORMULA BOX */
 .formula {
-  background: #eef;
+  background: #f4f4f4;
   padding: 12px;
   border-radius: 6px;
   font-size: 0.95rem;
+  border: 1px solid #e0e0e0;
 }
 
 /* LISTS */
@@ -292,29 +326,35 @@ ul {
 }
 
 .tiers li {
-  margin-bottom: 6px; /* tighter */
+  margin-bottom: 6px;
 }
 
 /* BUTTONS */
 .btn {
   display: inline-block;
   padding: 10px 16px;
-  background: #0d3b66;
-  color: white;
+  background: #222;
+  color: #fff;
   text-decoration: none;
   border-radius: 4px;
   font-size: 0.9rem;
+  transition: 0.2s;
+}
+
+.btn:hover {
+  background: #444;
 }
 
 .btn.primary {
-  background: #f4a261;
+  background: #000;
 }
 
-/* FOOTER */
+/* FOOTER (clean, no heavy color) */
 .footer {
-  background: #0d3b66;
-  color: white;
-  padding: 30px 20px; /* compact */
+  background: #ffffff;
+  border-top: 1px solid #eee;
+  padding: 25px 20px;
+  margin-top: 30px;
 }
 
 .footer-content {
@@ -325,6 +365,12 @@ ul {
 
 .footer h4 {
   margin-bottom: 8px;
+  font-size: 0.95rem;
+}
+
+.footer p {
+  font-size: 0.9rem;
+  color: #666;
 }
 
 .footer ul {
@@ -337,8 +383,9 @@ ul {
 }
 
 .footer a {
-  color: #ddd;
+  color: #444;
   text-decoration: none;
+  font-size: 0.9rem;
 }
 
 .footer a:hover {
@@ -346,8 +393,8 @@ ul {
 }
 
 .footer-bottom {
-  margin-top: 20px;
-  font-size: 0.85rem;
+  margin-top: 15px;
+  font-size: 0.8rem;
   text-align: center;
-  opacity: 0.8;
+  color: #888;
 }
