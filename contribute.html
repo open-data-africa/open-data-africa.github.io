@@ -3,92 +3,864 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Contribute – Open Data Africa</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="description" content="Contribute your openly licensed African datasets to support AI innovation and data accessibility across the continent.">
+  <meta name="keywords" content="Africa, Open Data, Contribute, Dataset Submission, AI, Data Sharing, GIZ">
+  <meta name="author" content="AI Made in Africa / GIZ / African Union">
+  
+  <!-- Open Graph for Social Sharing -->
+  <meta property="og:title" content="Contribute – Open Data Africa">
+  <meta property="og:description" content="Join our effort to make high-quality, openly licensed datasets from Africa accessible for AI and innovation.">
+  <meta property="og:type" content="website">
+  
+  <title>Contribute – Open Data Africa | Share Your Dataset</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    /* ===== CSS VARIABLES - GERMAN FLAG COLORS ===== */
+    :root {
+      /* German Flag Colors */
+      --german-black: #1a1a1a;
+      --german-red: #c8102e;
+      --german-gold: #ffce00;
+      
+      /* Supporting Colors */
+      --white: #ffffff;
+      --light: #f8f9fa;
+      --gray: #6c757d;
+      --gray-light: #e9ecef;
+      
+      /* UI Elements */
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+      --radius: 8px;
+      --radius-lg: 12px;
+      --transition: all 0.3s ease;
+    }
+
+    /* ===== RESET & BASE ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body, html {
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      color: var(--german-black);
+      background: var(--white);
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      margin-bottom: 1rem;
+    }
+
+    a {
+      color: var(--german-red);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    a:hover {
+      color: var(--german-black);
+    }
+
+    ul {
+      list-style: none;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    /* ===== UTILITIES ===== */
+    .wrapper {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .full-width {
+      width: 100%;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .mb-2 {
+      margin-bottom: 2rem;
+    }
+
+    .mb-3 {
+      margin-bottom: 3rem;
+    }
+
+    /* ===== FLAG BAR ===== */
+    .flag-bar {
+      height: 6px;
+      width: 100%;
+      display: flex;
+    }
+
+    .flag-bar .black {
+      flex: 1;
+      background: var(--german-black);
+    }
+
+    .flag-bar .red {
+      flex: 1;
+      background: var(--german-red);
+    }
+
+    .flag-bar .gold {
+      flex: 1;
+      background: var(--german-gold);
+    }
+
+    /* ===== NAVIGATION ===== */
+    nav {
+      background: var(--german-black);
+      padding: 1rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: var(--shadow);
+    }
+
+    .nav-list {
+      list-style: none;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      margin: 0;
+      padding: 0;
+    }
+
+    .nav-list li a {
+      color: var(--white);
+      text-decoration: none;
+      font-weight: 500;
+      padding: 8px 16px;
+      border-radius: var(--radius);
+      transition: var(--transition);
+      display: inline-block;
+    }
+
+    .nav-list li a:hover {
+      background: var(--german-red);
+      color: var(--white);
+    }
+
+    .nav-list a[aria-current="page"] {
+      background: var(--german-gold);
+      color: var(--german-black);
+      font-weight: 600;
+    }
+
+    /* Mobile Menu Toggle */
+    .mobile-menu-toggle {
+      display: none;
+      background: transparent;
+      border: none;
+      color: var(--white);
+      font-size: 1.5rem;
+      cursor: pointer;
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    /* ===== HERO SECTION ===== */
+    .hero {
+      background: linear-gradient(135deg, var(--german-black) 0%, #3a3a3a 100%);
+      padding: 100px 1rem 80px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      color: var(--white);
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,206,0,0.1)"/></svg>');
+      background-size: 30px 30px;
+      opacity: 0.3;
+    }
+
+    .hero .wrapper {
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      animation: fadeInUp 0.8s ease;
+    }
+
+    .hero h1 span {
+      color: var(--german-gold);
+    }
+
+    .hero p {
+      font-size: 1.3rem;
+      color: rgba(255, 255, 255, 0.9);
+      max-width: 700px;
+      margin: 0 auto 2rem;
+      animation: fadeInUp 0.8s ease 0.2s both;
+    }
+
+    .hero-accent {
+      height: 4px;
+      width: 100px;
+      background: linear-gradient(90deg, var(--german-red), var(--german-gold));
+      margin: 0 auto;
+      border-radius: 2px;
+      animation: fadeInUp 0.8s ease 0.4s both;
+    }
+
+    /* ===== MAIN CONTENT ===== */
+    main {
+      padding: 80px 0;
+    }
+
+    section {
+      margin-bottom: 60px;
+    }
+
+    section h2 {
+      font-size: 2.5rem;
+      color: var(--german-black);
+      margin-bottom: 1.5rem;
+      position: relative;
+      padding-bottom: 15px;
+    }
+
+    section h2::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 80px;
+      height: 4px;
+      background: linear-gradient(90deg, var(--german-red), var(--german-gold));
+      border-radius: 2px;
+    }
+
+    section p {
+      font-size: 1.1rem;
+      color: var(--gray);
+      line-height: 1.8;
+    }
+
+    /* ===== INFO BOXES ===== */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin: 40px 0;
+    }
+
+    .info-card {
+      background: var(--white);
+      padding: 40px 30px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+      border-left: 5px solid var(--german-red);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .info-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .info-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--german-black), var(--german-red), var(--german-gold));
+    }
+
+    .info-card h3 {
+      color: var(--german-black);
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .info-card h3 i {
+      font-size: 1.8rem;
+      color: var(--german-red);
+    }
+
+    .info-card p {
+      color: var(--gray);
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+
+    /* ===== HIGHLIGHT SECTION ===== */
+    .highlight-section {
+      background: var(--light);
+      padding: 60px 40px;
+      border-radius: var(--radius-lg);
+      border: 2px solid var(--gray-light);
+    }
+
+    .highlight-section h2 {
+      text-align: center;
+    }
+
+    .highlight-section h2::after {
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .highlight-section p {
+      text-align: center;
+      max-width: 700px;
+      margin: 0 auto 2rem;
+    }
+
+    /* ===== SUBMISSION REQUIREMENTS ===== */
+    .requirements-list {
+      background: var(--white);
+      padding: 40px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      margin: 30px 0;
+    }
+
+    .requirements-list ul {
+      list-style: none;
+    }
+
+    .requirements-list ul li {
+      padding: 15px 0;
+      padding-left: 40px;
+      position: relative;
+      border-bottom: 1px solid var(--gray-light);
+      font-size: 1rem;
+      color: var(--german-black);
+    }
+
+    .requirements-list ul li:last-child {
+      border-bottom: none;
+    }
+
+    .requirements-list ul li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      top: 15px;
+      color: var(--german-gold);
+      font-weight: 700;
+      font-size: 1.3rem;
+      background: var(--german-black);
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .requirements-list ul li i {
+      margin-right: 10px;
+      color: var(--german-red);
+    }
+
+    /* ===== BUTTONS ===== */
+    .button {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 32px;
+      background: linear-gradient(135deg, var(--german-red) 0%, #a00d26 100%);
+      color: var(--white);
+      border-radius: var(--radius);
+      font-weight: 600;
+      font-size: 1.1rem;
+      transition: var(--transition);
+      box-shadow: var(--shadow);
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .button:hover {
+      background: linear-gradient(135deg, #a00d26 0%, var(--german-red) 100%);
+      color: var(--white);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .button-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 30px;
+      background: transparent;
+      border: 2px solid var(--german-gold);
+      color: var(--german-black);
+      border-radius: var(--radius);
+      font-weight: 600;
+      font-size: 1.1rem;
+      transition: var(--transition);
+      text-decoration: none;
+    }
+
+    .button-secondary:hover {
+      background: var(--german-gold);
+      color: var(--german-black);
+      transform: translateY(-2px);
+    }
+
+    .button-container {
+      text-align: center;
+      margin-top: 2rem;
+    }
+
+    /* ===== WHY CONTRIBUTE SECTION ===== */
+    .why-contribute {
+      background: linear-gradient(135deg, var(--german-black) 0%, #3a3a3a 100%);
+      color: var(--white);
+      padding: 60px 40px;
+      border-radius: var(--radius-lg);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .why-contribute::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--german-black), var(--german-red), var(--german-gold));
+    }
+
+    .why-contribute h2 {
+      color: var(--white);
+    }
+
+    .why-contribute h2::after {
+      background: linear-gradient(90deg, var(--german-gold), var(--german-red));
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .why-contribute p {
+      color: rgba(255, 255, 255, 0.9);
+      max-width: 700px;
+      margin: 0 auto 1rem;
+      font-size: 1.1rem;
+    }
+
+    .why-contribute strong {
+      color: var(--german-gold);
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      background: var(--german-black);
+      color: var(--white);
+      padding: 60px 0 30px;
+      border-top: 4px solid var(--german-red);
+    }
+
+    .footer-content {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 40px;
+      margin-bottom: 40px;
+    }
+
+    .footer h4 {
+      font-size: 1.2rem;
+      margin-bottom: 1.5rem;
+      color: var(--german-gold);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .footer p {
+      opacity: 0.8;
+      line-height: 1.8;
+    }
+
+    .footer ul li {
+      margin-bottom: 12px;
+    }
+
+    .footer ul li a {
+      color: var(--white);
+      opacity: 0.8;
+    }
+
+    .footer ul li a:hover {
+      opacity: 1;
+      color: var(--german-gold);
+    }
+
+    .footer-social {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .footer-social a {
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--white);
+      font-size: 1.2rem;
+    }
+
+    .footer-social a:hover {
+      background: var(--german-red);
+      color: var(--white);
+    }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 30px;
+      text-align: center;
+      opacity: 0.7;
+      font-size: 0.9rem;
+    }
+
+    .footer-bottom a {
+      color: var(--german-gold);
+    }
+
+    /* ===== ANIMATIONS ===== */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .mobile-menu-toggle {
+        display: block;
+      }
+
+      .nav-list {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        margin-top: 20px;
+      }
+
+      .nav-list.active {
+        display: flex;
+      }
+
+      .hero h1 {
+        font-size: 2rem;
+      }
+
+      .hero p {
+        font-size: 1.1rem;
+      }
+
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .highlight-section,
+      .why-contribute {
+        padding: 40px 20px;
+      }
+
+      .requirements-list {
+        padding: 30px 20px;
+      }
+
+      .button {
+        width: 100%;
+        justify-content: center;
+      }
+
+      main {
+        padding: 40px 0;
+      }
+
+      section {
+        margin-bottom: 40px;
+      }
+    }
+
+    /* ===== ACCESSIBILITY ===== */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+  </style>
 </head>
 <body>
 
+  <!-- German Flag Bar -->
+  <div class="flag-bar">
+    <div class="black"></div>
+    <div class="red"></div>
+    <div class="gold"></div>
+  </div>
+
   <!-- Navigation -->
-  <nav class="full-width">
-    <ul class="nav-list">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="datasets.html">Datasets</a></li>
-      <li><a href="use-cases.html">Use Cases</a></li>
-      <li><a href="resources.html">Resources</a></li>
-      <li><a href="contribute.html" aria-current="page">Contribute</a></li>
-      <li><a href="dashboard.html">Dashboard</a></li>
-      <li><a href="aodria.html">AODRIA</a></li>
-      <li><a href="contact.html">Contact</a></li>
-    </ul>
+  <nav>
+    <div class="wrapper">
+      <button class="mobile-menu-toggle" aria-label="Toggle menu" onclick="toggleMenu()">
+        <i class="fas fa-bars"></i>
+      </button>
+      <ul class="nav-list" id="navList">
+        <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="about.html"><i class="fas fa-info-circle"></i> About</a></li>
+        <li><a href="datasets.html"><i class="fas fa-database"></i> Datasets</a></li>
+        <li><a href="use-cases.html"><i class="fas fa-lightbulb"></i> Use Cases</a></li>
+        <li><a href="resources.html"><i class="fas fa-book"></i> Resources</a></li>
+        <li><a href="contribute.html" aria-current="page"><i class="fas fa-upload"></i> Contribute</a></li>
+        <li><a href="dashboard.html"><i class="fas fa-chart-bar"></i> Dashboard</a></li>
+        <li><a href="aodria.html"><i class="fas fa-award"></i> AODRIA</a></li>
+        <li><a href="contact.html"><i class="fas fa-envelope"></i> Contact</a></li>
+      </ul>
+    </div>
   </nav>
 
   <!-- Hero Section -->
-  <section class="hero full-width">
+  <section class="hero">
     <div class="wrapper">
-      <h1>🤝 Contribute a Dataset</h1>
+      <h1><i class="fas fa-handshake"></i> Contribute a <span>Dataset</span></h1>
       <p>Join our effort to make high-quality, openly licensed datasets from Africa accessible for AI and innovation.</p>
+      <div class="hero-accent"></div>
     </div>
   </section>
 
   <!-- Main Content -->
   <main class="wrapper">
+    
+    <!-- How You Can Contribute -->
     <section>
       <h2>How You Can Contribute</h2>
       <p>
         We welcome contributions from researchers, organizations, and individuals working with data relevant to Africa. 
         If you have a dataset that can help drive innovation, improve decision-making, or support open AI development, 
-        we’d love to hear from you.
+        we'd love to hear from you.
       </p>
 
-      <ul>
-        <li>🌍 Datasets from agriculture, health, environment, or digital economy sectors</li>
-        <li>📊 Data that supports AI research, modeling, or applications</li>
-        <li>🔓 Openly licensed or publicly shareable datasets</li>
-      </ul>
+      <div class="info-grid">
+        <div class="info-card">
+          <h3><i class="fas fa-globe-africa"></i> Sector Focus</h3>
+          <p>Datasets from agriculture, health, environment, climate, language, or digital economy sectors across Africa.</p>
+        </div>
+
+        <div class="info-card">
+          <h3><i class="fas fa-robot"></i> AI-Ready Data</h3>
+          <p>Data that supports AI research, modeling, or applications—structured, documented, and machine-readable.</p>
+        </div>
+
+        <div class="info-card">
+          <h3><i class="fas fa-unlock"></i> Open Licensing</h3>
+          <p>Openly licensed (CC-BY, CC0, ODC) or publicly shareable datasets with clear usage terms.</p>
+        </div>
+      </div>
     </section>
 
+    <!-- Submit Your Dataset -->
     <section class="highlight-section">
-      <h2>Submit Your Dataset</h2>
+      <h2><i class="fas fa-upload"></i> Submit Your Dataset</h2>
       <p>
-        To contribute a dataset, please send us an email with the following details:
+        To contribute a dataset, please send us an email with the following details. Our team will review your submission and get back to you within 5 business days.
       </p>
-      <ul>
-        <li>📌 Dataset name and short description</li>
-        <li>📅 Date collected or last updated</li>
-        <li>🏢 Source or organization</li>
-        <li>🔗 Link to dataset (if already hosted)</li>
-        <li>📄 License or access terms</li>
-      </ul>
 
-      <div style="text-align: center; margin-top: 2rem;">
-        <a href="mailto:yonas.gebremichael@giz.de?subject=Dataset%20Contribution%20to%20Open%20Data%20Africa&body=Hello%20Open%20Data%20Africa%20Team,%0D%0A%0D%0AI'd%20like%20to%20contribute%20a%20dataset%20to%20the%20catalog.%0D%0A%0D%0AHere%20are%20the%20details:%0D%0A-%20Dataset%20Name:%0D%0A-%20Description:%0D%0A-%20Date%20Collected/Updated:%0D%0A-%20Source/Organization:%0D%0A-%20License:%0D%0A-%20Link%20(if%20available):%0D%0A%0D%0AThank%20you!%0D%0A" 
+      <div class="requirements-list">
+        <ul>
+          <li><i class="fas fa-tag"></i> <strong>Dataset Name</strong> – Clear, descriptive title</li>
+          <li><i class="fas fa-align-left"></i> <strong>Description</strong> – Short summary of content and purpose</li>
+          <li><i class="fas fa-calendar"></i> <strong>Date Collected/Updated</strong> – When data was gathered or last refreshed</li>
+          <li><i class="fas fa-building"></i> <strong>Source/Organization</strong> – Publisher or custodian information</li>
+          <li><i class="fas fa-file-contract"></i> <strong>License</strong> – Usage terms and access conditions</li>
+          <li><i class="fas fa-link"></i> <strong>Link</strong> – URL to dataset (if already hosted online)</li>
+          <li><i class="fas fa-envelope"></i> <strong>Contact</strong> – Your email for follow-up questions</li>
+        </ul>
+      </div>
+
+      <div class="button-container">
+        <a href="mailto:yonas.gebremichael@giz.de?subject=Dataset%20Contribution%20to%20Open%20Data%20Africa&body=Hello%20Open%20Data%20Africa%20Team,%0D%0A%0D%0AI'd%20like%20to%20contribute%20a%20dataset%20to%20the%20catalog.%0D%0A%0D%0AHere%20are%20the%20details:%0D%0A-%20Dataset%20Name:%0D%0A-%20Description:%0D%0A-%20Date%20Collected/Updated:%0D%0A-%20Source/Organization:%0D%0A-%20License:%0D%0A-%20Link%20(if%20available):%0D%0A-%20Contact%20Email:%0D%0A%0D%0AThank%20you!%0D%0A" 
            class="button">
-          📤 Send Dataset via Email
+          <i class="fas fa-paper-plane"></i> Send Dataset via Email
+        </a>
+      </div>
+
+      <p style="text-align: center; margin-top: 20px; font-size: 0.9rem; color: var(--gray);">
+        <i class="fas fa-info-circle"></i> Prefer a different contact method? <a href="contact.html">Get in touch</a>
+      </p>
+    </section>
+
+    <!-- Why Contribute -->
+    <section class="why-contribute">
+      <h2><i class="fas fa-heart"></i> Why Contribute?</h2>
+      <p>
+        By sharing your dataset, you help strengthen Africa's data ecosystem and support local innovation. 
+        Every contribution adds value to researchers, startups, and policymakers working to build inclusive, data-driven solutions.
+      </p>
+      <p>
+        Your data could power the next breakthrough in African AI, inform critical policy decisions, or enable new services that improve lives across the continent.
+      </p>
+      <p style="margin-top: 30px; font-size: 1.3rem;">
+        <strong>Together, we can make AI truly "Made in Africa."</strong>
+      </p>
+
+      <div class="button-container" style="margin-top: 40px;">
+        <a href="datasets.html" class="button-secondary">
+          <i class="fas fa-database"></i> View Existing Datasets
         </a>
       </div>
     </section>
 
-    <section>
-      <h2>Why Contribute?</h2>
-      <p>
-        By sharing your dataset, you help strengthen Africa’s data ecosystem and support local innovation. 
-        Every contribution adds value to researchers, startups, and policymakers working to build inclusive, data-driven solutions.
-      </p>
-      <p><strong>Together, we can make AI truly “Made in Africa.”</strong></p>
-    </section>
   </main>
 
   <!-- Footer -->
-  <footer class="full-width">
+  <footer>
     <div class="wrapper">
-      <p>&copy; 2025 Open Data Africa. All rights reserved.</p>
-      <p>
-        <a href="mailto:yonas.gebremichael@giz.de">Contact Us</a> |
-        <a href="datasets.html">Explore Datasets</a>
-      </p>
+      <div class="footer-content">
+        
+        <div>
+          <h4><i class="fas fa-globe-africa"></i> Open Data Africa</h4>
+          <p>Open data ecosystems across Africa through benchmarking, recognition, and capacity building.</p>
+          <div class="footer-social">
+            <a href="https://www.linkedin.com/company/giz-african-union/posts/?feedView=all" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+          </div>
+        </div>
+
+        <div>
+          <h4><i class="fas fa-link"></i> Quick Links</h4>
+          <ul>
+            <li><a href="index.html"><i class="fas fa-chevron-right"></i> Home</a></li>
+            <li><a href="about.html"><i class="fas fa-chevron-right"></i> About Us</a></li>
+            <li><a href="datasets.html"><i class="fas fa-chevron-right"></i> Datasets</a></li>
+            <li><a href="aodria.html"><i class="fas fa-chevron-right"></i> AODRIA</a></li>
+            <li><a href="contribute.html"><i class="fas fa-chevron-right"></i> Submit Data</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4><i class="fas fa-file-alt"></i> Resources</h4>
+          <ul>
+            <li><a href="resources.html"><i class="fas fa-chevron-right"></i> Publications</a></li>
+            <li><a href="faq.html"><i class="fas fa-chevron-right"></i> FAQ</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4><i class="fas fa-envelope"></i> Contact</h4>
+          <p><i class="fas fa-envelope"></i> aimadeinafrica@giz.de</p>
+          <p><i class="fas fa-map-marker-alt"></i> GIZ African Union, Addis Ababa, Ethiopia</p>
+        </div>
+
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2026 Open Data Africa | Powered by AI Made in Africa / GIZ</p>
+      </div>
     </div>
   </footer>
+
+  <!-- MOBILE MENU SCRIPT -->
+  <script>
+    function toggleMenu() {
+      const navList = document.getElementById('navList');
+      navList.classList.toggle('active');
+    }
+
+    // Close menu when clicking outside
+    document.addEventListener('click', function(event) {
+      const navList = document.getElementById('navList');
+      const toggle = document.querySelector('.mobile-menu-toggle');
+      if (!navList.contains(event.target) && !toggle.contains(event.target)) {
+        navList.classList.remove('active');
+      }
+    });
+  </script>
+
+  <!-- SCHEMA.ORG STRUCTURED DATA -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Contribute – Open Data Africa",
+    "description": "Contribute your openly licensed African datasets to support AI innovation and data accessibility across the continent",
+    "publisher": {
+      "@type": "Organization",
+      "name": "AI Made in Africa / GIZ / African Union",
+      "url": "https://www.giz.de/en/africa"
+    }
+  }
+  </script>
 
 </body>
 </html>
