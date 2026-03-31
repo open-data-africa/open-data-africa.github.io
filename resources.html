@@ -3,260 +3,811 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Resources – Open Data Africa</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="description" content="Curated publications, tools, and community links to support open data and AI development across Africa.">
+  <meta name="keywords" content="Africa, Open Data, Resources, Publications, Guides, Datasets, AI, Research">
+  <meta name="author" content="AI Made in Africa / GIZ / African Union">
+  
+  <!-- Open Graph for Social Sharing -->
+  <meta property="og:title" content="Resources – Open Data Africa">
+  <meta property="og:description" content="Curated publications, tools, and community links for African data innovation">
+  <meta property="og:type" content="website">
+  
+  <title>Resources – Open Data Africa | Publications, Guides & Dataset Sources</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
   <style>
-    .hero {
-      background-color: #f4f4f4;
-      padding: 3rem 1rem;
-      text-align: center;
-      border-bottom: 1px solid #ddd;
+    /* ===== CSS VARIABLES - GERMAN FLAG COLORS ===== */
+    :root {
+      /* German Flag Colors */
+      --german-black: #1a1a1a;
+      --german-red: #c8102e;
+      --german-gold: #ffce00;
+      
+      /* Supporting Colors */
+      --white: #ffffff;
+      --light: #f8f9fa;
+      --gray: #6c757d;
+      --gray-light: #e9ecef;
+      
+      /* UI Elements */
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+      --radius: 8px;
+      --radius-lg: 12px;
+      --transition: all 0.3s ease;
     }
-html {
-  scroll-behavior: smooth;
-}
 
-    .hero h1 {
-      font-size: 2.5rem;
-      margin-bottom: 0.5rem;
+    /* ===== RESET & BASE ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
 
-    .hero p {
-      font-size: 1.1rem;
-      max-width: 700px;
-      margin: 0 auto;
-      color: #555;
+    html {
+      scroll-behavior: smooth;
     }
 
+    body, html {
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      color: var(--german-black);
+      background: var(--white);
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      margin-bottom: 1rem;
+    }
+
+    a {
+      color: var(--german-red);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    a:hover {
+      color: var(--german-black);
+    }
+
+    ul {
+      list-style: none;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    /* ===== UTILITIES ===== */
     .wrapper {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 2rem 1rem;
+      padding: 0 20px;
     }
 
-    .resources-container {
+    .text-center {
+      text-align: center;
+    }
+
+    .mb-2 {
+      margin-bottom: 2rem;
+    }
+
+    .mb-3 {
+      margin-bottom: 3rem;
+    }
+
+    /* ===== FLAG BAR ===== */
+    .flag-bar {
+      height: 6px;
+      width: 100%;
       display: flex;
-      flex-wrap: wrap;
+    }
+
+    .flag-bar .black {
+      flex: 1;
+      background: var(--german-black);
+    }
+
+    .flag-bar .red {
+      flex: 1;
+      background: var(--german-red);
+    }
+
+    .flag-bar .gold {
+      flex: 1;
+      background: var(--german-gold);
+    }
+
+    /* ===== NAVIGATION ===== */
+    nav {
+      background: var(--german-black);
+      padding: 1rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: var(--shadow);
+    }
+
+    .nav-list {
+      list-style: none;
+      display: flex;
       justify-content: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      margin: 0;
+      padding: 0;
+    }
+
+    .nav-list li a {
+      color: var(--white);
+      text-decoration: none;
+      font-weight: 500;
+      padding: 8px 16px;
+      border-radius: var(--radius);
+      transition: var(--transition);
+      display: inline-block;
+    }
+
+    .nav-list li a:hover {
+      background: var(--german-red);
+      color: var(--white);
+    }
+
+    .nav-list a[aria-current="page"] {
+      background: var(--german-gold);
+      color: var(--german-black);
+      font-weight: 600;
+    }
+
+    /* Mobile Menu Toggle */
+    .mobile-menu-toggle {
+      display: none;
+      background: transparent;
+      border: none;
+      color: var(--white);
+      font-size: 1.5rem;
+      cursor: pointer;
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    /* ===== HERO SECTION ===== */
+    .hero {
+      background: linear-gradient(135deg, var(--german-black) 0%, #3a3a3a 100%);
+      padding: 100px 1rem 80px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      color: var(--white);
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,206,0,0.1)"/></svg>');
+      background-size: 30px 30px;
+      opacity: 0.3;
+    }
+
+    .hero .wrapper {
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      animation: fadeInUp 0.8s ease;
+    }
+
+    .hero h1 span {
+      color: var(--german-gold);
+    }
+
+    .hero p {
+      font-size: 1.3rem;
+      color: rgba(255, 255, 255, 0.9);
+      max-width: 700px;
+      margin: 0 auto 2rem;
+      animation: fadeInUp 0.8s ease 0.2s both;
+    }
+
+    .hero-accent {
+      height: 4px;
+      width: 100px;
+      background: linear-gradient(90deg, var(--german-red), var(--german-gold));
+      margin: 0 auto;
+      border-radius: 2px;
+      animation: fadeInUp 0.8s ease 0.4s both;
+    }
+
+    /* ===== MAIN CONTENT ===== */
+    main {
+      padding: 80px 0;
+    }
+
+    section {
+      margin-bottom: 60px;
+    }
+
+    section h2 {
+      font-size: 2.5rem;
+      color: var(--german-black);
+      margin-bottom: 1rem;
+      position: relative;
+      padding-bottom: 15px;
+    }
+
+    section h2::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 4px;
+      background: linear-gradient(90deg, var(--german-red), var(--german-gold));
+      border-radius: 2px;
+    }
+
+    /* ===== RESOURCE CARDS ===== */
+    .resources-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 30px;
-      margin-top: 2rem;
+      margin-top: 40px;
     }
 
     .resource-card {
-      background-color: #fff;
-      border: 1px solid #ddd;
-      border-left: 5px solid #aa0000;
-      width: 300px;
-      padding: 20px;
-      border-radius: 8px;
+      background-color: var(--white);
+      border: 1px solid var(--gray-light);
+      border-left: 5px solid var(--german-red);
+      padding: 40px 30px;
+      border-radius: var(--radius-lg);
       text-align: left;
-      transition: all 0.3s ease;
+      transition: var(--transition);
       text-decoration: none;
-      color: #333;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+      color: var(--german-black);
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
     }
 
     .resource-card:hover {
-      background-color: #fef6f6;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      background-color: var(--light);
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-5px);
+    }
+
+    .resource-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--german-black), var(--german-red), var(--german-gold));
     }
 
     .resource-card h3 {
       margin-top: 0;
-      font-size: 1.2rem;
+      font-size: 1.5rem;
+      color: var(--german-black);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .resource-card h3 i {
+      font-size: 1.8rem;
+      color: var(--german-red);
     }
 
     .resource-card p {
-      font-size: 0.95em;
-      color: #555;
+      font-size: 1rem;
+      color: var(--gray);
       margin-bottom: 0;
+      line-height: 1.7;
     }
 
+    /* ===== GUIDES SECTION ===== */
     .dataset-guides {
-      margin-top: 4rem;
+      margin-top: 60px;
+      padding: 60px 40px;
+      background: var(--light);
+      border-radius: var(--radius-lg);
     }
 
     .dataset-guides h2 {
-      font-size: 1.8rem;
-      margin-bottom: 1rem;
       text-align: center;
-      color: #333;
+      margin-bottom: 1rem;
     }
 
-    .guide-list {
+    .dataset-guides > p {
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto 3rem;
+      color: var(--gray);
+      font-size: 1.1rem;
+    }
+
+    .guides-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
-      margin-top: 1rem;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 30px;
     }
 
     .guide-item {
-      background: #fafafa;
-      border: 1px solid #eee;
-      border-left: 5px solid #0066cc;
-      padding: 1rem 1.5rem;
-      border-radius: 8px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+      background: var(--white);
+      border: 1px solid var(--gray-light);
+      border-left: 5px solid var(--german-gold);
+      padding: 30px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+    }
+
+    .guide-item:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-3px);
     }
 
     .guide-item h4 {
       margin-top: 0;
-      font-size: 1.1rem;
+      font-size: 1.3rem;
+      color: var(--german-black);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .guide-item h4 i {
+      color: var(--german-gold);
     }
 
     .guide-item p {
-      margin-bottom: 0;
+      margin-bottom: 1rem;
       font-size: 0.95rem;
-      color: #555;
+      color: var(--gray);
+      line-height: 1.7;
     }
 
+    .guide-item ul {
+      list-style: none;
+    }
+
+    .guide-item ul li {
+      padding: 8px 0;
+      padding-left: 20px;
+      position: relative;
+      border-bottom: 1px solid var(--gray-light);
+    }
+
+    .guide-item ul li:last-child {
+      border-bottom: none;
+    }
+
+    .guide-item ul li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--german-red);
+      font-weight: 700;
+    }
+
+    .guide-item ul li a {
+      color: var(--german-black);
+      font-weight: 500;
+    }
+
+    .guide-item ul li a:hover {
+      color: var(--german-red);
+    }
+
+    /* ===== FOOTER ===== */
     footer {
+      background: var(--german-black);
+      color: var(--white);
+      padding: 60px 0 30px;
+      border-top: 4px solid var(--german-red);
+    }
+
+    .footer-content {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 40px;
+      margin-bottom: 40px;
+    }
+
+    .footer h4 {
+      font-size: 1.2rem;
+      margin-bottom: 1.5rem;
+      color: var(--german-gold);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .footer p {
+      opacity: 0.8;
+      line-height: 1.8;
+    }
+
+    .footer ul li {
+      margin-bottom: 12px;
+    }
+
+    .footer ul li a {
+      color: var(--white);
+      opacity: 0.8;
+    }
+
+    .footer ul li a:hover {
+      opacity: 1;
+      color: var(--german-gold);
+    }
+
+    .footer-social {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .footer-social a {
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--white);
+      font-size: 1.2rem;
+    }
+
+    .footer-social a:hover {
+      background: var(--german-red);
+      color: var(--white);
+    }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 30px;
       text-align: center;
-      padding: 1.5rem 0;
-      border-top: 1px solid #ddd;
+      opacity: 0.7;
       font-size: 0.9rem;
-      color: #666;
-      background-color: #f9f9f9;
-      margin-top: 4rem;
+    }
+
+    .footer-bottom a {
+      color: var(--german-gold);
+    }
+
+    /* ===== ANIMATIONS ===== */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .mobile-menu-toggle {
+        display: block;
+      }
+
+      .nav-list {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        margin-top: 20px;
+      }
+
+      .nav-list.active {
+        display: flex;
+      }
+
+      .hero h1 {
+        font-size: 2rem;
+      }
+
+      .hero p {
+        font-size: 1.1rem;
+      }
+
+      .resources-container {
+        grid-template-columns: 1fr;
+      }
+
+      .guides-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .dataset-guides {
+        padding: 40px 20px;
+      }
+
+      main {
+        padding: 40px 0;
+      }
+
+      section {
+        margin-bottom: 40px;
+      }
+    }
+
+    /* ===== ACCESSIBILITY ===== */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
     }
   </style>
 </head>
 <body>
 
+  <!-- German Flag Bar -->
+  <div class="flag-bar">
+    <div class="black"></div>
+    <div class="red"></div>
+    <div class="gold"></div>
+  </div>
+
   <!-- Navigation -->
   <nav>
-    <ul class="nav-list">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="datasets.html">Datasets</a></li>
-      <li><a href="use-cases.html">Use Cases</a></li>
-      <li><a href="resources.html" aria-current="page">Resources</a></li>
-      <li><a href="contribute.html">Contribute</a></li>
-      <li><a href="dashboard.html">Dashboard</a></li>
-      <li><a href="aodria.html">AODRIA</a></li>
-      <li><a href="contact.html">Contact</a></li>
-    </ul>
+    <div class="wrapper">
+      <button class="mobile-menu-toggle" aria-label="Toggle menu" onclick="toggleMenu()">
+        <i class="fas fa-bars"></i>
+      </button>
+      <ul class="nav-list" id="navList">
+        <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="about.html"><i class="fas fa-info-circle"></i> About</a></li>
+        <li><a href="datasets.html"><i class="fas fa-database"></i> Datasets</a></li>
+        <li><a href="use-cases.html"><i class="fas fa-lightbulb"></i> Use Cases</a></li>
+        <li><a href="resources.html" aria-current="page"><i class="fas fa-book"></i> Resources</a></li>
+        <li><a href="contribute.html"><i class="fas fa-upload"></i> Contribute</a></li>
+        <li><a href="dashboard.html"><i class="fas fa-chart-bar"></i> Dashboard</a></li>
+        <li><a href="adri.html"><i class="fas fa-award"></i> AADRI</a></li>
+        <li><a href="contact.html"><i class="fas fa-envelope"></i> Contact</a></li>
+      </ul>
+    </div>
   </nav>
 
   <!-- Hero Section -->
   <section class="hero">
-    <h1>Explore Resources</h1>
-    <p>Curated publications, tools, and community links to support open data and AI development across Africa.</p>
+    <div class="wrapper">
+      <h1>Explore <span>Resources</span></h1>
+      <p>Curated publications, tools, and community links to support open data and AI development across Africa.</p>
+      <div class="hero-accent"></div>
+    </div>
   </section>
 
   <!-- Main Content -->
   <main class="wrapper">
-    <!-- Cards -->
-    <div class="resources-container">
-      <a href="resources/publications.html" class="resource-card">
-        <h3>📄 Publications</h3>
-        <p>Research papers, reports, and policy briefs focused on open data and AI in Africa.</p>
-      </a>
+    
+    <!-- Resource Cards -->
+    <section>
+      <div class="resources-container">
+        <a href="resources/publications.html" class="resource-card">
+          <h3><i class="fas fa-file-alt"></i> Publications</h3>
+          <p>Research papers, reports, and policy briefs focused on open data and AI in Africa.</p>
+        </a>
 
-      <!-- These now scroll down to the guides section -->
-      <a href="#guides" class="resource-card">
-        <h3>🤝 Stakeholders</h3>
-        <p>Networks, institutions, and key players driving data accessibility efforts across the continent.</p>
-      </a>
+        <a href="#guides" class="resource-card">
+          <h3><i class="fas fa-handshake"></i> Stakeholders</h3>
+          <p>Networks, institutions, and key players driving data accessibility efforts across the continent.</p>
+        </a>
 
-      <a href="#guides" class="resource-card">
-        <h3>🔗 Useful Links</h3>
-        <p>Tools, dataset portals, APIs, and repositories supporting data use and innovation.</p>
-      </a>
-    </div>
+        <a href="#guides" class="resource-card">
+          <h3><i class="fas fa-link"></i> Useful Links</h3>
+          <p>Tools, dataset portals, APIs, and repositories supporting data use and innovation.</p>
+        </a>
+      </div>
+    </section>
 
     <!-- Guides Section -->
-   <section class="dataset-guides">
-  <h2>📚 Guides & Sources of Open Datasets</h2>
-  <p style="text-align: center; max-width: 800px; margin: 0 auto 2rem; color: #555;">
-    Discover where to find valuable open datasets across government portals, research institutions, civic tech, and international initiatives. These resources support African innovators, researchers, and policymakers.
-  </p>
+    <section class="dataset-guides" id="guides">
+      <h2><i class="fas fa-book"></i> Guides & Sources of Open Datasets</h2>
+      <p>
+        Discover where to find valuable open datasets across government portals, research institutions, civic tech, and international initiatives. These resources support African innovators, researchers, and policymakers.
+      </p>
 
-  <div style="display: flex; flex-wrap: wrap; gap: 30px; justify-content: center;">
-    <!-- Guide Group 1 -->
-    <div class="guide-item" style="flex: 1 1 350px;">
-      <h4>🌐 Government Portals</h4>
-      <p>National statistics offices and ministries often publish public datasets on agriculture, health, and education.</p>
-      <ul>
-        <li><a href="https://www.opendata.go.ke/" target="_blank">Kenya Open Data</a></li>
-        <li><a href="https://nigeria.opendataforafrica.org/" target="_blank">Nigeria Open Data</a></li>
-        <li><a href="https://www.data.gov.za/" target="_blank">South Africa National Data Portal</a></li>
-        <li><a href="https://ess.gov.et/" target="_blank">Ethiopia ESS</a></li>
-        <li><a href="https://www.statsghana.gov.gh/" target="_blank">Ghana Statistical Service</a></li>
-      </ul>
-    </div>
+      <div class="guides-grid">
+        <!-- Guide Group 1 -->
+        <div class="guide-item">
+          <h4><i class="fas fa-landmark"></i> Government Portals</h4>
+          <p>National statistics offices and ministries often publish public datasets on agriculture, health, and education.</p>
+          <ul>
+            <li><a href="https://www.opendata.go.ke/" target="_blank" rel="noopener noreferrer">Kenya Open Data</a></li>
+            <li><a href="https://nigeria.opendataforafrica.org/" target="_blank" rel="noopener noreferrer">Nigeria Open Data</a></li>
+            <li><a href="https://www.data.gov.za/" target="_blank" rel="noopener noreferrer">South Africa National Data Portal</a></li>
+            <li><a href="https://ess.gov.et/" target="_blank" rel="noopener noreferrer">Ethiopia ESS</a></li>
+            <li><a href="https://www.statsghana.gov.gh/" target="_blank" rel="noopener noreferrer">Ghana Statistical Service</a></li>
+          </ul>
+        </div>
 
-    <!-- Guide Group 2 -->
-    <div class="guide-item" style="flex: 1 1 350px;">
-      <h4>📊 International Platforms</h4>
-      <p>Sources like World Bank, WHO, and UN offer global and regional open datasets useful for Africa-focused projects.</p>
-      <ul>
-        <li><a href="https://data.worldbank.org/" target="_blank">World Bank Data</a></li>
-        <li><a href="http://data.un.org/" target="_blank">UN Data</a></li>
-        <li><a href="https://data.oecd.org/" target="_blank">OECD Data</a></li>
-        <li><a href="https://www.who.int/data/gho" target="_blank">WHO Global Health Observatory</a></li>
-        <li><a href="https://data.unicef.org/" target="_blank">UNICEF Data</a></li>
-      </ul>
-    </div>
+        <!-- Guide Group 2 -->
+        <div class="guide-item">
+          <h4><i class="fas fa-globe"></i> International Platforms</h4>
+          <p>Sources like World Bank, WHO, and UN offer global and regional open datasets useful for Africa-focused projects.</p>
+          <ul>
+            <li><a href="https://data.worldbank.org/" target="_blank" rel="noopener noreferrer">World Bank Data</a></li>
+            <li><a href="http://data.un.org/" target="_blank" rel="noopener noreferrer">UN Data</a></li>
+            <li><a href="https://data.oecd.org/" target="_blank" rel="noopener noreferrer">OECD Data</a></li>
+            <li><a href="https://www.who.int/data/gho" target="_blank" rel="noopener noreferrer">WHO Global Health Observatory</a></li>
+            <li><a href="https://data.unicef.org/" target="_blank" rel="noopener noreferrer">UNICEF Data</a></li>
+          </ul>
+        </div>
 
-    <!-- Guide Group 3 -->
-    <div class="guide-item" style="flex: 1 1 350px;">
-      <h4>🧠 Research Institutions</h4>
-      <p>Universities and think tanks frequently release data from fieldwork, surveys, or experiments in African contexts.</p>
-      <ul>
-        <li><a href="https://www.datafirst.uct.ac.za/" target="_blank">DataFirst (UCT South Africa)</a></li>
-        <li><a href="https://dataverse.harvard.edu/" target="_blank">Harvard Dataverse</a></li>
-        <li><a href="https://data.icrisat.org/" target="_blank">ICRISAT Dataverse</a></li>
-        <li><a href="https://data.ilri.org/" target="_blank">ILRI Dataverse (Livestock)</a></li>
-      </ul>
-    </div>
+        <!-- Guide Group 3 -->
+        <div class="guide-item">
+          <h4><i class="fas fa-university"></i> Research Institutions</h4>
+          <p>Universities and think tanks frequently release data from fieldwork, surveys, or experiments in African contexts.</p>
+          <ul>
+            <li><a href="https://www.datafirst.uct.ac.za/" target="_blank" rel="noopener noreferrer">DataFirst (UCT South Africa)</a></li>
+            <li><a href="https://dataverse.harvard.edu/" target="_blank" rel="noopener noreferrer">Harvard Dataverse</a></li>
+            <li><a href="https://data.icrisat.org/" target="_blank" rel="noopener noreferrer">ICRISAT Dataverse</a></li>
+            <li><a href="https://data.ilri.org/" target="_blank" rel="noopener noreferrer">ILRI Dataverse (Livestock)</a></li>
+          </ul>
+        </div>
 
-    <!-- Guide Group 4 -->
-    <div class="guide-item" style="flex: 1 1 350px;">
-      <h4>🔍 Open Data Directories</h4>
-      <p>Platforms like CKAN, DataHub, and African Open Science Framework provide searchable dataset registries.</p>
-      <ul>
-        <li><a href="https://ckan.org/instances/" target="_blank">CKAN Dataset Catalogs</a></li>
-        <li><a href="https://datahub.io/" target="_blank">DataHub.io</a></li>
-        <li><a href="https://africaopendata.org/" target="_blank">OpenAFRICA</a></li>
-        <li><a href="https://odin.opendatawatch.com/" target="_blank">Open Data Inventory (ODIN)</a></li>
-        <li><a href="https://fairsharing.org/" target="_blank">FAIRsharing.org</a></li>
-      </ul>
-    </div>
+        <!-- Guide Group 4 -->
+        <div class="guide-item">
+          <h4><i class="fas fa-search"></i> Open Data Directories</h4>
+          <p>Platforms like CKAN, DataHub, and African Open Science Framework provide searchable dataset registries.</p>
+          <ul>
+            <li><a href="https://ckan.org/instances/" target="_blank" rel="noopener noreferrer">CKAN Dataset Catalogs</a></li>
+            <li><a href="https://datahub.io/" target="_blank" rel="noopener noreferrer">DataHub.io</a></li>
+            <li><a href="https://africaopendata.org/" target="_blank" rel="noopener noreferrer">OpenAFRICA</a></li>
+            <li><a href="https://odin.opendatawatch.com/" target="_blank" rel="noopener noreferrer">Open Data Inventory (ODIN)</a></li>
+            <li><a href="https://fairsharing.org/" target="_blank" rel="noopener noreferrer">FAIRsharing.org</a></li>
+          </ul>
+        </div>
 
-    <!-- Guide Group 5 -->
-    <div class="guide-item" style="flex: 1 1 350px;">
-      <h4>💼 Civic Tech & NGOs</h4>
-      <p>Non-profits and civic tech communities publish datasets on governance, health, and transparency.</p>
-      <ul>
-        <li><a href="https://codeforafrica.org/" target="_blank">Code for Africa</a></li>
-        <li><a href="https://okfn.org/" target="_blank">Open Knowledge Foundation</a></li>
-        <li><a href="https://datascienceafrica.org/" target="_blank">Data Science Africa</a></li>
-        <li><a href="https://www.digitalearthafrica.org/" target="_blank">Digital Earth Africa</a></li>
-        <li><a href="https://www.godan.info/" target="_blank">GODAN – Global Open Data for Agriculture & Nutrition</a></li>
-      </ul>
-    </div>
+        <!-- Guide Group 5 -->
+        <div class="guide-item">
+          <h4><i class="fas fa-users"></i> Civic Tech & NGOs</h4>
+          <p>Non-profits and civic tech communities publish datasets on governance, health, and transparency.</p>
+          <ul>
+            <li><a href="https://codeforafrica.org/" target="_blank" rel="noopener noreferrer">Code for Africa</a></li>
+            <li><a href="https://okfn.org/" target="_blank" rel="noopener noreferrer">Open Knowledge Foundation</a></li>
+            <li><a href="https://datascienceafrica.org/" target="_blank" rel="noopener noreferrer">Data Science Africa</a></li>
+            <li><a href="https://www.digitalearthafrica.org/" target="_blank" rel="noopener noreferrer">Digital Earth Africa</a></li>
+            <li><a href="https://www.godan.info/" target="_blank" rel="noopener noreferrer">GODAN – Global Open Data for Agriculture & Nutrition</a></li>
+          </ul>
+        </div>
 
-    <!-- Guide Group 6 -->
-    <div class="guide-item" style="flex: 1 1 350px;">
-      <h4>🌍 International Cooperation Initiatives</h4>
-      <p>These initiatives support open data, digital public infrastructure, and responsible AI through global partnerships, funding, and technical assistance.</p>
-      <ul>
-        <li><a href="https://www.giz.de/expertise/html/61982.html" target="_blank">FAIR Forward (GIZ)</a></li>
-        <li><a href="https://www.data4sdgs.org/" target="_blank">Global Partnership for Sustainable Development Data</a></li>
-        <li><a href="https://www.paris21.org/" target="_blank">PARIS21 (Partnership in Statistics for Development)</a></li>
-      </ul>
-    </div>
-  </div>
-</section>
-
+        <!-- Guide Group 6 -->
+        <div class="guide-item">
+          <h4><i class="fas fa-handshake"></i> International Cooperation</h4>
+          <p>These initiatives support open data, digital public infrastructure, and responsible AI through global partnerships.</p>
+          <ul>
+            <li><a href="https://www.giz.de/expertise/html/61982.html" target="_blank" rel="noopener noreferrer">FAIR Forward (GIZ)</a></li>
+            <li><a href="https://www.data4sdgs.org/" target="_blank" rel="noopener noreferrer">Global Partnership for Sustainable Development Data</a></li>
+            <li><a href="https://www.paris21.org/" target="_blank" rel="noopener noreferrer">PARIS21 (Partnership in Statistics for Development)</a></li>
+          </ul>
+        </div>
+      </div>
     </section>
+
   </main>
 
   <!-- Footer -->
   <footer>
-    &copy; 2025 Open Data Africa. All rights reserved.
+    <div class="wrapper">
+      <div class="footer-content">
+        
+        <div>
+          <h4><i class="fas fa-globe-africa"></i> Open Data Africa</h4>
+          <p>Open data ecosystems across Africa through benchmarking, recognition, and capacity building.</p>
+          <div class="footer-social">
+            <a href="https://www.linkedin.com/company/giz-african-union/posts/?feedView=all" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+          </div>
+        </div>
+
+        <div>
+          <h4><i class="fas fa-link"></i> Quick Links</h4>
+          <ul>
+            <li><a href="index.html"><i class="fas fa-chevron-right"></i> Home</a></li>
+            <li><a href="about.html"><i class="fas fa-chevron-right"></i> About Us</a></li>
+            <li><a href="datasets.html"><i class="fas fa-chevron-right"></i> Datasets</a></li>
+            <li><a href="adri.html"><i class="fas fa-chevron-right"></i> AADRI Framework</a></li>
+            <li><a href="contribute.html"><i class="fas fa-chevron-right"></i> Submit Data</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4><i class="fas fa-file-alt"></i> Resources</h4>
+          <ul>
+            <li><a href="resources.html"><i class="fas fa-chevron-right"></i> Publications</a></li>
+            <li><a href="faq.html"><i class="fas fa-chevron-right"></i> FAQ</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4><i class="fas fa-envelope"></i> Contact</h4>
+          <p><i class="fas fa-envelope"></i> aimadeinafrica@giz.de</p>
+          <p><i class="fas fa-map-marker-alt"></i> GIZ African Union, Addis Ababa, Ethiopia</p>
+        </div>
+
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2026 Open Data Africa | Powered by AI Made in Africa / GIZ</p>
+      </div>
+    </div>
   </footer>
+
+  <!-- MOBILE MENU SCRIPT -->
+  <script>
+    function toggleMenu() {
+      const navList = document.getElementById('navList');
+      navList.classList.toggle('active');
+    }
+
+    // Close menu when clicking outside
+    document.addEventListener('click', function(event) {
+      const navList = document.getElementById('navList');
+      const toggle = document.querySelector('.mobile-menu-toggle');
+      if (!navList.contains(event.target) && !toggle.contains(event.target)) {
+        navList.classList.remove('active');
+      }
+    });
+  </script>
+
+  <!-- SCHEMA.ORG STRUCTURED DATA -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Resources – Open Data Africa",
+    "description": "Curated publications, tools, and community links to support open data and AI development across Africa",
+    "publisher": {
+      "@type": "Organization",
+      "name": "AI Made in Africa / GIZ / African Union",
+      "url": "https://www.africa-data-award.org"
+    }
+  }
+  </script>
 
 </body>
 </html>
