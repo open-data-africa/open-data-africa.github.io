@@ -3,204 +3,923 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Contact & Feedback – Open Data Africa</title>
-  <link rel="stylesheet" href="style.css" />
-
+  <meta name="description" content="Get in touch with Open Data Africa. We welcome collaboration, feedback, and ideas that strengthen Africa's open data and AI ecosystem.">
+  <meta name="keywords" content="Africa, Open Data, Contact, Feedback, GIZ, AI, Collaboration">
+  <meta name="author" content="AI Made in Africa / GIZ / African Union">
+  
+  <!-- Open Graph for Social Sharing -->
+  <meta property="og:title" content="Contact & Feedback – Open Data Africa">
+  <meta property="og:description" content="Get in touch with us to strengthen Africa's open data ecosystem">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.africa-data-award.org/contact.html">
+  
+  <title>Contact & Feedback – Open Data Africa | Get In Touch</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f9f9f9;
+    /* ===== CSS VARIABLES - GERMAN FLAG COLORS ===== */
+    :root {
+      /* German Flag Colors */
+      --german-black: #1a1a1a;
+      --german-red: #c8102e;
+      --german-gold: #ffce00;
+      
+      /* Social Colors */
+      --linkedin: #0077b5;
+      --instagram: #E1306C;
+      --twitter: #1DA1F2;
+      --github: #333;
+      --email: #c8102e;
+      
+      /* Supporting Colors */
+      --white: #ffffff;
+      --light: #f8f9fa;
+      --gray: #6c757d;
+      --gray-light: #e9ecef;
+      
+      /* UI Elements */
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+      --radius: 8px;
+      --radius-lg: 12px;
+      --transition: all 0.3s ease;
+    }
+
+    /* ===== RESET & BASE ===== */
+    * {
       margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
 
-    /* Navigation */
-    nav {
-      background: #fff;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    html {
+      scroll-behavior: smooth;
     }
 
-    .nav-list {
-      display: flex;
-      justify-content: center;
-      gap: 1.5rem;
-      padding: 1rem 0;
-      margin: 0;
-      list-style: none;
-      flex-wrap: wrap;
-    }
-
-    .nav-list a {
-      text-decoration: none;
-      font-weight: bold;
-      color: #333;
-    }
-
-    .nav-list a[aria-current="page"] {
-      color: #0066ff;
-    }
-
-    /* Main */
-    main {
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 2.5rem 1.5rem;
-      text-align: center;
-    }
-
-    h1 {
-      font-size: 2.2rem;
-      margin-bottom: 0.5rem;
-    }
-
-    p {
-      font-size: 1.1rem;
-      color: #444;
+    body, html {
+      font-family: 'Inter', sans-serif;
       line-height: 1.6;
+      color: var(--german-black);
+      background: var(--light);
+      overflow-x: hidden;
     }
 
-    /* Social */
-    .social-links {
-      display: flex;
-      justify-content: center;
-      gap: 2rem;
-      margin: 2rem 0;
-      flex-wrap: wrap;
-    }
-
-    .social-links a {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      font-weight: bold;
-      text-decoration: none;
-      transition: transform 0.2s ease;
-    }
-
-    .social-links a:hover {
-      transform: translateY(-3px);
-    }
-
-    .social-links svg {
-      width: 28px;
-      height: 28px;
-    }
-
-    .linkedin svg { fill: #0077b5; }
-    .instagram svg { fill: #E1306C; }
-
-    /* Sections */
-    .section {
-      margin-top: 3.5rem;
-      text-align: left;
-    }
-
-    .section h2 {
-      text-align: center;
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+      line-height: 1.3;
       margin-bottom: 1rem;
     }
 
-    /* Form */
+    p {
+      margin-bottom: 1rem;
+    }
+
+    a {
+      color: var(--german-red);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    a:hover {
+      color: var(--german-black);
+    }
+
+    ul {
+      list-style: none;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    /* ===== UTILITIES ===== */
+    .wrapper {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .mb-2 {
+      margin-bottom: 2rem;
+    }
+
+    .mb-3 {
+      margin-bottom: 3rem;
+    }
+
+    /* ===== FLAG BAR ===== */
+    .flag-bar {
+      height: 6px;
+      width: 100%;
+      display: flex;
+    }
+
+    .flag-bar .black {
+      flex: 1;
+      background: var(--german-black);
+    }
+
+    .flag-bar .red {
+      flex: 1;
+      background: var(--german-red);
+    }
+
+    .flag-bar .gold {
+      flex: 1;
+      background: var(--german-gold);
+    }
+
+    /* ===== NAVIGATION ===== */
+    nav {
+      background: var(--german-black);
+      padding: 1rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: var(--shadow);
+    }
+
+    .nav-list {
+      list-style: none;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      margin: 0;
+      padding: 0;
+    }
+
+    .nav-list li a {
+      color: var(--white);
+      text-decoration: none;
+      font-weight: 500;
+      padding: 8px 16px;
+      border-radius: var(--radius);
+      transition: var(--transition);
+      display: inline-block;
+    }
+
+    .nav-list li a:hover {
+      background: var(--german-red);
+      color: var(--white);
+    }
+
+    .nav-list a[aria-current="page"] {
+      background: var(--german-gold);
+      color: var(--german-black);
+      font-weight: 600;
+    }
+
+    /* Mobile Menu Toggle */
+    .mobile-menu-toggle {
+      display: none;
+      background: transparent;
+      border: none;
+      color: var(--white);
+      font-size: 1.5rem;
+      cursor: pointer;
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    /* ===== HERO SECTION ===== */
+    .hero {
+      background: linear-gradient(135deg, var(--german-black) 0%, #3a3a3a 100%);
+      padding: 100px 1rem 80px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      color: var(--white);
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,206,0,0.1)"/></svg>');
+      background-size: 30px 30px;
+      opacity: 0.3;
+    }
+
+    .hero .wrapper {
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      animation: fadeInUp 0.8s ease;
+    }
+
+    .hero h1 span {
+      color: var(--german-gold);
+    }
+
+    .hero p {
+      font-size: 1.3rem;
+      color: rgba(255, 255, 255, 0.9);
+      max-width: 700px;
+      margin: 0 auto 2rem;
+      line-height: 1.8;
+      animation: fadeInUp 0.8s ease 0.2s both;
+    }
+
+    .hero-accent {
+      height: 4px;
+      width: 100px;
+      background: linear-gradient(90deg, var(--german-red), var(--german-gold));
+      margin: 0 auto;
+      border-radius: 2px;
+      animation: fadeInUp 0.8s ease 0.4s both;
+    }
+
+    /* ===== MAIN CONTENT ===== */
+    main {
+      padding: 60px 0;
+    }
+
+    section {
+      margin-bottom: 60px;
+    }
+
+    section h2 {
+      font-size: 2.5rem;
+      color: var(--german-black);
+      margin-bottom: 1rem;
+      position: relative;
+      padding-bottom: 15px;
+      text-align: center;
+    }
+
+    section h2::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 4px;
+      background: linear-gradient(90deg, var(--german-red), var(--german-gold));
+      border-radius: 2px;
+    }
+
+    section p {
+      font-size: 1.1rem;
+      color: var(--gray);
+      line-height: 1.8;
+      text-align: center;
+      max-width: 700px;
+      margin: 0 auto 2rem;
+    }
+
+    /* ===== CONTACT INFO CARDS ===== */
+    .contact-info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+      margin: 40px 20px;
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .contact-info-card {
+      background: var(--white);
+      padding: 40px 30px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      text-align: center;
+      transition: var(--transition);
+      border-top: 4px solid var(--german-red);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .contact-info-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .contact-info-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--german-black), var(--german-red), var(--german-gold));
+    }
+
+    .contact-info-card .icon {
+      width: 70px;
+      height: 70px;
+      background: linear-gradient(135deg, var(--german-red), #a00d26);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      color: var(--white);
+      font-size: 1.8rem;
+    }
+
+    .contact-info-card h3 {
+      color: var(--german-black);
+      font-size: 1.3rem;
+      margin-bottom: 15px;
+    }
+
+    .contact-info-card p {
+      color: var(--gray);
+      font-size: 1rem;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .contact-info-card a {
+      color: var(--german-red);
+      font-weight: 600;
+      word-break: break-all;
+    }
+
+    .contact-info-card a:hover {
+      color: var(--german-black);
+    }
+
+    /* ===== SOCIAL LINKS ===== */
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      margin: 40px 0;
+      flex-wrap: wrap;
+    }
+
+    .social-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 15px 25px;
+      background: var(--white);
+      border-radius: 50px;
+      box-shadow: var(--shadow);
+      font-weight: 600;
+      text-decoration: none;
+      transition: var(--transition);
+      border: 2px solid transparent;
+    }
+
+    .social-link:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .social-link i {
+      font-size: 1.5rem;
+    }
+
+    .social-link.linkedin {
+      color: var(--linkedin);
+      border-color: var(--linkedin);
+    }
+
+    .social-link.linkedin:hover {
+      background: var(--linkedin);
+      color: var(--white);
+    }
+
+    .social-link.instagram {
+      color: var(--instagram);
+      border-color: var(--instagram);
+    }
+
+    .social-link.instagram:hover {
+      background: var(--instagram);
+      color: var(--white);
+    }
+
+    .social-link.twitter {
+      color: var(--twitter);
+      border-color: var(--twitter);
+    }
+
+    .social-link.twitter:hover {
+      background: var(--twitter);
+      color: var(--white);
+    }
+
+    .social-link.github {
+      color: var(--github);
+      border-color: var(--github);
+    }
+
+    .social-link.github:hover {
+      background: var(--github);
+      color: var(--white);
+    }
+
+    .social-link.email {
+      color: var(--email);
+      border-color: var(--email);
+    }
+
+    .social-link.email:hover {
+      background: var(--email);
+      color: var(--white);
+    }
+
+    /* ===== FORM CONTAINER ===== */
+    .form-container {
+      background: var(--white);
+      padding: 40px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      margin: 40px 20px;
+      max-width: 1000px;
+      margin-left: auto;
+      margin-right: auto;
+      border-top: 4px solid var(--german-gold);
+    }
+
     .form-container iframe {
       width: 100%;
       height: 720px;
       border: none;
-      border-radius: 12px;
-      background: #fff;
+      border-radius: var(--radius);
+      background: var(--white);
     }
 
-    /* Map */
+    /* ===== MAP CONTAINER ===== */
     .map-container {
-      margin-top: 2rem;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      background: var(--white);
+      padding: 40px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      margin: 40px 20px;
+      max-width: 1000px;
+      margin-left: auto;
+      margin-right: auto;
+      border-top: 4px solid var(--german-red);
     }
 
-    iframe.map {
+    .map-container iframe {
       width: 100%;
       height: 450px;
       border: none;
+      border-radius: var(--radius);
     }
 
-    /* Footer */
-    footer {
-      margin-top: 4rem;
-      padding: 1.5rem 0;
-      background: #000;
-      color: #fff;
+    .location-info {
       text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .location-info i {
+      font-size: 3rem;
+      color: var(--german-red);
+      margin-bottom: 15px;
+    }
+
+    .location-info h3 {
+      color: var(--german-black);
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+    }
+
+    .location-info p {
+      color: var(--gray);
+      font-size: 1rem;
+    }
+
+    /* ===== FAQ SECTION ===== */
+    .faq-section {
+      background: var(--light);
+      padding: 60px 40px;
+      border-radius: var(--radius-lg);
+      margin: 60px 20px;
+      max-width: 1000px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .faq-section h2 {
+      text-align: center;
+    }
+
+    .faq-section h2::after {
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .faq-item {
+      background: var(--white);
+      padding: 25px 30px;
+      border-radius: var(--radius-lg);
+      margin-bottom: 20px;
+      box-shadow: var(--shadow);
+      border-left: 4px solid var(--german-gold);
+      transition: var(--transition);
+    }
+
+    .faq-item:hover {
+      box-shadow: var(--shadow-lg);
+    }
+
+    .faq-item h3 {
+      color: var(--german-black);
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .faq-item h3 i {
+      color: var(--german-gold);
+      margin-top: 4px;
+    }
+
+    .faq-item p {
+      color: var(--gray);
+      font-size: 1rem;
+      text-align: left;
+      margin-bottom: 0;
+      padding-left: 32px;
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      background: var(--german-black);
+      color: var(--white);
+      padding: 60px 0 30px;
+      border-top: 4px solid var(--german-red);
+      margin-top: 60px;
+    }
+
+    .footer-content {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 40px;
+      margin-bottom: 40px;
+    }
+
+    .footer h4 {
+      font-size: 1.2rem;
+      margin-bottom: 1.5rem;
+      color: var(--german-gold);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .footer p {
+      opacity: 0.8;
+      line-height: 1.8;
+    }
+
+    .footer ul li {
+      margin-bottom: 12px;
+    }
+
+    .footer ul li a {
+      color: var(--white);
+      opacity: 0.8;
+    }
+
+    .footer ul li a:hover {
+      opacity: 1;
+      color: var(--german-gold);
+    }
+
+    .footer-social {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .footer-social a {
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--white);
+      font-size: 1.2rem;
+    }
+
+    .footer-social a:hover {
+      background: var(--german-red);
+      color: var(--white);
+    }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 30px;
+      text-align: center;
+      opacity: 0.7;
       font-size: 0.9rem;
+    }
+
+    .footer-bottom a {
+      color: var(--german-gold);
+    }
+
+    /* ===== ANIMATIONS ===== */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .mobile-menu-toggle {
+        display: block;
+      }
+
+      .nav-list {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        margin-top: 20px;
+      }
+
+      .nav-list.active {
+        display: flex;
+      }
+
+      .hero h1 {
+        font-size: 2rem;
+      }
+
+      .hero p {
+        font-size: 1.1rem;
+      }
+
+      .contact-info-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .social-links {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .social-link {
+        width: 100%;
+        max-width: 300px;
+        justify-content: center;
+      }
+
+      .form-container,
+      .map-container,
+      .faq-section {
+        padding: 30px 20px;
+      }
+
+      .form-container iframe {
+        height: 800px;
+      }
+
+      .map-container iframe {
+        height: 350px;
+      }
+
+      main {
+        padding: 40px 0;
+      }
+
+      section {
+        margin-bottom: 40px;
+      }
+
+      section h2 {
+        font-size: 2rem;
+      }
+    }
+
+    /* ===== ACCESSIBILITY ===== */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
     }
   </style>
 </head>
-
 <body>
+
+<!-- German Flag Bar -->
+<div class="flag-bar">
+  <div class="black"></div>
+  <div class="red"></div>
+  <div class="gold"></div>
+</div>
 
 <!-- Navigation -->
 <nav>
-  <ul class="nav-list">
-    <li><a href="index.html">Home</a></li>
-    <li><a href="about.html">About</a></li>
-    <li><a href="datasets.html">Datasets</a></li>
-    <li><a href="use-cases.html">Use Cases</a></li>
-    <li><a href="resources.html">Resources</a></li>
-    <li><a href="contribute.html">Contribute</a></li>
-    <li><a href="contact.html" aria-current="page">Contact & Feedback</a></li>
-  </ul>
+  <div class="wrapper">
+    <button class="mobile-menu-toggle" aria-label="Toggle menu" onclick="toggleMenu()">
+      <i class="fas fa-bars"></i>
+    </button>
+    <ul class="nav-list" id="navList">
+      <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+      <li><a href="about.html"><i class="fas fa-info-circle"></i> About</a></li>
+      <li><a href="datasets.html"><i class="fas fa-database"></i> Datasets</a></li>
+      <li><a href="use-cases.html"><i class="fas fa-lightbulb"></i> Use Cases</a></li>
+      <li><a href="resources.html"><i class="fas fa-book"></i> Resources</a></li>
+      <li><a href="contribute.html"><i class="fas fa-upload"></i> Contribute</a></li>
+      <li><a href="dashboard.html"><i class="fas fa-chart-bar"></i> Dashboard</a></li>
+      <li><a href="aodria.html"><i class="fas fa-award"></i> AODRIA</a></li>
+      <li><a href="contact.html" aria-current="page"><i class="fas fa-envelope"></i> Contact</a></li>
+    </ul>
+  </div>
 </nav>
 
-<!-- Main Content -->
-<main>
-
-  <h1>Contact & Feedback</h1>
-  <p>
-    We welcome collaboration, feedback, and ideas that strengthen Africa’s open data and AI ecosystem.
-    Please connect with us or share your thoughts using the form below.
-  </p>
-
-  <!-- Social Links -->
-  <div class="social-links">
-    <a href="https://www.linkedin.com/company/giz-african-union/posts/?feedView=all"
-       target="_blank"
-       class="linkedin">
-      <svg viewBox="0 0 24 24">
-        <path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM0 8h5v16H0V8zm7.5 0h4.8v2.2h.1c.7-1.3 2.4-2.6 4.9-2.6 5.2 0 6.2 3.4 6.2 7.8V24h-5v-7c0-1.7 0-3.9-2.4-3.9-2.4 0-2.8 1.9-2.8 3.8V24h-5V8z"/>
-      </svg>
-      LinkedIn
-    </a>
-
-    <a href="https://www.instagram.com/gizafricanunion/"
-       target="_blank"
-       class="instagram">
-      <svg viewBox="0 0 24 24">
-        <path d="M12 2.2c3.2 0 3.6 0 4.9.1 1.2.1 1.9.3 2.3.5.6.3 1 .6 1.5 1.1.5.5.8.9 1.1 1.5.2.4.4 1 .5 2.3.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c-.1 1.2-.3 1.9-.5 2.3-.3.6-.6 1-1.1 1.5-.5.5-.9.8-1.5 1.1-.4.2-1 .4-2.3.5-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-1.2-.1-1.9-.3-2.3-.5-.6-.3-1-.6-1.5-1.1-.5-.5-.8-.9-1.1-1.5-.2-.4-.4-1-.5-2.3C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.9c.1-1.2.3-1.9.5-2.3.3-.6.6-1 1.1-1.5.5-.5.9-.8 1.5-1.1.4-.2 1-.4 2.3-.5C8.4 2.2 8.8 2.2 12 2.2z"/>
-      </svg>
-      Instagram
-    </a>
-  </div>
-
-  <!-- Feedback Form -->
-  <section class="section">
-    <h2>📝 Share Your Feedback</h2>
-    <p style="text-align:center;">
-      Your feedback helps improve the Open Data Africa platform and guides future development.
+<!-- Hero Section -->
+<section class="hero">
+  <div class="wrapper">
+    <h1><i class="fas fa-envelope"></i> Contact & <span>Feedback</span></h1>
+    <p>
+      We welcome collaboration, feedback, and ideas that strengthen Africa's open data and AI ecosystem. Please connect with us or share your thoughts using the form below.
     </p>
+    <div class="hero-accent"></div>
+  </div>
+</section>
 
-    <div class="form-container">
-      <iframe src="https://docs.google.com/forms/d/e/1FAIpQLScHfwIeZ6s7ty5pFsBOPudA5HSDW9zoFrVn_pKhpUhZLNLZ0A/viewform?embedded=true" width="640" height="2344" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
+<!-- Main Content -->
+<main class="wrapper">
+
+  <!-- Contact Info Cards -->
+  <section>
+    <div class="contact-info-grid">
+      <div class="contact-info-card">
+        <div class="icon">
+          <i class="fas fa-envelope"></i>
+        </div>
+        <h3>Email Us</h3>
+        <p>General inquiries and partnerships</p>
+        <a href="mailto:aimadeinafrica@giz.de">aimadeinafrica@giz.de</a>
+      </div>
+
+      <div class="contact-info-card">
+        <div class="icon">
+          <i class="fas fa-map-marker-alt"></i>
+        </div>
+        <h3>Visit Us</h3>
+        <p>GIZ African Union Office</p>
+        <p>Addis Ababa, Ethiopia</p>
+      </div>
+
+      <div class="contact-info-card">
+        <div class="icon">
+          <i class="fas fa-clock"></i>
+        </div>
+        <h3>Business Hours</h3>
+        <p>Monday - Friday</p>
+        <p>9:00 AM - 5:00 PM (EAT)</p>
+      </div>
+    </div>
+
+    <!-- Social Links -->
+    <div class="social-links">
+      <a href="https://www.linkedin.com/company/giz-african-union/posts/?feedView=all" 
+         target="_blank" 
+         rel="noopener noreferrer"
+         class="social-link linkedin">
+        <i class="fab fa-linkedin"></i>
+        <span>LinkedIn</span>
+      </a>
+
+      <a href="https://www.instagram.com/gizafricanunion/" 
+         target="_blank" 
+         rel="noopener noreferrer"
+         class="social-link instagram">
+        <i class="fab fa-instagram"></i>
+        <span>Instagram</span>
+      </a>
+
+   
+      <a href="https://github.com/open-data-africa" 
+         target="_blank" 
+         rel="noopener noreferrer"
+         class="social-link github">
+        <i class="fab fa-github"></i>
+        <span>GitHub</span>
+      </a>
+
+      <a href="mailto:aimadeinafrica@giz.de" 
+         class="social-link email">
+        <i class="fas fa-envelope"></i>
+        <span>Email</span>
+      </a>
     </div>
   </section>
 
-  <!-- Map -->
-  <section class="section">
-    <h2>📍 Our Location</h2>
+  <!-- Feedback Form -->
+  <section>
+    <h2><i class="fas fa-comment-alt"></i> Share Your Feedback</h2>
+    <p>
+      Your feedback helps improve the Open Data Africa platform and guides future development. 
+      We read every submission and respond within 5 business days.
+    </p>
+
+    <div class="form-container">
+      <iframe 
+        src="https://docs.google.com/forms/d/e/1FAIpQLScHfwIeZ6s7ty5pFsBOPudA5HSDW9zoFrVn_pKhpUhZLNLZ0A/viewform?embedded=true" 
+        title="Feedback Form"
+        loading="lazy">
+        Loading…
+      </iframe>
+    </div>
+  </section>
+
+  <!-- Map Section -->
+  <section>
+    <h2><i class="fas fa-map-marked-alt"></i> Our Location</h2>
+    
     <div class="map-container">
+      <div class="location-info">
+        <i class="fas fa-building"></i>
+        <h3>GIZ African Union Office</h3>
+        <p>United Nations Conference Centre (UNCC) Building<br>
+        Menelik II Avenue, Addis Ababa, Ethiopia</p>
+      </div>
+      
       <iframe
-        class="map"
         src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3941.063203244321!2d38.760862073143706!3d9.00775718932492!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x164b858a298f5da7%3A0x5c55ef38f1e42596!2sGIZ%20African%20Union!5e0!3m2!1sen!2set!4v1753948918126"
         loading="lazy"
-        referrerpolicy="no-referrer-when-downgrade">
+        referrerpolicy="no-referrer-when-downgrade"
+        title="GIZ African Union Office Location">
       </iframe>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="faq-section">
+    <h2><i class="fas fa-question-circle"></i> Frequently Asked Questions</h2>
+    
+    <div class="faq-item">
+      <h3><i class="fas fa-circle-question"></i> How do I contribute a dataset?</h3>
+      <p>Visit our <a href="contribute.html">Contribute page</a> to submit your dataset. We'll review it within 5 business days and get back to you.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3><i class="fas fa-circle-question"></i> Can I request a specific dataset?</h3>
+      <p>Yes! Use the feedback form above to request specific datasets. We'll work with our partners to make them available.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3><i class="fas fa-circle-question"></i> How do I report an issue with a dataset?</h3>
+      <p>Use the feedback form to report broken links, outdated information, or data quality issues. We prioritize these reports.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3><i class="fas fa-circle-question"></i> Can I partner with Open Data Africa?</h3>
+      <p>Absolutely! Email us at aimadeinafrica@giz.de to discuss partnership opportunities, collaborations, or sponsorships.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3><i class="fas fa-circle-question"></i> How often is the catalogue updated?</h3>
+      <p>We update the catalogue monthly with new datasets. Major updates are announced via our social media channels.</p>
     </div>
   </section>
 
@@ -208,8 +927,96 @@
 
 <!-- Footer -->
 <footer>
-  <p>© 2025 Open Data Africa – Powered by AI Made in Africa</p>
+  <div class="wrapper">
+    <div class="footer-content">
+      
+      <div>
+        <h4><i class="fas fa-globe-africa"></i> Open Data Africa</h4>
+        <p>Open data ecosystems across Africa through benchmarking, recognition, and capacity building.</p>
+        <div class="footer-social">
+          <a href="https://www.linkedin.com/company/giz-african-union/posts/?feedView=all" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+        </div>
+      </div>
+
+      <div>
+        <h4><i class="fas fa-link"></i> Quick Links</h4>
+        <ul>
+          <li><a href="index.html"><i class="fas fa-chevron-right"></i> Home</a></li>
+          <li><a href="about.html"><i class="fas fa-chevron-right"></i> About Us</a></li>
+          <li><a href="datasets.html"><i class="fas fa-chevron-right"></i> Datasets</a></li>
+          <li><a href="aodria.html"><i class="fas fa-chevron-right"></i> AODRIA Framework</a></li>
+          <li><a href="contribute.html"><i class="fas fa-chevron-right"></i> Submit Data</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4><i class="fas fa-file-alt"></i> Resources</h4>
+        <ul>
+          <li><a href="resources.html"><i class="fas fa-chevron-right"></i> Publications</a></li>
+          <li><a href="faq.html"><i class="fas fa-chevron-right"></i> FAQ</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4><i class="fas fa-envelope"></i> Contact</h4>
+        <p><i class="fas fa-envelope"></i> aimadeinafrica@giz.de</p>
+        <p><i class="fas fa-map-marker-alt"></i> GIZ African Union, Addis Ababa, Ethiopia</p>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; 2026 Open Data Africa | Powered by AI Made in Africa / GIZ</p>
+      <p style="margin-top: 10px;">
+      </p>
+    </div>
+  </div>
 </footer>
+
+<!-- MOBILE MENU SCRIPT -->
+<script>
+  function toggleMenu() {
+    const navList = document.getElementById('navList');
+    navList.classList.toggle('active');
+  }
+
+  // Close menu when clicking outside
+  document.addEventListener('click', function(event) {
+    const navList = document.getElementById('navList');
+    const toggle = document.querySelector('.mobile-menu-toggle');
+    if (!navList.contains(event.target) && !toggle.contains(event.target)) {
+      navList.classList.remove('active');
+    }
+  });
+</script>
+
+<!-- SCHEMA.ORG STRUCTURED DATA -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ContactPage",
+  "name": "Contact & Feedback – Open Data Africa",
+  "description": "Get in touch with Open Data Africa",
+  "publisher": {
+    "@type": "Organization",
+    "name": "AI Made in Africa / GIZ / African Union",
+    "url": "https://www.africa-data-award.org",
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "email": "aimadeinafrica@giz.de",
+      "contactType": "customer service",
+      "areaServed": "Africa",
+      "availableLanguage": ["English", "French", "Portuguese", "Arabic"]
+    },
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Addis Ababa",
+      "addressCountry": "Ethiopia"
+    }
+  },
+  "url": "https://www.open-data-africa.github.io/contact.html"
+}
+</script>
 
 </body>
 </html>
