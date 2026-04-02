@@ -11,6 +11,7 @@
 <meta property="og:title" content="Datasets – Open Data Africa">
 <meta property="og:description" content="Access our catalogue of AI-ready African datasets">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://www.africa-data-award.org/datasets.html">
 
 <title>Datasets – Open Data Africa | AI-Ready Data Catalogue</title>
 
@@ -25,6 +26,11 @@
 <!-- D3.js for Map Visualization -->
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics-compat.js"></script>
 
 <style>
 /* ===== CSS VARIABLES - GERMAN FLAG COLORS ===== */
@@ -46,6 +52,7 @@
   --light: #f8f9fa;
   --gray: #6c757d;
   --gray-light: #e9ecef;
+  --success: #28a745;
   
   /* UI Elements */
   --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -217,7 +224,7 @@ nav {
   left: 0;
   right: 0;
   bottom: 0;
-  background: url('image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,206,0,0.1)"/></svg>');
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,206,0,0.1)"/></svg>');
   background-size: 30px 30px;
   opacity: 0.3;
 }
@@ -296,6 +303,7 @@ nav {
   font-weight: 700;
   color: var(--german-gold);
   font-size: 1.1rem;
+  min-width: 40px;
 }
 
 .live-indicator {
@@ -382,7 +390,7 @@ nav {
 
 .summary-card .trend {
   font-size: 0.85rem;
-  color: var(--success, #28a745);
+  color: var(--success);
   margin-top: 10px;
   display: flex;
   align-items: center;
@@ -1124,13 +1132,13 @@ footer {
       <div class="icon"><i class="fas fa-database"></i></div>
       <span class="number" id="totalDatasets">-</span>
       <span class="label">Total Datasets</span>
-      <span class="trend"><i class="fas fa-arrow-up"></i> +12% this month</span>
+      <span class="trend"><i class="fas fa-arrow-up"></i> Growing</span>
     </div>
     <div class="summary-card">
       <div class="icon"><i class="fas fa-download"></i></div>
       <span class="number" id="totalDownloads">-</span>
       <span class="label">Total Downloads</span>
-      <span class="trend"><i class="fas fa-arrow-up"></i> +8% this week</span>
+      <span class="trend"><i class="fas fa-arrow-up"></i> Real-time</span>
     </div>
     <div class="summary-card">
       <div class="icon"><i class="fas fa-globe-africa"></i></div>
@@ -1257,27 +1265,10 @@ footer {
     <h3><i class="fas fa-bolt"></i> Recent Activity</h3>
     <div class="activity-list" id="activityList">
       <div class="activity-item">
-        <i class="fas fa-download"></i>
+        <i class="fas fa-spinner fa-spin"></i>
         <div class="info">
-          <div class="action">Dataset downloaded</div>
+          <div class="action">Loading recent activity...</div>
           <div class="time">Just now</div>
-          <div class="location"><i class="fas fa-map-marker-alt"></i> Kenya</div>
-        </div>
-      </div>
-      <div class="activity-item">
-        <i class="fas fa-eye"></i>
-        <div class="info">
-          <div class="action">Page viewed</div>
-          <div class="time">2 minutes ago</div>
-          <div class="location"><i class="fas fa-map-marker-alt"></i> Nigeria</div>
-        </div>
-      </div>
-      <div class="activity-item">
-        <i class="fas fa-download"></i>
-        <div class="info">
-          <div class="action">Dataset downloaded</div>
-          <div class="time">5 minutes ago</div>
-          <div class="location"><i class="fas fa-map-marker-alt"></i> South Africa</div>
         </div>
       </div>
     </div>
@@ -1339,55 +1330,75 @@ footer {
 
     <div class="footer-bottom">
       <p>&copy; 2026 Open Data Africa | Powered by AI Made in Africa / GIZ</p>
+      <p style="margin-top: 10px;">
+        <a href="privacy.html" style="color: var(--german-gold);">Privacy Policy</a> | 
+        <a href="terms.html" style="color: var(--german-gold);">Terms of Use</a>
+      </p>
     </div>
   </div>
 </footer>
 
-<!-- ENGAGEMENT & ANALYTICS SCRIPT -->
+<!-- FIREBASE & ANALYTICS SCRIPT -->
 <script>
-// ===== CONFIGURATION =====
-const CONFIG = {
-  BIN_ID: "693a77f7d0ea881f40216983",
-  API_KEY: "$2a$10$OX/sVa0zzJhjrVuZ7Ntdn.vR1lJmoipoZ/2xxFrnc16mCaDHzw5m2",
-  UPDATE_INTERVAL: 30000, // 30 seconds
-  ACTIVITY_INTERVAL: 5000, // 5 seconds
-  SESSION_KEY: 'oda_session_id'
+// ============================================
+// 🔥 FIREBASE CONFIGURATION
+// ============================================
+// TODO: Replace with your actual Firebase project config
+// Get this from: Firebase Console > Project Settings > General > Your apps
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY_HERE",
+  authDomain: "your-project.firebaseapp.com",
+  databaseURL: "https://your-project-default-rtdb.firebaseio.com",
+  projectId: "your-project-id",
+  storageBucket: "your-project.appspot.com",
+  messagingSenderId: "123456789",
+  appId: "1:123456789:web:abcdef123456",
+  measurementId: "G-XXXXXXXXXX"
 };
 
-// ===== STATE =====
+// ============================================
+// 📊 ANALYTICS STATE
+// ============================================
 let catalogData = [];
 let sessionData = {
-  id: sessionStorage.getItem(CONFIG.SESSION_KEY) || generateSessionId(),
+  id: sessionStorage.getItem('oda_session_id') || 'sess_' + Math.random().toString(36).substr(2, 9),
   startTime: Date.now(),
   country: 'Unknown',
-  activities: []
+  page: 'datasets'
 };
 
 // Store session ID
-sessionStorage.setItem(CONFIG.SESSION_KEY, sessionData.id);
+sessionStorage.setItem('oda_session_id', sessionData.id);
 
-// ===== UTILITY FUNCTIONS =====
-function generateSessionId() {
-  return 'sess_' + Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
+// Country name mapping for map
+const countryNameMap = {
+  "cote d'ivoire": "Ivory Coast",
+  "eswatini": "Swaziland",
+  "democratic republic of the congo": "DR Congo"
+};
+
+// ============================================
+// 🔥 FIREBASE INITIALIZATION
+// ============================================
+let db, analytics;
+let firebaseInitialized = false;
+
+try {
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  db = firebase.database();
+  analytics = firebase.analytics();
+  firebaseInitialized = true;
+  console.log('✅ Firebase initialized successfully');
+} catch (error) {
+  console.warn('⚠️ Firebase not configured. Using fallback mode.', error);
+  // Fallback: simulate data for demo purposes
+  startFallbackMode();
 }
 
-function normalizeName(name) {
-  return name ? name.toLowerCase().trim() : "";
-}
-
-function timeAgo(date) {
-  const seconds = Math.floor((new Date() - date) / 1000);
-  if (seconds < 60) return 'Just now';
-  if (seconds < 3600) return Math.floor(seconds / 60) + ' minutes ago';
-  if (seconds < 86400) return Math.floor(seconds / 3600) + ' hours ago';
-  return Math.floor(seconds / 86400) + ' days ago';
-}
-
-function varCSS(name) {
-  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
-}
-
-// ===== GEOLOCATION =====
+// ============================================
+// 🌍 GEOLOCATION
+// ============================================
 async function getCountry() {
   try {
     const res = await fetch("https://ipapi.co/json/");
@@ -1398,115 +1409,215 @@ async function getCountry() {
   }
 }
 
-// ===== ANALYTICS TRACKING =====
+// ============================================
+// 📈 ANALYTICS TRACKING FUNCTIONS
+// ============================================
+
+// Track page view
 async function trackPageView() {
   const country = await getCountry();
   sessionData.country = country;
+  const timestamp = Date.now();
   
-  try {
-    // Track in JSONBin (or your analytics service)
-    const stats = await getStats();
-    stats.pageViews = (stats.pageViews || 0) + 1;
-    stats.uniqueVisitors = (stats.uniqueVisitors || 0) + 1;
-    
-    if (!stats.countries[country]) {
-      stats.countries[country] = { visits: 0, downloads: 0 };
+  if (firebaseInitialized) {
+    try {
+      // Update global stats
+      const statsRef = db.ref('stats');
+      statsRef.transaction(currentStats => {
+        return {
+          pageViews: (currentStats?.pageViews || 0) + 1,
+          uniqueVisitors: (currentStats?.uniqueVisitors || 0) + 1,
+          lastUpdated: timestamp
+        };
+      });
+      
+      // Track by country
+      const countryKey = country.replace(/\s/g, '_').replace(/'/g, '');
+      const countryRef = db.ref(`countries/${countryKey}`);
+      countryRef.transaction(currentData => {
+        return {
+          visits: (currentData?.visits || 0) + 1,
+          lastVisit: timestamp,
+          countryName: country
+        };
+      });
+      
+      // Track active users (last 5 minutes)
+      const activeRef = db.ref(`active/${sessionData.id}`);
+      activeRef.set({
+        timestamp: timestamp,
+        country: country,
+        page: sessionData.page
+      });
+      
+      // Clean up old active users after 5 minutes
+      setTimeout(() => {
+        activeRef.remove();
+      }, 300000);
+      
+      // Log to Firebase Analytics
+      analytics.logEvent('page_view', {
+        page_title: 'Datasets Catalogue',
+        page_location: window.location.href,
+        country: country
+      });
+      
+      console.log('✅ Page view tracked:', country);
+    } catch (error) {
+      console.error('❌ Error tracking page view:', error);
     }
-    stats.countries[country].visits += 1;
-    
-    await updateStats(stats);
-    updateLiveStats(stats);
-  } catch (error) {
-    console.error("Error tracking page view:", error);
   }
 }
 
-async function trackDownload() {
+// Track download
+async function trackDownload(datasetName = 'Full Catalogue') {
   const country = sessionData.country;
+  const timestamp = Date.now();
   
-  try {
-    const stats = await getStats();
-    stats.downloads = (stats.downloads || 0) + 1;
-    stats.downloadsToday = (stats.downloadsToday || 0) + 1;
-    
-    if (!stats.countries[country]) {
-      stats.countries[country] = { visits: 0, downloads: 0 };
+  if (firebaseInitialized) {
+    try {
+      // Update download stats
+      const statsRef = db.ref('stats');
+      statsRef.transaction(currentStats => {
+        return {
+          downloads: (currentStats?.downloads || 0) + 1,
+          downloadsToday: (currentStats?.downloadsToday || 0) + 1,
+          lastUpdated: timestamp
+        };
+      });
+      
+      // Track by country
+      const countryKey = country.replace(/\s/g, '_').replace(/'/g, '');
+      const countryRef = db.ref(`countries/${countryKey}`);
+      countryRef.transaction(currentData => {
+        return {
+          downloads: (currentData?.downloads || 0) + 1,
+          lastDownload: timestamp,
+          countryName: country
+        };
+      });
+      
+      // Add to activity feed
+      const activityRef = db.ref('activity').push();
+      activityRef.set({
+        type: 'download',
+        dataset: datasetName,
+        country: country,
+        timestamp: timestamp,
+        sessionId: sessionData.id
+      });
+      
+      // Log to Firebase Analytics
+      analytics.logEvent('download', {
+        content_type: 'dataset',
+        item_id: datasetName,
+        country: country
+      });
+      
+      console.log('✅ Download tracked:', datasetName, country);
+    } catch (error) {
+      console.error('❌ Error tracking download:', error);
     }
-    stats.countries[country].downloads += 1;
-    
-    // Add to activity feed
-    addActivity('download', country);
-    
-    await updateStats(stats);
-    updateLiveStats(stats);
-    
-    // Animate download button
-    const btn = document.getElementById('downloadBtn');
-    btn.innerHTML = '<i class="fas fa-check"></i> Download Started!';
-    setTimeout(() => {
-      btn.innerHTML = '<i class="fas fa-download"></i> Download Dataset Catalogue (Excel)';
-    }, 3000);
-  } catch (error) {
-    console.error("Error tracking download:", error);
   }
 }
 
-// ===== JSONBIN API =====
-async function getStats() {
-  try {
-    const res = await fetch(
-      `https://api.jsonbin.io/v3/b/${CONFIG.BIN_ID}/latest`,
-      { headers: { "X-Master-Key": CONFIG.API_KEY } }
-    );
-    const json = await res.json();
-    return json.record || { pageViews: 0, downloads: 0, countries: {} };
-  } catch (error) {
-    console.error("Error fetching stats:", error);
-    return { pageViews: 0, downloads: 0, countries: {} };
+// Track country exploration on map
+function trackCountryExploration(country, datasetCount) {
+  if (firebaseInitialized) {
+    try {
+      const countryKey = country.replace(/\s/g, '_').replace(/'/g, '');
+      const countryRef = db.ref(`countries/${countryKey}`);
+      countryRef.transaction(currentData => {
+        return {
+          ...currentData,
+          explorations: (currentData?.explorations || 0) + 1,
+          lastExploration: Date.now(),
+          countryName: country
+        };
+      });
+      
+      // Log to Firebase Analytics
+      analytics.logEvent('country_explore', {
+        country: country,
+        dataset_count: datasetCount
+      });
+    } catch (error) {
+      console.error('❌ Error tracking country exploration:', error);
+    }
   }
 }
 
-async function updateStats(updated) {
-  try {
-    await fetch(`https://api.jsonbin.io/v3/b/${CONFIG.BIN_ID}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Master-Key": CONFIG.API_KEY
-      },
-      body: JSON.stringify(updated)
+// ============================================
+// 📡 REAL-TIME LISTENERS
+// ============================================
+
+// Listen for real-time stats updates
+function listenToStats() {
+  if (!firebaseInitialized) return;
+  
+  const statsRef = db.ref('stats');
+  statsRef.on('value', (snapshot) => {
+    const stats = snapshot.val() || {};
+    
+    // Update summary cards
+    animateNumber('totalDatasets', catalogData.length);
+    animateNumber('totalDownloads', stats.downloads || 0);
+    
+    // Calculate live visitors (active in last 5 min)
+    const activeRef = db.ref('active');
+    activeRef.once('value', (activeSnapshot) => {
+      const activeUsers = activeSnapshot.val() || {};
+      const now = Date.now();
+      const liveCount = Object.values(activeUsers).filter(
+        user => (now - user.timestamp) < 300000
+      ).length;
+      
+      animateNumber('liveVisitors', liveCount);
     });
-  } catch (error) {
-    console.error("Error updating stats:", error);
-  }
+    
+    // Update downloads today
+    animateNumber('downloadsToday', stats.downloadsToday || 0);
+    
+    // Count active countries
+    const countriesRef = db.ref('countries');
+    countriesRef.once('value', (countriesSnapshot) => {
+      const countries = countriesSnapshot.val() || {};
+      const now = Date.now();
+      const activeCountries = Object.values(countries).filter(
+        c => (now - (c.lastVisit || 0)) < 300000
+      ).length;
+      
+      animateNumber('countriesActive', activeCountries);
+    });
+  });
 }
 
-// ===== LIVE STATS UPDATE =====
-function updateLiveStats(stats) {
-  // Simulate live visitors (replace with WebSocket for real-time)
-  const liveVisitors = Math.floor(Math.random() * 20) + 5;
-  const downloadsToday = stats.downloadsToday || Math.floor(stats.downloads * 0.1);
-  const countriesActive = Object.keys(stats.countries || {}).length;
+// Listen for activity feed updates
+function listenToActivity() {
+  if (!firebaseInitialized) return;
   
-  animateNumber('liveVisitors', liveVisitors);
-  animateNumber('downloadsToday', downloadsToday);
-  animateNumber('countriesActive', countriesActive);
-  
-  // Update summary cards
-  document.getElementById("totalDatasets").textContent = catalogData.length.toLocaleString();
-  document.getElementById("totalDownloads").textContent = (stats.downloads || 0).toLocaleString();
-  
-  const countries = [...new Set(catalogData.map(d => normalizeName(d.Country)))];
-  document.getElementById("totalCountries").textContent = countries.length;
-  
-  const domains = [...new Set(catalogData.map(d => d.Domain).filter(d => d))];
-  document.getElementById("totalDomains").textContent = domains.length;
+  const activityRef = db.ref('activity');
+  activityRef.limitToLast(6).on('child_added', (snapshot) => {
+    const activity = snapshot.val();
+    if (activity) {
+      addActivityToFeed(activity.type, activity.country, activity.timestamp);
+    }
+  });
 }
 
+// ============================================
+// 🎨 UI UPDATE FUNCTIONS
+// ============================================
+
+// Animate numbers
 function animateNumber(elementId, target) {
   const element = document.getElementById(elementId);
+  if (!element) return;
+  
   const current = parseInt(element.textContent.replace(/,/g, '')) || 0;
-  const increment = (target - current) / 20;
+  if (current === target) return;
+  
+  const increment = (target - current) / 30;
   let count = current;
   
   const timer = setInterval(() => {
@@ -1516,23 +1627,32 @@ function animateNumber(elementId, target) {
       clearInterval(timer);
     }
     element.textContent = Math.floor(count).toLocaleString();
-  }, 50);
+  }, 30);
 }
 
-// ===== ACTIVITY FEED =====
-function addActivity(type, country) {
+// Add activity to feed
+function addActivityToFeed(type, country, timestamp) {
   const activityList = document.getElementById('activityList');
+  if (!activityList) return;
+  
+  // Remove loading state if present
+  const loadingItem = activityList.querySelector('.fa-spinner');
+  if (loadingItem) {
+    activityList.innerHTML = '';
+  }
+  
   const activity = document.createElement('div');
   activity.className = 'activity-item';
   
   const icon = type === 'download' ? 'fa-download' : 'fa-eye';
   const action = type === 'download' ? 'Dataset downloaded' : 'Page viewed';
+  const timeAgo = getTimeAgo(timestamp);
   
   activity.innerHTML = `
     <i class="fas ${icon}"></i>
     <div class="info">
       <div class="action">${action}</div>
-      <div class="time">Just now</div>
+      <div class="time">${timeAgo}</div>
       <div class="location"><i class="fas fa-map-marker-alt"></i> ${country}</div>
     </div>
   `;
@@ -1545,23 +1665,46 @@ function addActivity(type, country) {
   }
 }
 
-// Simulate activity updates
-function simulateActivity() {
-  const countries = ['Kenya', 'Nigeria', 'South Africa', 'Ghana', 'Ethiopia', 'Egypt', 'Morocco'];
-  const types = ['download', 'view'];
-  
-  const randomCountry = countries[Math.floor(Math.random() * countries.length)];
-  const randomType = types[Math.floor(Math.random() * types.length)];
-  
-  addActivity(randomType, randomCountry);
+function getTimeAgo(timestamp) {
+  const seconds = Math.floor((Date.now() - timestamp) / 1000);
+  if (seconds < 60) return 'Just now';
+  if (seconds < 3600) return Math.floor(seconds / 60) + ' min ago';
+  if (seconds < 86400) return Math.floor(seconds / 3600) + ' hours ago';
+  return Math.floor(seconds / 86400) + ' days ago';
 }
 
-// ===== COUNTRY MAP FUNCTIONS =====
-const countryNameMap = {
-  "cote d'ivoire": "Ivory Coast",
-  "eswatini": "Swaziland",
-  "democratic republic of the congo": "DR Congo"
-};
+// Fallback mode for demo (when Firebase not configured)
+function startFallbackMode() {
+  console.log('🔄 Running in fallback mode (Firebase not configured)');
+  
+  // Simulate live visitors
+  setInterval(() => {
+    const liveVisitors = Math.floor(Math.random() * 15) + 5;
+    animateNumber('liveVisitors', liveVisitors);
+  }, 5000);
+  
+  // Simulate downloads
+  setInterval(() => {
+    const current = parseInt(document.getElementById('downloadsToday').textContent.replace(/,/g, '')) || 0;
+    animateNumber('downloadsToday', current + Math.floor(Math.random() * 3));
+  }, 10000);
+  
+  // Simulate activity
+  const countries = ['Kenya', 'Nigeria', 'South Africa', 'Ghana', 'Ethiopia', 'Egypt', 'Morocco'];
+  setInterval(() => {
+    const randomCountry = countries[Math.floor(Math.random() * countries.length)];
+    const randomType = Math.random() > 0.5 ? 'download' : 'view';
+    addActivityToFeed(randomType, randomCountry, Date.now());
+  }, 8000);
+}
+
+// ============================================
+// 🗺️ MAP FUNCTIONS
+// ============================================
+
+function normalizeName(name) {
+  return name ? name.toLowerCase().trim() : "";
+}
 
 function showCountryLinks(country, datasets) {
   document.getElementById("countryName").textContent = country;
@@ -1598,6 +1741,13 @@ function showCountryLinks(country, datasets) {
     `;
     tbody.appendChild(tr);
   });
+  
+  // Track country exploration
+  trackCountryExploration(country, datasets.length);
+}
+
+function varCSS(name) {
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 }
 
 function drawMap() {
@@ -1712,7 +1862,9 @@ function drawMap() {
   });
 }
 
-// ===== CATEGORY FILTER =====
+// ============================================
+// 📂 CATEGORY FILTER
+// ============================================
 function setupCategoryFilter() {
   document.querySelectorAll('.category-card').forEach(card => {
     card.addEventListener('click', function() {
@@ -1721,11 +1873,14 @@ function setupCategoryFilter() {
       
       const category = this.getAttribute('data-category');
       // Filter logic would go here for dataset listing
+      console.log('Category filter:', category);
     });
   });
 }
 
-// ===== MOBILE MENU =====
+// ============================================
+// 📱 MOBILE MENU
+// ============================================
 function toggleMenu() {
   const navList = document.getElementById('navList');
   navList.classList.toggle('active');
@@ -1739,7 +1894,9 @@ document.addEventListener('click', function(event) {
   }
 });
 
-// ===== INITIALIZATION =====
+// ============================================
+// 🚀 INITIALIZATION
+// ============================================
 document.addEventListener('DOMContentLoaded', function() {
   // Show loading state
   document.querySelector("#datasetTable tbody").innerHTML = `
@@ -1770,6 +1927,13 @@ document.addEventListener('DOMContentLoaded', function() {
       
       drawMap();
       setupCategoryFilter();
+      
+      // Initialize analytics after data loads
+      if (firebaseInitialized) {
+        trackPageView();
+        listenToStats();
+        listenToActivity();
+      }
     },
     error: function(error) {
       console.error("Error loading catalog:", error);
@@ -1784,19 +1948,25 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  // Track page view
-  trackPageView();
-
   // Track download
-  document.getElementById("downloadBtn").addEventListener("click", trackDownload);
+  document.getElementById("downloadBtn").addEventListener("click", function() {
+    trackDownload('Full Catalogue Excel');
+    
+    // Visual feedback
+    const btn = document.getElementById('downloadBtn');
+    btn.innerHTML = '<i class="fas fa-check"></i> Download Started!';
+    setTimeout(() => {
+      btn.innerHTML = '<i class="fas fa-download"></i> Download Dataset Catalogue (Excel)';
+    }, 3000);
+  });
 
-  // Update live stats periodically
+  // Reset daily stats at midnight (client-side approximation)
   setInterval(() => {
-    getStats().then(updateLiveStats);
-  }, CONFIG.UPDATE_INTERVAL);
-
-  // Simulate activity feed updates
-  setInterval(simulateActivity, CONFIG.ACTIVITY_INTERVAL);
+    const now = new Date();
+    if (now.getHours() === 0 && now.getMinutes() === 0 && firebaseInitialized) {
+      db.ref('stats/downloadsToday').set(0);
+    }
+  }, 60000); // Check every minute
 });
 </script>
 
