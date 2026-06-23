@@ -1,0 +1,23 @@
+# Local AI assistant artefacts — never commit
+CLAUDE.md
+AGENTS.md
+.claude/
+.aider*
+.cursor/
+.cursorrules
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+*.swp
+*.swo
+.vscode/
+.idea/
+
+# Python (for any helper scripts run locally against this repo)
+__pycache__/
+*.pyc
+.venv/
+venv/
