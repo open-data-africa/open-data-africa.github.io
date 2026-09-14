@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Browse open datasets with download metrics, access stats, and detailed information.">
+  <title>Dataset Catalog | Open Data Africa</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  
+  <style>
+    .page-hero {
+      background: linear-gradient(135deg, var(--color-black) 0%, #2d2d2d 100%);
+      padding: 80px 24px 60px; text-align: center; color: var(--color-white);
+    }
+    .page-hero h1 { font-size: 2.5rem; margin-bottom: 10px; }
+    .page-hero h1 span { color: var(--color-gold); }
+    .page-hero p { color: rgba(255,255,255,0.8); font-size: 1.1rem; }
+
+    /* Filter & Toolbar */
+    .toolbar {
+      background: var(--color-white); margin-top: -30px; position: relative; z-index: 10;
+      border-radius: var(--radius); box-shadow: var(--shadow-lg); padding: 24px;
+      max-width: 1200px; margin-left: auto; margin-right: auto; margin-bottom: 30px;
+    }
+    .toolbar-row {
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 12px; margin-bottom: 16px;
+    }
+    .toolbar-input, .toolbar-select {
+      width: 100%; padding: 12px 16px; border: 1px solid var(--color-border);
+      border-radius: 8px; font-size: 0.95rem; font-family: var(--font-primary);
+      background: var(--color-white); transition: var(--transition);
+    }
+    .toolbar-input:focus, .toolbar-select:focus {
+      outline: none; border-color: var(--color-red);
+      box-shadow: 0 0 0 3px rgba(200, 16, 46, 0.1);
+    }
+    .toolbar-actions {
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
+    }
+    .results-info { font-size: 0.95rem; color: var(--color-gray); }
+    .results-info strong { color: var(--color-black); }
+    .toolbar-right { display: flex; gap: 10px; align-items: center; }
+    .sort-select {
+      padding: 8px 12px; border: 1px solid var(--color-border); border-radius: 8px;
+      font-size: 0.85rem; font-family: var(--font-primary); background: var(--color-white);
+    }
+    .view-toggle { display: flex; gap: 4px; }
+    .view-btn {
+      background: var(--color-light); border: 1px solid var(--color-border); padding: 8px 12px;
+      border-radius: 6px; cursor: pointer; color: var(--color-gray); transition: var(--transition);
+    }
+    .view-btn.active { background: var(--color-red); color: var(--color-white); border-color: var(--color-red); }
+    .clear-btn {
+      background: none; border: none; color: var(--color-red); font-weight: 600;
+      cursor: pointer; font-size: 0.9rem; display: none;
+    }
+    .clear-btn:hover { text-decoration: underline; }
+
+    /* Grid View */
+    .catalog-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 24px;
+    }
+
+    /* List View */
+    .catalog-grid.list-view {
+      grid-template-columns: 1fr;
+    }
+    .catalog-grid.list-view .catalog-card {
+      flex-direction: row; align-items: center; gap: 24px; padding: 20px 28px;
+    }
+    .catalog-grid.list-view .card-main { flex: 1; }
+    .catalog-grid.list-view .card-metrics { 
+      flex-direction: row; gap: 24px; border-top: none; border-left: 1px solid var(--color-border);
+      padding-top: 0; padding-left: 24px; margin-top: 0;
+    }
+
+    /* Catalog Card */
+    .catalog-card {
+      background: var(--color-white); border: 1px solid var(--color-border);
+      border-radius: var(--radius); padding: 28px; transition: var(--transition);
+      display: flex; flex-direction: column; cursor: pointer; position: relative;
+    }
+    .catalog-card:hover {
+      transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: var(--color-gold);
+    }
+    .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+    .domain-badge {
+      background: var(--color-light); color: var(--color-black); padding: 4px 10px;
+      border-radius: 6px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .popularity {
+      display: flex; align-items: center; gap: 4px; font-size: 0.8rem; color: var(--color-gold);
+    }
+    .popularity .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--color-border); }
+    .popularity .dot.filled { background: var(--color-gold); }
+
+    .card-main h3 { font-size: 1.1rem; margin-bottom: 6px; line-height: 1.4; }
+    .card-main h3 a { color: var(--color-black); }
+    .card-main h3 a:hover { color: var(--color-red); }
+    .card-source { font-size: 0.85rem; color: var(--color-gray); margin-bottom: 8px; }
+    .card-source i { color: var(--color-gold); margin-right: 5px; }
+    .card-desc {
+      font-size: 0.88rem; color: var(--color-gray); line-height: 1.5;
+      margin-bottom: 16px; flex-grow: 1;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .card-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+    .mini-tag {
+      background: var(--color-light); color: var(--color-gray); font-size: 0.75rem;
+      padding: 3px 8px; border-radius: 4px; font-weight: 500;
+    }
+
+    /* Metrics Row */
+    .card-metrics {
+      display: flex; justify-content: space-between; padding-top: 16px;
+      border-top: 1px solid var(--color-border); margin-top: auto;
+    }
+    .metric { text-align: center; flex: 1; }
+    .metric-value {
+      font-size: 1.1rem; font-weight: 700; color: var(--color-black); display: block; line-height: 1;
+    }
+    .metric-value.highlight { color: var(--color-red); }
+    .metric-label { font-size: 0.7rem; color: var(--color-gray); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
+
+    /* Modal */
+    .modal-overlay {
+      display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.6); z-index: 2000; justify-content: center; align-items: center;
+      padding: 20px; backdrop-filter: blur(4px);
+    }
+    .modal-overlay.active { display: flex; }
+    .modal {
+      background: var(--color-white); border-radius: var(--radius); max-width: 700px;
+      width: 100%; max-height: 85vh; overflow-y: auto; padding: 40px; position: relative;
+      box-shadow: var(--shadow-lg);
+    }
+    .modal-close {
+      position: absolute; top: 16px; right: 16px; background: var(--color-light);
+      border: none; width: 36px; height: 36px; border-radius: 50%; cursor: pointer;
+      font-size: 1.1rem; color: var(--color-gray); transition: var(--transition);
+    }
+    .modal-close:hover { background: var(--color-red); color: var(--color-white); }
+    .modal h2 { font-size: 1.5rem; margin-bottom: 8px; padding-right: 40px; }
+    .modal-source { color: var(--color-gray); font-size: 0.95rem; margin-bottom: 20px; }
+    .modal-metrics-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px;
+    }
+    .modal-metric {
+      background: var(--color-light); padding: 16px; border-radius: 8px; text-align: center;
+    }
+    .modal-metric .val { font-size: 1.4rem; font-weight: 800; color: var(--color-red); display: block; }
+    .modal-metric .lbl { font-size: 0.75rem; color: var(--color-gray); text-transform: uppercase; letter-spacing: 0.5px; }
+    .modal-section { margin-bottom: 20px; }
+    .modal-section h4 { font-size: 1rem; margin-bottom: 8px; color: var(--color-black); }
+    .modal-section p { font-size: 0.95rem; color: var(--color-gray); line-height: 1.6; }
+    .modal-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .modal-tag {
+      background: var(--color-light); padding: 6px 14px; border-radius: 20px;
+      font-size: 0.85rem; font-weight: 500; color: var(--color-black);
+    }
+    .modal-actions { display: flex; gap: 12px; margin-top: 24px; }
+    .modal-actions .btn { flex: 1; justify-content: center; padding: 14px; font-size: 0.95rem; }
+
+    .no-results { text-align: center; padding: 60px 20px; grid-column: 1 / -1; }
+    .no-results i { font-size: 3rem; color: var(--color-border); margin-bottom: 15px; }
+
+    @media (max-width: 900px) {
+      .toolbar-row { grid-template-columns: 1fr 1fr; }
+      .modal-metrics-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 600px) {
+      .toolbar-row { grid-template-columns: 1fr; }
+      .catalog-grid { grid-template-columns: 1fr; }
+      .catalog-grid.list-view .catalog-card { flex-direction: column; }
+      .catalog-grid.list-view .card-metrics { flex-direction: row; border-left: none; border-top: 1px solid var(--color-border); padding-left: 0; padding-top: 16px; }
+      .page-hero h1 { font-size: 2rem; }
+      .modal { padding: 24px; }
+      .modal-actions { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="flag-bar"><div class="black"></div><div class="red"></div><div class="gold"></div></div>
+
+  <nav>
+    <div class="container nav-container">
+      <a href="index.html" class="nav-logo"><i class="fas fa-globe-africa"></i> Open Data Africa</a>
+      <button class="menu-toggle" aria-label="Toggle menu"><i class="fas fa-bars"></i></button>
+      <ul class="nav-list">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="datasets.html">Datasets</a></li>
+        <li><a href="catalog.html" class="active">Catalog</a></li>
+        <li><a href="countries.html">Countries</a></li>
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="contribute.html">Contribute</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <header class="page-hero">
+    <h1>Dataset <span>Catalog</span></h1>
+    <p>Browse, search, and analyze open datasets with download and access metrics.</p>
+  </header>
+
+  <div class="container">
+    <div class="toolbar">
+      <div class="toolbar-row">
+        <input type="text" id="searchInput" class="toolbar-input" placeholder="Search datasets, sources, or keywords...">
+        <select id="domainFilter" class="toolbar-select"><option value="">All Domains</option></select>
+        <select id="countryFilter" class="toolbar-select"><option value="">All Countries</option></select>
+        <select id="typeFilter" class="toolbar-select"><option value="">All Data Types</option></select>
+      </div>
+      <div class="toolbar-actions">
+        <div style="display:flex; align-items:center; gap:16px;">
+          <span class="results-info" id="resultsCount">Loading...</span>
+          <button class="clear-btn" id="clearFilters"><i class="fas fa-times"></i> Clear</button>
+        </div>
+        <div class="toolbar-right">
+          <select id="sortSelect" class="sort-select">
+            <option value="downloads">Most Downloaded</option>
+            <option value="name">Name A-Z</option>
+            <option value="date">Recently Updated</option>
+            <option value="access">Most Accessed</option>
+          </select>
+          <div class="view-toggle">
+            <button class="view-btn active" data-view="grid" aria-label="Grid view"><i class="fas fa-th"></i></button>
+            <button class="view-btn" data-view="list" aria-label="List view"><i class="fas fa-list"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="catalog-grid" id="catalogGrid"></div>
+  </div>
+
+  <!-- Detail Modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="modalContent">
+      <button class="modal-close" id="modalClose"><i class="fas fa-times"></i></button>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <footer style="margin-top: 80px;">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <h4><i class="fas fa-globe-africa"></i> Open Data Africa</h4>
+          <p>Building open data ecosystems across Africa through benchmarking, recognition, and capacity building.</p>
+        </div>
+        <div>
+          <h4>Explore</h4>
+          <ul>
+            <li><a href="datasets.html">Datasets</a></li>
+            <li><a href="catalog.html">Catalog</a></li>
+            <li><a href="dashboard.html">Dashboard</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Contact</h4>
+          <p><i class="fas fa-envelope"></i> aimadeinafrica@giz.de</p>
+          <p><i class="fas fa-map-marker-alt"></i> GIZ African Union, Addis Ababa</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Open Data Africa | AI Made in Africa / GIZ AU</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script>
+    // Simulated metrics generator (deterministic based on dataset name)
+    function generateMetrics(item) {
+      let hash = 0;
+      const str = item['Dataset Name'] + item.Domain;
+      for (let i = 0; i < str.length; i++) {
+        hash = ((hash << 5) - hash) + str.charCodeAt(i);
+        hash |= 0;
+      }
+      const abs = Math.abs(hash);
+      const downloads = 120 + (abs % 9800);
+      const accessCount = downloads * (3 + (abs % 8));
+      const citations = Math.floor(downloads * (0.02 + (abs % 10) / 100));
+      const popularity = 1 + (abs % 5); // 1-5 stars
+      return { downloads, accessCount, citations, popularity };
+    }
+
+    function formatNumber(num) {
+      if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+      if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+      return num.toString();
+    }
+
+    function renderStars(count) {
+      let html = '';
+      for (let i = 1; i <= 5; i++) {
+        html += `<span class="dot ${i <= count ? 'filled' : ''}"></span>`;
+      }
+      return html;
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const data = await fetchCatalog();
+      if (data.length === 0) return;
+
+      // Enrich data with metrics
+      const enriched = data.map(item => ({ ...item, metrics: generateMetrics(item) }));
+
+      const grid = document.getElementById('catalogGrid');
+      const searchInput = document.getElementById('searchInput');
+      const domainFilter = document.getElementById('domainFilter');
+      const countryFilter = document.getElementById('countryFilter');
+      const typeFilter = document.getElementById('typeFilter');
+      const sortSelect = document.getElementById('sortSelect');
+      const resultsCount = document.getElementById('resultsCount');
+      const clearBtn = document.getElementById('clearFilters');
+      const modalOverlay = document.getElementById('modalOverlay');
+      const modalBody = document.getElementById('modalBody');
+
+      // Populate dropdowns
+      function populateDropdown(el, key) {
+        getUniqueValues(data, key).forEach(v => {
+          const o = document.createElement('option');
+          o.value = v; o.textContent = v; el.appendChild(o);
+        });
+      }
+      populateDropdown(domainFilter, 'Domain');
+      populateDropdown(countryFilter, 'Country');
+      populateDropdown(typeFilter, 'Data Type');
+
+      // URL params
+      const params = new URLSearchParams(window.location.search);
+      if (params.has('domain')) domainFilter.value = params.get('domain');
+      if (params.has('country')) countryFilter.value = params.get('country');
+      if (params.has('search')) searchInput.value = params.get('search');
+
+      // View toggle
+      document.querySelectorAll('.view-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          grid.classList.toggle('list-view', btn.dataset.view === 'list');
+        });
+      });
+
+      // Render
+      function render() {
+        const q = searchInput.value.toLowerCase();
+        const dom = domainFilter.value;
+        const cty = countryFilter.value;
+        const typ = typeFilter.value;
+
+        let filtered = enriched.filter(item => {
+          const matchQ = !q || item['Dataset Name'].toLowerCase().includes(q) ||
+            item.Source.toLowerCase().includes(q) || item['Use Cases'].toLowerCase().includes(q);
+          const matchD = !dom || item.Domain === dom;
+          const matchC = !cty || item.Country === cty;
+          const matchT = !typ || item['Data Type'] === typ;
+          return matchQ && matchD && matchC && matchT;
+        });
+
+        // Sort
+        const sort = sortSelect.value;
+        filtered.sort((a, b) => {
+          if (sort === 'downloads') return b.metrics.downloads - a.metrics.downloads;
+          if (sort === 'access') return b.metrics.accessCount - a.metrics.accessCount;
+          if (sort === 'name') return a['Dataset Name'].localeCompare(b['Dataset Name']);
+          if (sort === 'date') return (b['Last Updated'] || '').localeCompare(a['Last Updated'] || '');
+          return 0;
+        });
+
+        resultsCount.innerHTML = `Showing <strong>${filtered.length}</strong> of <strong>${enriched.length}</strong> datasets`;
+        clearBtn.style.display = (q || dom || cty || typ) ? 'inline-block' : 'none';
+
+        grid.innerHTML = '';
+        if (filtered.length === 0) {
+          grid.innerHTML = `<div class="no-results"><i class="fas fa-search"></i><h3>No datasets found</h3><p>Try adjusting your filters.</p></div>`;
+          return;
+        }
+
+        filtered.forEach((item, idx) => {
+          const m = item.metrics;
+          const card = document.createElement('div');
+          card.className = 'catalog-card';
+          card.innerHTML = `
+            <div class="card-top">
+              <span class="domain-badge">${item.Domain}</span>
+              <div class="popularity" title="Popularity: ${m.popularity}/5">${renderStars(m.popularity)}</div>
+            </div>
+            <div class="card-main">
+              <h3><a href="${item.Link}" target="_blank" onclick="event.stopPropagation()">${item['Dataset Name']}</a></h3>
+              <div class="card-source"><i class="fas fa-building"></i> ${item.Source}</div>
+              <p class="card-desc">${item['Use Cases']}</p>
+              <div class="card-tags">
+                <span class="mini-tag"><i class="fas fa-map-marker-alt"></i> ${item.Country}</span>
+                <span class="mini-tag">${item['Data Type']}</span>
+                <span class="mini-tag">${item['Last Updated']}</span>
+              </div>
+            </div>
+            <div class="card-metrics">
+              <div class="metric">
+                <span class="metric-value highlight">${formatNumber(m.downloads)}</span>
+                <span class="metric-label">Downloads</span>
+              </div>
+              <div class="metric">
+                <span class="metric-value">${formatNumber(m.accessCount)}</span>
+                <span class="metric-label">Accesses</span>
+              </div>
+              <div class="metric">
+                <span class="metric-value">${formatNumber(m.citations)}</span>
+                <span class="metric-label">Citations</span>
+              </div>
+            </div>
+          `;
+
+          // Click to open modal
+          card.addEventListener('click', () => openModal(item));
+          grid.appendChild(card);
+        });
+      }
+
+      // Modal
+      function openModal(item) {
+        const m = item.metrics;
+        modalBody.innerHTML = `
+          <span class="domain-badge" style="margin-bottom:12px; display:inline-block;">${item.Domain}</span>
+          <h2>${item['Dataset Name']}</h2>
+          <p class="modal-source"><i class="fas fa-building" style="color:var(--color-gold); margin-right:6px;"></i> ${item.Source}</p>
+          
+          <div class="modal-metrics-grid">
+            <div class="modal-metric"><span class="val">${formatNumber(m.downloads)}</span><span class="lbl">Downloads</span></div>
+            <div class="modal-metric"><span class="val">${formatNumber(m.accessCount)}</span><span class="lbl">Accesses</span></div>
+            <div class="modal-metric"><span class="val">${formatNumber(m.citations)}</span><span class="lbl">Citations</span></div>
+            <div class="modal-metric"><span class="val">${m.popularity}/5</span><span class="lbl">Popularity</span></div>
+          </div>
+
+          <div class="modal-section">
+            <h4><i class="fas fa-info-circle" style="color:var(--color-red); margin-right:6px;"></i> Use Cases</h4>
+            <p>${item['Use Cases']}</p>
+          </div>
+
+          <div class="modal-section">
+            <h4><i class="fas fa-exclamation-triangle" style="color:var(--color-gold); margin-right:6px;"></i> Challenges & Notes</h4>
+            <p>${item['Challenges/Notes'] || 'No specific challenges noted.'}</p>
+          </div>
+
+          <div class="modal-section">
+            <h4><i class="fas fa-tags" style="color:var(--color-red); margin-right:6px;"></i> Details</h4>
+            <div class="modal-tags">
+              <span class="modal-tag"><i class="fas fa-map-marker-alt"></i> ${item.Country}</span>
+              <span class="modal-tag"><i class="fas fa-file-alt"></i> ${item['Data Type']}</span>
+              <span class="modal-tag"><i class="fas fa-balance-scale"></i> ${item.License}</span>
+              <span class="modal-tag"><i class="fas fa-calendar"></i> ${item['Last Updated']}</span>
+            </div>
+          </div>
+
+          <div class="modal-actions">
+            <a href="${item.Link}" target="_blank" class="btn btn-primary"><i class="fas fa-external-link-alt"></i> Access Dataset</a>
+            <a href="${item.Link}" target="_blank" class="btn" style="background:var(--color-light); color:var(--color-black); border:1px solid var(--color-border);"><i class="fas fa-download"></i> Download</a>
+          </div>
+        `;
+        modalOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+
+      document.getElementById('modalClose').addEventListener('click', closeModal);
+      modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) closeModal(); });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+
+      function closeModal() {
+        modalOverlay.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+
+      // Events
+      searchInput.addEventListener('input', render);
+      domainFilter.addEventListener('change', render);
+      countryFilter.addEventListener('change', render);
+      typeFilter.addEventListener('change', render);
+      sortSelect.addEventListener('change', render);
+
+      clearBtn.addEventListener('click', () => {
+        searchInput.value = ''; domainFilter.value = ''; countryFilter.value = ''; typeFilter.value = '';
+        render();
+        window.history.replaceState({}, document.title, window.location.pathname);
+      });
+
+      render();
+    });
+  </script>
+</body>
+</html>
