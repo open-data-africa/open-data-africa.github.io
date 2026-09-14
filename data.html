@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="Browse, search, and download open datasets across Africa with access metrics and popularity scores.">
-  <title>Datasets Catalog v2 | Open Data Africa</title>
+  <meta name="description" content="Browse and search hundreds of open datasets across Africa. Filter by domain, country, and data type.">
+  <title>Datasets Catalog | Open Data Africa</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="css/style.css">
   
   <style>
-    /* ===== PAGE HERO ===== */
+    /* ===== PAGE SPECIFIC STYLES ===== */
     .page-hero {
       background: linear-gradient(135deg, var(--color-black) 0%, #2d2d2d 100%);
       padding: 80px 24px 60px; text-align: center; color: var(--color-white);
@@ -22,290 +22,145 @@
     .page-hero h1 span { color: var(--color-gold); }
     .page-hero p { color: rgba(255,255,255,0.8); font-size: 1.1rem; }
 
-    /* ===== METRICS BANNER ===== */
-    .metrics-banner {
+    /* Stats Banner */
+    .stats-banner {
+      background: var(--color-white); margin-top: -40px; position: relative; z-index: 10;
+      border-radius: var(--radius); box-shadow: var(--shadow-lg); padding: 30px 24px;
+      max-width: 1200px; margin-left: auto; margin-right: auto; margin-bottom: 40px;
+    }
+    .stats-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; text-align: center; }
+    .stat-item .stat-number { font-size: 2rem; font-weight: 800; color: var(--color-red); display: block; line-height: 1; margin-bottom: 6px; }
+    .stat-item .stat-label { font-size: 0.85rem; color: var(--color-gray); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    /* Layout: Sidebar + Main */
+    .catalog-layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 30px;
+      max-width: 1200px;
+      margin: 0 auto 60px;
+      padding: 0 24px;
+    }
+
+    /* Sidebar Filters */
+    .sidebar {
       background: var(--color-white);
-      margin-top: -30px;
-      position: relative;
-      z-index: 10;
+      border: 1px solid var(--color-border);
       border-radius: var(--radius);
-      box-shadow: var(--shadow-lg);
       padding: 24px;
-      max-width: 1200px;
-      margin-left: auto;
-      margin-right: auto;
-      margin-bottom: 30px;
+      height: fit-content;
+      position: sticky;
+      top: 80px;
     }
-    .metrics-grid {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 20px;
-      text-align: center;
+    .filter-group { margin-bottom: 24px; }
+    .filter-group h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 12px; color: var(--color-black); display: flex; align-items: center; gap: 8px; }
+    .filter-group h4 i { color: var(--color-red); font-size: 0.9rem; }
+    
+    .filter-search {
+      width: 100%; padding: 10px 12px; border: 1px solid var(--color-border); border-radius: 8px;
+      font-size: 0.9rem; margin-bottom: 12px; font-family: var(--font-primary);
     }
-    .metric-item {
-      padding: 10px;
-      border-right: 1px solid var(--color-border);
+    .filter-search:focus { outline: none; border-color: var(--color-red); }
+    
+    .filter-list {
+      max-height: 200px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px;
     }
-    .metric-item:last-child { border-right: none; }
-    .metric-value {
-      font-size: 1.8rem;
-      font-weight: 800;
-      color: var(--color-red);
-      display: block;
-      line-height: 1;
-      margin-bottom: 6px;
+    .filter-list::-webkit-scrollbar { width: 6px; }
+    .filter-list::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 3px; }
+    
+    .filter-option {
+      display: flex; align-items: center; gap: 8px; font-size: 0.9rem; color: var(--color-gray);
+      cursor: pointer; padding: 4px 0; transition: var(--transition);
     }
-    .metric-label {
-      font-size: 0.8rem;
-      color: var(--color-gray);
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
+    .filter-option:hover { color: var(--color-red); }
+    .filter-option input { accent-color: var(--color-red); cursor: pointer; }
+    .filter-count { margin-left: auto; font-size: 0.8rem; background: var(--color-light); padding: 2px 8px; border-radius: 10px; color: var(--color-black); }
 
-    /* ===== FILTER BAR ===== */
-    .filter-container {
-      background: var(--color-light);
-      border-radius: var(--radius);
-      padding: 20px 24px;
-      max-width: 1200px;
-      margin: 0 auto 30px;
-      border: 1px solid var(--color-border);
+    .btn-reset {
+      width: 100%; padding: 10px; background: var(--color-light); color: var(--color-black);
+      border: 1px solid var(--color-border); border-radius: 8px; font-weight: 600; font-size: 0.9rem;
+      cursor: pointer; transition: var(--transition); display: flex; align-items: center; justify-content: center; gap: 8px;
     }
-    .filter-row {
-      display: grid;
-      grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
-      gap: 12px;
-      align-items: center;
-    }
-    .filter-input, .filter-select {
-      width: 100%;
-      padding: 11px 14px;
-      border: 1px solid var(--color-border);
-      border-radius: 8px;
-      font-size: 0.9rem;
-      font-family: var(--font-primary);
-      background: var(--color-white);
-      transition: var(--transition);
-    }
-    .filter-input:focus, .filter-select:focus {
-      outline: none;
-      border-color: var(--color-red);
-      box-shadow: 0 0 0 3px rgba(200, 16, 46, 0.1);
-    }
+    .btn-reset:hover { background: var(--color-red); color: var(--color-white); border-color: var(--color-red); }
 
-    /* ===== RESULTS HEADER ===== */
+    /* Main Content */
+    .main-content { min-width: 0; }
     .results-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-      gap: 10px;
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;
+      padding-bottom: 16px; border-bottom: 1px solid var(--color-border);
     }
-    .results-count { font-size: 0.95rem; color: var(--color-gray); font-weight: 500; }
+    .results-count { font-size: 1rem; color: var(--color-gray); font-weight: 500; }
     .results-count strong { color: var(--color-black); }
-    .sort-controls { display: flex; align-items: center; gap: 10px; }
-    .sort-controls label { font-size: 0.85rem; color: var(--color-gray); font-weight: 600; }
-    .sort-select {
-      padding: 8px 12px;
-      border: 1px solid var(--color-border);
-      border-radius: 8px;
-      font-size: 0.85rem;
-      font-family: var(--font-primary);
-      background: var(--color-white);
-      cursor: pointer;
-    }
-    .clear-filters {
-      background: none; border: none; color: var(--color-red);
-      font-weight: 600; cursor: pointer; font-size: 0.9rem; display: none;
-    }
-    .clear-filters:hover { text-decoration: underline; }
 
-    /* ===== DATASET CARDS (Enhanced) ===== */
-    .datasets-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
-      gap: 24px;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
+    /* Dataset Cards (Matching Target Style) */
     .ds-card {
-      background: var(--color-white);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius);
-      padding: 24px;
-      transition: var(--transition);
-      display: flex;
-      flex-direction: column;
-      position: relative;
+      background: var(--color-white); border: 1px solid var(--color-border); border-radius: var(--radius);
+      padding: 28px; margin-bottom: 24px; transition: var(--transition); position: relative;
     }
-    .ds-card:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-md);
-      border-color: var(--color-gold);
+    .ds-card:hover { box-shadow: var(--shadow-md); border-color: var(--color-gold); }
+    
+    .ds-card-top { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; align-items: center; }
+    .ds-badge {
+      font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+      padding: 4px 10px; border-radius: 6px; background: var(--color-light); color: var(--color-black);
     }
-    .ds-card-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 12px;
+    .ds-badge.domain { background: rgba(200, 16, 46, 0.1); color: var(--color-red); }
+    
+    .ds-card h3 { font-size: 1.25rem; margin-bottom: 8px; line-height: 1.4; }
+    .ds-card h3 a { color: var(--color-black); }
+    .ds-card h3 a:hover { color: var(--color-red); }
+    
+    .ds-source { font-size: 0.9rem; color: var(--color-gray); margin-bottom: 16px; display: flex; align-items: center; gap: 6px; }
+    .ds-source i { color: var(--color-gold); }
+    
+    .ds-hashtags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+    .ds-hashtag { font-size: 0.8rem; color: var(--color-red); font-weight: 500; }
+    
+    .ds-section { margin-bottom: 16px; }
+    .ds-section h5 { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; color: var(--color-black); margin-bottom: 8px; letter-spacing: 0.5px; }
+    .ds-section p, .ds-section ul { font-size: 0.9rem; color: var(--color-gray); line-height: 1.6; margin: 0; }
+    .ds-section ul { padding-left: 18px; }
+    .ds-section ul li { margin-bottom: 4px; }
+    
+    .ds-meta-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+      background: var(--color-light); padding: 16px; border-radius: 8px; margin-bottom: 20px;
     }
-    .ds-domain {
-      background: var(--color-light);
-      color: var(--color-black);
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-size: 0.7rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+    .ds-meta-item { font-size: 0.85rem; }
+    .ds-meta-item strong { color: var(--color-black); display: block; margin-bottom: 2px; font-size: 0.8rem; text-transform: uppercase; }
+    .ds-meta-item span { color: var(--color-gray); }
+    
+    .ds-footer {
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;
+      padding-top: 20px; border-top: 1px solid var(--color-border);
     }
-    .ds-popularity {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 0.8rem;
-      font-weight: 700;
-      color: var(--color-gold);
+    .ds-license {
+      font-size: 0.85rem; color: var(--color-gray); display: flex; align-items: center; gap: 6px;
     }
-    .ds-popularity i { font-size: 0.75rem; }
-    .ds-card h4 {
-      font-size: 1.1rem;
-      margin-bottom: 6px;
-      line-height: 1.4;
+    .ds-license i { color: var(--color-gold); }
+    
+    .btn-access {
+      padding: 10px 24px; background: var(--color-red); color: var(--color-white);
+      border-radius: 8px; font-weight: 600; font-size: 0.9rem; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 8px; transition: var(--transition);
     }
-    .ds-card h4 a { color: var(--color-black); }
-    .ds-card h4 a:hover { color: var(--color-red); }
-    .ds-source {
-      font-size: 0.85rem;
-      color: var(--color-gray);
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .ds-source i { color: var(--color-gold); font-size: 0.8rem; }
-    .ds-use-cases {
-      font-size: 0.88rem;
-      color: var(--color-gray);
-      margin-bottom: 16px;
-      flex-grow: 1;
-      line-height: 1.5;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-    .ds-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-bottom: 16px;
-    }
-    .ds-tag {
-      background: var(--color-light);
-      color: var(--color-black);
-      font-size: 0.75rem;
-      padding: 3px 10px;
-      border-radius: 20px;
-      font-weight: 500;
-    }
-    .ds-metrics {
-      display: flex;
-      gap: 16px;
-      padding: 12px 0;
-      border-top: 1px solid var(--color-border);
-      border-bottom: 1px solid var(--color-border);
-      margin-bottom: 16px;
-    }
-    .ds-metric {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 0.8rem;
-      color: var(--color-gray);
-    }
-    .ds-metric i { color: var(--color-red); font-size: 0.75rem; }
-    .ds-metric strong { color: var(--color-black); }
-    .ds-actions {
-      display: flex;
-      gap: 8px;
-      margin-top: auto;
-    }
-    .ds-btn {
-      flex: 1;
-      padding: 10px 12px;
-      border-radius: 8px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      text-align: center;
-      cursor: pointer;
-      transition: var(--transition);
-      border: none;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      text-decoration: none;
-    }
-    .ds-btn-primary {
-      background: var(--color-red);
-      color: var(--color-white);
-    }
-    .ds-btn-primary:hover { background: #a00d26; color: var(--color-white); }
-    .ds-btn-outline {
-      background: transparent;
-      color: var(--color-black);
-      border: 1px solid var(--color-border);
-    }
-    .ds-btn-outline:hover { border-color: var(--color-red); color: var(--color-red); }
-    .ds-btn-icon {
-      flex: 0;
-      width: 40px;
-      padding: 10px;
-      background: var(--color-light);
-      color: var(--color-gray);
-      border: 1px solid var(--color-border);
-    }
-    .ds-btn-icon:hover { background: var(--color-gold); color: var(--color-black); border-color: var(--color-gold); }
+    .btn-access:hover { background: #a00d26; color: var(--color-white); transform: translateY(-2px); }
 
-    /* Toast Notification */
-    .toast {
-      position: fixed;
-      bottom: 30px;
-      right: 30px;
-      background: var(--color-black);
-      color: var(--color-white);
-      padding: 14px 24px;
-      border-radius: 8px;
-      font-size: 0.9rem;
-      font-weight: 500;
-      box-shadow: var(--shadow-lg);
-      z-index: 9999;
-      transform: translateY(100px);
-      opacity: 0;
-      transition: all 0.3s ease;
-    }
-    .toast.show { transform: translateY(0); opacity: 1; }
-    .toast i { color: var(--color-gold); margin-right: 8px; }
-
-    .no-results {
-      text-align: center; padding: 60px 20px; grid-column: 1 / -1;
-    }
+    .no-results { text-align: center; padding: 60px 20px; grid-column: 1 / -1; }
     .no-results i { font-size: 3rem; color: var(--color-border); margin-bottom: 15px; }
 
+    /* Responsive */
     @media (max-width: 900px) {
-      .filter-row { grid-template-columns: 1fr 1fr; }
-      .metrics-grid { grid-template-columns: repeat(3, 1fr); }
-      .metric-item { border-right: none; }
+      .catalog-layout { grid-template-columns: 1fr; }
+      .sidebar { position: static; margin-bottom: 20px; }
+      .stats-grid { grid-template-columns: repeat(3, 1fr); }
+      .ds-meta-grid { grid-template-columns: 1fr; }
     }
     @media (max-width: 600px) {
-      .filter-row { grid-template-columns: 1fr; }
-      .metrics-grid { grid-template-columns: repeat(2, 1fr); }
-      .datasets-grid { grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
       .page-hero h1 { font-size: 2rem; }
-      .ds-actions { flex-wrap: wrap; }
+      .ds-footer { flex-direction: column; align-items: flex-start; }
+      .btn-access { width: 100%; justify-content: center; }
     }
   </style>
 </head>
@@ -319,7 +174,7 @@
       <button class="menu-toggle" aria-label="Toggle menu"><i class="fas fa-bars"></i></button>
       <ul class="nav-list">
         <li><a href="index.html">Home</a></li>
-        <li><a href="datasets-v2.html" class="active">Datasets</a></li>
+        <li><a href="datasets.html" class="active">Datasets</a></li>
         <li><a href="countries.html">Countries</a></li>
         <li><a href="dashboard.html">Dashboard</a></li>
         <li><a href="insights.html">Insights</a></li>
@@ -329,64 +184,66 @@
   </nav>
 
   <header class="page-hero">
-    <h1>Explore the <span>Data Catalog</span></h1>
-    <p>Search, filter, and access open datasets with real-time usage metrics.</p>
+    <h1>Comprehensive Data <span>Repository</span></h1>
+    <p>Explore hundreds of open datasets powering African AI innovation.</p>
   </header>
 
   <div class="container">
-    <!-- Metrics Banner -->
-    <div class="metrics-banner">
-      <div class="metrics-grid" id="metricsGrid">
-        <div class="metric-item"><span class="metric-value">...</span><span class="metric-label">Loading</span></div>
+    <!-- Stats Banner -->
+    <div class="stats-banner" id="statsBanner">
+      <div class="stats-grid">
+        <div class="stat-item"><span class="stat-number">...</span><span class="stat-label">Loading</span></div>
       </div>
     </div>
-
-    <!-- Filter Bar -->
-    <div class="filter-container">
-      <div class="filter-row">
-        <input type="text" id="searchInput" class="filter-input" placeholder="Search datasets, sources, or use cases...">
-        <select id="domainFilter" class="filter-select"><option value="">All Domains</option></select>
-        <select id="countryFilter" class="filter-select"><option value="">All Countries</option></select>
-        <select id="typeFilter" class="filter-select"><option value="">All Data Types</option></select>
-        <select id="licenseFilter" class="filter-select"><option value="">All Licenses</option></select>
-      </div>
-    </div>
-
-    <!-- Results Header -->
-    <div class="results-header" style="max-width: 1200px; margin: 0 auto 20px;">
-      <div style="display: flex; align-items: center; gap: 15px;">
-        <span class="results-count" id="resultsCount">Loading...</span>
-        <button class="clear-filters" id="clearFilters"><i class="fas fa-times"></i> Clear All</button>
-      </div>
-      <div class="sort-controls">
-        <label>Sort by:</label>
-        <select id="sortSelect" class="sort-select">
-          <option value="popularity">Popularity</option>
-          <option value="recent">Most Recent</option>
-          <option value="name">Name (A-Z)</option>
-          <option value="accessed">Most Accessed</option>
-        </select>
-      </div>
-    </div>
-
-    <!-- Datasets Grid -->
-    <div class="datasets-grid" id="datasetsGrid"></div>
   </div>
 
-  <!-- Toast Notification -->
-  <div class="toast" id="toast"><i class="fas fa-check-circle"></i> <span id="toastMsg">Copied!</span></div>
+  <div class="catalog-layout">
+    <!-- Sidebar Filters -->
+    <aside class="sidebar">
+      <div class="filter-group">
+        <h4><i class="fas fa-layer-group"></i> By Domain</h4>
+        <input type="text" class="filter-search" id="domainSearch" placeholder="Search domains...">
+        <div class="filter-list" id="domainFilters"></div>
+      </div>
 
-  <footer style="margin-top: 80px;">
+      <div class="filter-group">
+        <h4><i class="fas fa-globe-africa"></i> By Country</h4>
+        <input type="text" class="filter-search" id="countrySearch" placeholder="Search countries...">
+        <div class="filter-list" id="countryFilters"></div>
+      </div>
+
+      <div class="filter-group">
+        <h4><i class="fas fa-file-alt"></i> By Data Type</h4>
+        <input type="text" class="filter-search" id="typeSearch" placeholder="Search data types...">
+        <div class="filter-list" id="typeFilters"></div>
+      </div>
+
+      <button class="btn-reset" id="resetFilters"><i class="fas fa-undo"></i> Reset All Filters</button>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="results-header">
+        <div class="results-count" id="resultsCount">Loading datasets...</div>
+      </div>
+
+      <div id="datasetsGrid">
+        <!-- Populated by JavaScript -->
+      </div>
+    </main>
+  </div>
+
+  <footer>
     <div class="container">
       <div class="footer-grid">
         <div>
           <h4><i class="fas fa-globe-africa"></i> Open Data Africa</h4>
-          <p>Building open data ecosystems across Africa.</p>
+          <p>Building open data ecosystems across Africa through benchmarking, recognition, and capacity building.</p>
         </div>
         <div>
           <h4>Explore</h4>
           <ul>
-            <li><a href="datasets-v2.html">Datasets</a></li>
+            <li><a href="datasets.html">Datasets</a></li>
             <li><a href="countries.html">Countries</a></li>
             <li><a href="dashboard.html">Dashboard</a></li>
           </ul>
@@ -394,6 +251,7 @@
         <div>
           <h4>Contact</h4>
           <p><i class="fas fa-envelope"></i> aimadeinafrica@giz.de</p>
+          <p><i class="fas fa-map-marker-alt"></i> GIZ African Union, Addis Ababa</p>
         </div>
       </div>
       <div class="footer-bottom">
@@ -404,305 +262,143 @@
 
   <script src="js/main.js"></script>
   <script>
-    // ===== METRICS STORAGE (localStorage) =====
-    function getMetrics() {
-      const stored = localStorage.getItem('oda_metrics');
-      return stored ? JSON.parse(stored) : {};
-    }
-    function saveMetrics(metrics) {
-      localStorage.setItem('oda_metrics', JSON.stringify(metrics));
-    }
-    function trackAccess(datasetId) {
-      const m = getMetrics();
-      if (!m[datasetId]) m[datasetId] = { access: 0, download: 0, copy: 0, lastAccess: '' };
-      m[datasetId].access += 1;
-      m[datasetId].lastAccess = new Date().toISOString();
-      saveMetrics(m);
-    }
-    function trackDownload(datasetId) {
-      const m = getMetrics();
-      if (!m[datasetId]) m[datasetId] = { access: 0, download: 0, copy: 0, lastAccess: '' };
-      m[datasetId].download += 1;
-      saveMetrics(m);
-    }
-    function trackCopy(datasetId) {
-      const m = getMetrics();
-      if (!m[datasetId]) m[datasetId] = { access: 0, download: 0, copy: 0, lastAccess: '' };
-      m[datasetId].copy += 1;
-      saveMetrics(m);
-    }
-
-    // ===== POPULARITY SCORE CALCULATOR =====
-    function calcPopularity(item, domainCounts, metrics) {
-      let score = 0;
-      // Recency bonus (2026 = 10, 2025 = 8, 2024 = 6, older = 3)
-      const year = parseInt(item['Last Updated']) || 2020;
-      if (year >= 2026) score += 10;
-      else if (year >= 2025) score += 8;
-      else if (year >= 2024) score += 6;
-      else score += 3;
-
-      // Domain popularity bonus
-      const dc = domainCounts[item.Domain] || 0;
-      score += Math.min(dc, 10);
-
-      // License openness bonus
-      const lic = (item.License || '').toLowerCase();
-      if (lic.includes('cc0') || lic.includes('public')) score += 5;
-      else if (lic.includes('cc by 4') || lic.includes('cc by-sa')) score += 3;
-      else if (lic.includes('apache') || lic.includes('mit')) score += 2;
-      else score += 1;
-
-      // Access bonus from localStorage
-      const m = metrics[item.id] || { access: 0, download: 0 };
-      score += Math.min(m.access + m.download, 10);
-
-      return score;
-    }
-
-    // ===== TOAST NOTIFICATION =====
-    function showToast(msg) {
-      const toast = document.getElementById('toast');
-      document.getElementById('toastMsg').textContent = msg;
-      toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 2500);
-    }
-
-    // ===== DOWNLOAD METADATA AS JSON =====
-    function downloadMetadata(item) {
-      trackDownload(item.id);
-      const meta = {
-        id: item.id,
-        name: item['Dataset Name'],
-        domain: item.Domain,
-        source: item.Source,
-        country: item.Country,
-        dataType: item['Data Type'],
-        license: item.License,
-        link: item.Link,
-        useCases: item['Use Cases'],
-        lastUpdated: item['Last Updated'],
-        notes: item['Challenges/Notes']
-      };
-      const blob = new Blob([JSON.stringify(meta, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${item.id}_metadata.json`;
-      a.click();
-      URL.revokeObjectURL(url);
-      showToast('Metadata downloaded!');
-      renderDatasets(); // Re-render to update metrics
-    }
-
-    // ===== COPY LINK =====
-    function copyLink(item) {
-      trackCopy(item.id);
-      navigator.clipboard.writeText(item.Link).then(() => {
-        showToast('Link copied to clipboard!');
-        renderDatasets();
-      }).catch(() => {
-        showToast('Could not copy link');
-      });
-    }
-
-    // ===== MAIN APP =====
     document.addEventListener('DOMContentLoaded', async () => {
       const data = await fetchCatalog();
       if (data.length === 0) return;
 
       const grid = document.getElementById('datasetsGrid');
-      const searchInput = document.getElementById('searchInput');
-      const domainFilter = document.getElementById('domainFilter');
-      const countryFilter = document.getElementById('countryFilter');
-      const typeFilter = document.getElementById('typeFilter');
-      const licenseFilter = document.getElementById('licenseFilter');
-      const sortSelect = document.getElementById('sortSelect');
       const resultsCount = document.getElementById('resultsCount');
-      const clearFiltersBtn = document.getElementById('clearFilters');
-      const metrics = getMetrics();
-
-      // Pre-calculate domain counts for popularity
-      const domainCounts = countOccurrences(data, 'Domain');
-
-      // Calculate total metrics across all datasets
-      let totalAccess = 0, totalDownloads = 0, totalCopies = 0;
-      Object.values(metrics).forEach(m => {
-        totalAccess += m.access || 0;
-        totalDownloads += m.download || 0;
-        totalCopies += m.copy || 0;
-      });
-
-      // Render Metrics Banner
+      
+      // 1. Render Stats Banner
       const uniqueCountries = getUniqueValues(data, 'Country');
       const uniqueDomains = getUniqueValues(data, 'Domain');
-      document.getElementById('metricsGrid').innerHTML = `
-        <div class="metric-item"><span class="metric-value">${data.length}</span><span class="metric-label">Total Datasets</span></div>
-        <div class="metric-item"><span class="metric-value">${uniqueCountries.length}</span><span class="metric-label">Countries</span></div>
-        <div class="metric-item"><span class="metric-value">${uniqueDomains.length}</span><span class="metric-label">Domains</span></div>
-        <div class="metric-item"><span class="metric-value">${totalAccess + totalDownloads + totalCopies}</span><span class="metric-label">Total Interactions</span></div>
-        <div class="metric-item"><span class="metric-value">${totalDownloads}</span><span class="metric-label">Metadata Downloads</span></div>
+      const uniqueTypes = getUniqueValues(data, 'Data Type');
+      const uniqueSources = getUniqueValues(data, 'Source');
+      
+      document.querySelector('.stats-grid').innerHTML = `
+        <div class="stat-item"><span class="stat-number">${data.length}</span><span class="stat-label">Datasets</span></div>
+        <div class="stat-item"><span class="stat-number">${uniqueDomains.length}</span><span class="stat-label">Domains</span></div>
+        <div class="stat-item"><span class="stat-number">${uniqueCountries.length}</span><span class="stat-label">Countries</span></div>
+        <div class="stat-item"><span class="stat-number">${uniqueTypes.length}</span><span class="stat-label">Data Types</span></div>
+        <div class="stat-item"><span class="stat-number">${uniqueSources.length}</span><span class="stat-label">Sources</span></div>
       `;
 
-      // Populate Dropdowns
-      function populateDropdown(el, key) {
-        getUniqueValues(data, key).forEach(val => {
-          const opt = document.createElement('option');
-          opt.value = val; opt.textContent = val;
-          el.appendChild(opt);
-        });
+      // 2. Build Filter Lists
+      function buildFilterList(containerId, searchId, key) {
+        const container = document.getElementById(containerId);
+        const searchInput = document.getElementById(searchId);
+        const counts = countOccurrences(data, key);
+        const sortedKeys = Object.keys(counts).sort();
+
+        function renderList(filterText = '') {
+          container.innerHTML = '';
+          sortedKeys.filter(k => k.toLowerCase().includes(filterText.toLowerCase())).forEach(keyVal => {
+            const label = document.createElement('label');
+            label.className = 'filter-option';
+            label.innerHTML = `
+              <input type="checkbox" value="${keyVal}" data-key="${key}">
+              <span>${keyVal}</span>
+              <span class="filter-count">${counts[keyVal]}</span>
+            `;
+            container.appendChild(label);
+          });
+        }
+        renderList();
+        searchInput.addEventListener('input', (e) => renderList(e.target.value));
       }
-      populateDropdown(domainFilter, 'Domain');
-      populateDropdown(countryFilter, 'Country');
-      populateDropdown(typeFilter, 'Data Type');
 
-      // License dropdown (simplified)
-      const licenses = [...new Set(data.map(d => {
-        const l = (d.License || '').toLowerCase();
-        if (l.includes('cc0') || l.includes('public')) return 'Public Domain';
-        if (l.includes('cc by 4') || l.includes('cc by-sa')) return 'CC BY';
-        if (l.includes('apache')) return 'Apache';
-        if (l.includes('mit')) return 'MIT';
-        if (l.includes('odbl')) return 'ODbL';
-        if (l.includes('restricted')) return 'Restricted';
-        return 'Other';
-      }))].sort();
-      licenses.forEach(l => {
-        const opt = document.createElement('option');
-        opt.value = l; opt.textContent = l;
-        licenseFilter.appendChild(opt);
-      });
+      buildFilterList('domainFilters', 'domainSearch', 'Domain');
+      buildFilterList('countryFilters', 'countrySearch', 'Country');
+      buildFilterList('typeFilters', 'typeSearch', 'Data Type');
 
-      // URL Params
+      // 3. URL Params
       const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.has('domain')) domainFilter.value = urlParams.get('domain');
-      if (urlParams.has('country')) countryFilter.value = urlParams.get('country');
-      if (urlParams.has('search')) searchInput.value = urlParams.get('search');
+      if (urlParams.has('domain')) {
+        const cb = document.querySelector(`#domainFilters input[value="${urlParams.get('domain')}"]`);
+        if (cb) cb.checked = true;
+      }
+      if (urlParams.has('country')) {
+        const cb = document.querySelector(`#countryFilters input[value="${urlParams.get('country')}"]`);
+        if (cb) cb.checked = true;
+      }
 
-      // Render
+      // 4. Render Datasets
       function renderDatasets() {
-        const query = searchInput.value.toLowerCase();
-        const domain = domainFilter.value;
-        const country = countryFilter.value;
-        const type = typeFilter.value;
-        const license = licenseFilter.value;
-        const sort = sortSelect.value;
-        const currentMetrics = getMetrics();
+        const activeDomains = Array.from(document.querySelectorAll('#domainFilters input:checked')).map(cb => cb.value);
+        const activeCountries = Array.from(document.querySelectorAll('#countryFilters input:checked')).map(cb => cb.value);
+        const activeTypes = Array.from(document.querySelectorAll('#typeFilters input:checked')).map(cb => cb.value);
 
-        // Recalculate total interactions for banner
-        let tA = 0, tD = 0, tC = 0;
-        Object.values(currentMetrics).forEach(m => {
-          tA += m.access || 0; tD += m.download || 0; tC += m.copy || 0;
-        });
-        document.getElementById('metricsGrid').innerHTML = `
-          <div class="metric-item"><span class="metric-value">${data.length}</span><span class="metric-label">Total Datasets</span></div>
-          <div class="metric-item"><span class="metric-value">${uniqueCountries.length}</span><span class="metric-label">Countries</span></div>
-          <div class="metric-item"><span class="metric-value">${uniqueDomains.length}</span><span class="metric-label">Domains</span></div>
-          <div class="metric-item"><span class="metric-value">${tA + tD + tC}</span><span class="metric-label">Total Interactions</span></div>
-          <div class="metric-item"><span class="metric-value">${tD}</span><span class="metric-label">Metadata Downloads</span></div>
-        `;
-
-        let filtered = data.filter(item => {
-          const matchSearch = !query ||
-            item['Dataset Name'].toLowerCase().includes(query) ||
-            item.Source.toLowerCase().includes(query) ||
-            item['Use Cases'].toLowerCase().includes(query) ||
-            item.Domain.toLowerCase().includes(query);
-          const matchDomain = !domain || item.Domain === domain;
-          const matchCountry = !country || item.Country === country;
-          const matchType = !type || item['Data Type'] === type;
-          let matchLicense = true;
-          if (license) {
-            const l = (item.License || '').toLowerCase();
-            if (license === 'Public Domain') matchLicense = l.includes('cc0') || l.includes('public');
-            else if (license === 'CC BY') matchLicense = l.includes('cc by 4') || l.includes('cc by-sa');
-            else if (license === 'Apache') matchLicense = l.includes('apache');
-            else if (license === 'MIT') matchLicense = l.includes('mit');
-            else if (license === 'ODbL') matchLicense = l.includes('odbl');
-            else if (license === 'Restricted') matchLicense = l.includes('restricted');
-            else matchLicense = true;
-          }
-          return matchSearch && matchDomain && matchCountry && matchType && matchLicense;
+        const filtered = data.filter(item => {
+          const matchDomain = activeDomains.length === 0 || activeDomains.includes(item.Domain);
+          const matchCountry = activeCountries.length === 0 || activeCountries.includes(item.Country);
+          const matchType = activeTypes.length === 0 || activeTypes.includes(item['Data Type']);
+          return matchDomain && matchCountry && matchType;
         });
 
-        // Sort
-        filtered.sort((a, b) => {
-          if (sort === 'popularity') return calcPopularity(b, domainCounts, currentMetrics) - calcPopularity(a, domainCounts, currentMetrics);
-          if (sort === 'recent') return (parseInt(b['Last Updated']) || 0) - (parseInt(a['Last Updated']) || 0);
-          if (sort === 'name') return a['Dataset Name'].localeCompare(b['Dataset Name']);
-          if (sort === 'accessed') {
-            const aM = (currentMetrics[a.id] || {}).access || 0;
-            const bM = (currentMetrics[b.id] || {}).access || 0;
-            return bM - aM;
-          }
-          return 0;
-        });
-
-        resultsCount.innerHTML = `Showing <strong>${filtered.length}</strong> of <strong>${data.length}</strong> datasets`;
-        clearFiltersBtn.style.display = (query || domain || country || type || license) ? 'inline-block' : 'none';
-
+        resultsCount.innerHTML = `Showing <strong>${filtered.length}</strong> of <strong>${data.length}</strong> Dataset(s)`;
         grid.innerHTML = '';
+
         if (filtered.length === 0) {
           grid.innerHTML = `<div class="no-results"><i class="fas fa-search"></i><h3>No datasets found</h3><p>Try adjusting your filters.</p></div>`;
           return;
         }
 
         filtered.forEach(item => {
-          const pop = calcPopularity(item, domainCounts, currentMetrics);
-          const m = currentMetrics[item.id] || { access: 0, download: 0, copy: 0 };
-          const stars = pop >= 20 ? '★★★★★' : pop >= 15 ? '★★★★☆' : pop >= 10 ? '★★★☆☆' : pop >= 5 ? '★★☆☆☆' : '★☆☆☆☆';
+          // Generate hashtags from domain and data type
+          const tags = [item.Domain, item['Data Type']].map(t => t.toLowerCase().replace(/\s+/g, '-')).join(' #');
+          
+          // Format use cases (split by comma or newline if needed)
+          const useCasesList = item['Use Cases'].split(/, |- /).map(uc => `<li>${uc.trim()}</li>`).join('');
 
           const card = document.createElement('div');
           card.className = 'ds-card';
           card.innerHTML = `
             <div class="ds-card-top">
-              <span class="ds-domain">${item.Domain}</span>
-              <span class="ds-popularity" title="Popularity Score: ${pop}"><i class="fas fa-star"></i> ${pop}</span>
+              <span class="ds-badge domain">${item.Domain}</span>
+              <span class="ds-badge">${item.Country}</span>
+              <span class="ds-badge">${item['Data Type']}</span>
+              <span class="ds-badge">${item['Last Updated']}</span>
             </div>
-            <h4><a href="${item.Link}" target="_blank" onclick="trackAccess('${item.id}')">${item['Dataset Name']}</a></h4>
+            
+            <h3><a href="${item.Link}" target="_blank">${item['Dataset Name']}</a></h3>
             <div class="ds-source"><i class="fas fa-building"></i> ${item.Source}</div>
-            <p class="ds-use-cases">${item['Use Cases']}</p>
-            <div class="ds-tags">
-              <span class="ds-tag"><i class="fas fa-map-marker-alt"></i> ${item.Country}</span>
-              <span class="ds-tag"><i class="fas fa-file-alt"></i> ${item['Data Type']}</span>
-              <span class="ds-tag"><i class="fas fa-balance-scale"></i> ${item.License ? item.License.substring(0, 20) : 'N/A'}</span>
+            
+            <div class="ds-hashtags">#${tags}</div>
+            
+            <div class="ds-section">
+              <h5>Research Use Cases</h5>
+              <ul>${useCasesList}</ul>
             </div>
-            <div class="ds-metrics">
-              <div class="ds-metric"><i class="fas fa-eye"></i> <strong>${m.access}</strong> Views</div>
-              <div class="ds-metric"><i class="fas fa-download"></i> <strong>${m.download}</strong> Downloads</div>
-              <div class="ds-metric"><i class="fas fa-copy"></i> <strong>${m.copy}</strong> Copies</div>
-              <div class="ds-metric"><i class="fas fa-calendar"></i> ${item['Last Updated']}</div>
+            
+            <div class="ds-meta-grid">
+              <div class="ds-meta-item"><strong>Access</strong><span>Direct Download / External</span></div>
+              <div class="ds-meta-item"><strong>Updated</strong><span>${item['Last Updated']}</span></div>
             </div>
-            <div class="ds-actions">
-              <a href="${item.Link}" target="_blank" class="ds-btn ds-btn-primary" onclick="trackAccess('${item.id}')">
-                <i class="fas fa-external-link-alt"></i> Access
+            
+            <div class="ds-footer">
+              <div class="ds-license"><i class="fas fa-balance-scale"></i> ${item.License || 'Open Access'}</div>
+              <a href="${item.Link}" target="_blank" class="btn-access">
+                Access Dataset <i class="fas fa-external-link-alt"></i>
               </a>
-              <button class="ds-btn ds-btn-outline" onclick="downloadMetadata(${JSON.stringify(item).replace(/"/g, '&quot;')})">
-                <i class="fas fa-download"></i> Metadata
-              </button>
-              <button class="ds-btn ds-btn-icon" onclick="copyLink(${JSON.stringify(item).replace(/"/g, '&quot;')})" title="Copy Link">
-                <i class="fas fa-link"></i>
-              </button>
             </div>
           `;
           grid.appendChild(card);
         });
       }
 
-      // Event Listeners
-      searchInput.addEventListener('input', renderDatasets);
-      domainFilter.addEventListener('change', renderDatasets);
-      countryFilter.addEventListener('change', renderDatasets);
-      typeFilter.addEventListener('change', renderDatasets);
-      licenseFilter.addEventListener('change', renderDatasets);
-      sortSelect.addEventListener('change', renderDatasets);
-      clearFiltersBtn.addEventListener('click', () => {
-        searchInput.value = ''; domainFilter.value = ''; countryFilter.value = '';
-        typeFilter.value = ''; licenseFilter.value = ''; sortSelect.value = 'popularity';
+      // 5. Event Listeners
+      document.querySelectorAll('.filter-list input').forEach(cb => {
+        cb.addEventListener('change', renderDatasets);
+      });
+
+      document.getElementById('resetFilters').addEventListener('click', () => {
+        document.querySelectorAll('.filter-list input').forEach(cb => cb.checked = false);
+        document.querySelectorAll('.filter-search').forEach(input => input.value = '');
         renderDatasets();
         window.history.replaceState({}, document.title, window.location.pathname);
       });
 
+      // Initial Render
       renderDatasets();
     });
   </script>
