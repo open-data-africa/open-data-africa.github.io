@@ -18,7 +18,7 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
-    /* Page-specific enhancements for the Dashboard */
+    /* Page-specific enhancements for the Datasets Dashboard */
     .page-hero { background: linear-gradient(135deg, var(--color-black) 0%, #2d2d2d 100%); padding: 80px 24px 60px; text-align: center; color: var(--color-white); }
     .page-hero h1 { font-size: 2.5rem; margin-bottom: 10px; }
     .page-hero h1 span { color: var(--color-gold); }
@@ -60,14 +60,17 @@
     .view-btn { padding: 8px 16px; border-radius: 6px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: var(--transition); border: none; background: transparent; color: var(--color-gray); display: flex; align-items: center; gap: 6px; }
     .view-btn.active { background: var(--color-white); color: var(--color-red); box-shadow: var(--shadow-sm); }
 
-    .ds-card { background: var(--color-white); border: 1px solid var(--color-border); border-radius: var(--radius); padding: 24px; margin-bottom: 16px; transition: var(--transition); position: relative; }
+    /* Expandable Card Styles */
+    .ds-card { background: var(--color-white); border: 1px solid var(--color-border); border-radius: var(--radius); margin-bottom: 16px; transition: var(--transition); position: relative; overflow: hidden; }
     .ds-card:hover { box-shadow: var(--shadow-md); border-color: var(--color-gold); }
-    .ds-card summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: flex-start; }
+    .ds-card summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: flex-start; padding: 24px; }
     .ds-card summary::-webkit-details-marker { display: none; }
     .ds-card summary .chevron { transition: transform 0.2s ease; color: var(--color-gray); font-size: 1.1rem; margin-top: 4px; }
     .ds-card[open] summary .chevron { transform: rotate(180deg); }
+    .ds-card[open] summary { border-bottom: 1px solid var(--color-border); }
     
-    .ds-meta-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; background: var(--color-light); padding: 16px; border-radius: 8px; margin-top: 20px; }
+    .ds-details-content { padding: 24px; display: grid; grid-template-columns: 2fr 1fr; gap: 24px; background: var(--color-light); }
+    .ds-meta-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; background: var(--color-white); padding: 16px; border-radius: 8px; border: 1px solid var(--color-border); margin-top: 20px; }
     .ds-meta-item { font-size: 0.85rem; }
     .ds-meta-item strong { color: var(--color-black); display: block; margin-bottom: 2px; font-size: 0.8rem; text-transform: uppercase; }
     .ds-meta-item span { color: var(--color-gray); }
@@ -87,6 +90,7 @@
       .catalog-layout { grid-template-columns: 1fr; }
       .sidebar { position: static; margin-bottom: 20px; }
       .stats-grid { grid-template-columns: repeat(3, 1fr); }
+      .ds-details-content { grid-template-columns: 1fr; }
     }
     @media (max-width: 600px) {
       .stats-grid { grid-template-columns: repeat(2, 1fr); }
@@ -121,13 +125,13 @@
 
   <div class="container">
     <!-- Loading State -->
-    <div id="loading" class="text-center py-20">
+    <div id="loading" class="text-center py-20" style="padding: 80px 20px;">
       <i class="fas fa-circle-notch fa-spin text-5xl" style="color: var(--color-red); margin-bottom: 16px;"></i>
       <p style="font-size: 1.1rem; color: var(--color-gray);">Loading comprehensive data repository...</p>
     </div>
 
     <!-- Error State -->
-    <div id="error" class="hidden text-center py-20">
+    <div id="error" class="hidden text-center py-20" style="padding: 80px 20px; display: none;">
       <i class="fas fa-exclamation-triangle text-5xl" style="color: var(--color-red); margin-bottom: 16px;"></i>
       <p style="font-size: 1.1rem; font-weight: 700; color: var(--color-red);">Error loading datasets.json</p>
       <p style="color: var(--color-gray); margin-top: 8px;">Make sure the file is located at <code>data/datasets.json</code>.</p>
@@ -142,7 +146,7 @@
           <div class="stat-item"><span class="stat-number" id="statDomains">0</span><span class="stat-label">Domains</span></div>
           <div class="stat-item"><span class="stat-number" id="statCountries">0</span><span class="stat-label">Countries</span></div>
           <div class="stat-item"><span class="stat-number" id="statDataTypes">0</span><span class="stat-label">Data Types</span></div>
-          <div class="stat-item"><span class="stat-number" id="statAuthors">0</span><span class="stat-label">Sources</span></div>
+          <div class="stat-item"><span class="stat-number" id="statSources">0</span><span class="stat-label">Sources</span></div>
         </div>
       </div>
 
@@ -181,7 +185,7 @@
             <input type="text" class="filter-search" id="typeSearch" placeholder="Search data types...">
             <div class="filter-list" id="typeFilters"></div>
           </div>
-          <button class="btn-reset" id="resetFilters"><i class="fas fa-undo"></i> Reset All Filters</button a>
+          <button class="btn-reset" id="resetFilters"><i class="fas fa-undo"></i> Reset All Filters</button>
         </aside>
 
         <!-- Main Content -->
@@ -194,7 +198,7 @@
             <div class="view-toggle">
               <button class="view-btn active" id="btnCards" onclick="switchView('cards')"><i class="fas fa-th-large"></i> Cards</button>
               <button class="view-btn" id="btnTable" onclick="switchView('table')"><i class="fas fa-table"></i> Table</button>
-            </div each>
+            </div>
           </div>
 
           <!-- CARDS VIEW -->
@@ -259,14 +263,15 @@
     let chartInstances = {};
 
     document.addEventListener('DOMContentLoaded', async () => {
-      const data = await fetchCatalog();
+      // FIX 1: Fetch from the correct path
+      const data = await fetchCatalog(); 
       if (!data || data.length === 0) {
         document.getElementById('loading').style.display = 'none';
-        document.getElementById('error').classList.remove('hidden');
+        document.getElementById('error').style.display = 'block';
         return;
       }
 
-      // 1. Calculate Stats
+      // FIX 2: Use exact column names from your CSV/JSON
       const domains = getUniqueValues(data, 'Domain');
       const countries = getUniqueValues(data, 'Country');
       const dataTypes = getUniqueValues(data, 'Data Type');
@@ -276,9 +281,9 @@
       document.getElementById('statDomains').innerText = domains.length;
       document.getElementById('statCountries').innerText = countries.length;
       document.getElementById('statDataTypes').innerText = dataTypes.length;
-      document.getElementById('statAuthors').innerText = sources.length;
+      document.getElementById('statSources').innerText = sources.length;
 
-      // 2. Render Charts (Using brand colors)
+      // Render Charts
       const brandColors = ['#c8102e', '#ffce00', '#1a1a1a', '#6c757d', '#e9ecef', '#a00d26', '#d4af37', '#495057'];
       
       function renderChart(canvasId, type, labels, key, isHorizontal = false) {
@@ -312,10 +317,10 @@
       }
 
       renderChart('domainChart', 'doughnut', domains, 'Domain');
-      renderChart('countryChart', 'bar', countries.slice(0, 8), 'Country'); // Top 8
-      renderChart('dataTypeChart', 'bar', dataTypes.slice(0, 6), 'Data Type', true); // Horizontal
+      renderChart('countryChart', 'bar', countries.slice(0, 8), 'Country');
+      renderChart('dataTypeChart', 'bar', dataTypes.slice(0, 6), 'Data Type', true);
 
-      // 3. Build Sidebar Filters
+      // Build Sidebar Filters
       function buildFilterList(containerId, searchId, key) {
         const container = document.getElementById(containerId);
         const searchInput = document.getElementById(searchId);
@@ -343,7 +348,7 @@
       buildFilterList('countryFilters', 'countrySearch', 'Country');
       buildFilterList('typeFilters', 'typeSearch', 'Data Type');
 
-      // 4. URL Params Support
+      // URL Params Support
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.has('domain')) {
         const cb = document.querySelector(`#domainFilters input[value="${urlParams.get('domain')}"]`);
@@ -354,15 +359,15 @@
         if (cb) cb.checked = true;
       }
 
-      // 5. Filter & Render Logic
+      // Filter & Render Logic
       function filterAndRender() {
         const activeDomains = Array.from(document.querySelectorAll('#domainFilters input:checked')).map(cb => cb.value);
         const activeCountries = Array.from(document.querySelectorAll('#countryFilters input:checked')).map(cb => cb.value);
         const activeTypes = Array.from(document.querySelectorAll('#typeFilters input:checked')).map(cb => cb.value);
 
         const filtered = data.filter(item => {
-          const matchDomain = activeDomains.length === 0 || activeDomains.includes(item.Domain);
-          const matchCountry = activeCountries.length === 0 || activeCountries.includes(item.Country);
+          const matchDomain = activeDomains.length === 0 || activeDomains.includes(item['Domain']);
+          const matchCountry = activeCountries.length === 0 || activeCountries.includes(item['Country']);
           const matchType = activeTypes.length === 0 || activeTypes.includes(item['Data Type']);
           return matchDomain && matchCountry && matchType;
         });
@@ -388,7 +393,7 @@
             ? item['Use Cases'].split(/,|-|\n/).map(s => `<li>${s.trim()}</li>`).filter(s => s !== '<li></li>').join('') 
             : '<li>No specific use cases listed.</li>';
           
-          const citation = `${item.Source} (${item['Last Updated']}). ${item['Dataset Name']}. Retrieved from ${item.Link}`;
+          const citation = `${item['Source']} (${item['Last Updated']}). ${item['Dataset Name']}. Retrieved from ${item['Link']}`;
           const escapedCitation = citation.replace(/`/g, '\\`').replace(/'/g, "\\'");
 
           const card = document.createElement('details');
@@ -397,21 +402,21 @@
             <summary>
               <div class="flex-1 pr-4">
                 <div class="card-tags" style="margin-bottom: 12px;">
-                  <span class="tag" style="background: rgba(200, 16, 46, 0.1); color: var(--color-red);"><i class="fas fa-tag"></i> ${item.Domain}</span>
-                  <span class="tag"><i class="fas fa-globe-africa"></i> ${item.Country}</span>
+                  <span class="tag" style="background: rgba(200, 16, 46, 0.1); color: var(--color-red);"><i class="fas fa-tag"></i> ${item['Domain']}</span>
+                  <span class="tag"><i class="fas fa-globe-africa"></i> ${item['Country']}</span>
                   <span class="tag"><i class="fas fa-shapes"></i> ${item['Data Type']}</span>
                   <span class="tag"><i class="fas fa-calendar-alt"></i> ${item['Last Updated']}</span>
                 </div>
                 <h3 class="card-title" style="font-size: 1.15rem; margin-bottom: 8px;">
-                  <a href="${item.Link}" target="_blank" style="color: var(--color-black);">${item['Dataset Name']}</a>
+                  <a href="${item['Link']}" target="_blank" style="color: var(--color-black);">${item['Dataset Name']}</a>
                 </h3>
                 <p style="font-size: 0.9rem; color: var(--color-gray); display: flex; align-items: center; gap: 6px;">
-                  <i class="fas fa-building" style="color: var(--color-gold);"></i> ${item.Source}
+                  <i class="fas fa-building" style="color: var(--color-gold);"></i> ${item['Source']}
                 </p>
               </div>
               <i class="fas fa-chevron-down chevron"></i>
             </summary>
-            <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--color-border); display: grid; grid-template-columns: 2fr 1fr; gap: 24px;">
+            <div class="ds-details-content">
               <div>
                 <div style="margin-bottom: 20px;">
                   <h5 style="font-size: 0.85rem; font-weight: 700; text-transform: uppercase; color: var(--color-black); margin-bottom: 8px; letter-spacing: 0.5px;">
@@ -430,15 +435,19 @@
                     <strong>Updated</strong>
                     <span>${item['Last Updated']}</span>
                   </div>
+                  <div class="ds-meta-item" style="grid-column: 1 / -1;">
+                    <strong>Challenges / Notes</strong>
+                    <span>${item['Challenges/Notes'] || 'None noted'}</span>
+                  </div>
                 </div>
               </div>
-              <div style="background: var(--color-light); padding: 20px; border-radius: 8px; border: 1px solid var(--color-border); height: fit-content;">
+              <div style="background: var(--color-white); padding: 20px; border-radius: 8px; border: 1px solid var(--color-border); height: fit-content;">
                 <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
-                  <a href="${item.Link}" target="_blank" class="btn btn-primary btn-block" style="padding: 10px; font-size: 0.9rem;">
+                  <a href="${item['Link']}" target="_blank" class="btn btn-primary btn-block" style="padding: 10px; font-size: 0.9rem;">
                     <i class="fas fa-external-link-alt"></i> Access Dataset
                   </a>
                   <div style="color: var(--color-gray); font-size: 0.8rem; text-align: center; padding: 8px 0;">
-                    <i class="fas fa-balance-scale" style="color: var(--color-gold);"></i> ${item.License || 'License N/A'}
+                    <i class="fas fa-balance-scale" style="color: var(--color-gold);"></i> ${item['License'] || 'License N/A'}
                   </div>
                 </div>
                 <h5 style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--color-black); margin-bottom: 8px; letter-spacing: 0.5px;">
@@ -446,7 +455,7 @@
                 </h5>
                 <code class="block" 
                   onclick="navigator.clipboard.writeText(this.innerText); this.innerHTML='<i class=\\'fas fa-check\\' style=\\'color: #10b981;\\'></i> Copied!'; setTimeout(() => this.innerText = \`${escapedCitation}\`, 1500)"
-                  style="background: var(--color-white); border: 1px solid var(--color-border); padding: 10px; border-radius: 6px; font-size: 0.75rem; color: var(--color-gray); cursor: pointer; font-family: monospace; line-height: 1.4;">
+                  style="background: var(--color-light); border: 1px solid var(--color-border); padding: 10px; border-radius: 6px; font-size: 0.75rem; color: var(--color-gray); cursor: pointer; font-family: monospace; line-height: 1.4;">
                   ${citation}
                 </code>
               </div>
@@ -467,14 +476,14 @@
           const row = `<tr>
             <td>
               <div style="font-weight: 700; color: var(--color-black);">${item['Dataset Name']}</div>
-              <div style="font-size: 0.8rem; color: var(--color-gray); margin-top: 4px;"><i class="fas fa-building" style="color: var(--color-gold);"></i> ${item.Source}</div>
+              <div style="font-size: 0.8rem; color: var(--color-gray); margin-top: 4px;"><i class="fas fa-building" style="color: var(--color-gold);"></i> ${item['Source']}</div>
             </td>
-            <td><span class="tag" style="background: rgba(200, 16, 46, 0.1); color: var(--color-red);">${item.Domain}</span></td>
-            <td style="font-size: 0.9rem;">${item.Country}</td>
+            <td><span class="tag" style="background: rgba(200, 16, 46, 0.1); color: var(--color-red);">${item['Domain']}</span></td>
+            <td style="font-size: 0.9rem;">${item['Country']}</td>
             <td><span class="tag">${item['Data Type']}</span></td>
             <td><span class="tag" style="background: var(--color-light); color: var(--color-black);">${item['Last Updated']}</span></td>
             <td>
-              <a href="${item.Link}" target="_blank" class="btn btn-primary" style="padding: 6px 12px; font-size: 0.8rem;">
+              <a href="${item['Link']}" target="_blank" class="btn btn-primary" style="padding: 6px 12px; font-size: 0.8rem;">
                 <i class="fas fa-external-link-alt"></i> View
               </a>
             </td>
@@ -483,7 +492,7 @@
         });
       }
 
-      // 6. Event Listeners
+      // Event Listeners
       document.querySelectorAll('.filter-list input').forEach(cb => cb.addEventListener('change', filterAndRender));
       
       document.getElementById('resetFilters').addEventListener('click', () => {
