@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Latest insights, reports, policy briefs, and real-world use cases showcasing the power of open data in Africa.">
+  <title>Insights & Reports | Open Data Africa</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    /* ===== SHARED CSS VARIABLES & BASE ===== */
+    :root {
+      --german-black: #1a1a1a; --german-red: #c8102e; --german-gold: #ffce00;
+      --white: #ffffff; --light: #f8f9fa; --gray: #6c757d; --gray-light: #e9ecef;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.05); --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
+      --radius: 8px; --radius-lg: 12px; --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; line-height: 1.6; color: var(--german-black); background: var(--white); overflow-x: hidden; }
+    h1, h2, h3, h4 { font-family: 'Poppins', sans-serif; font-weight: 700; line-height: 1.2; margin-bottom: 1rem; }
+    p { margin-bottom: 1rem; color: var(--gray); }
+    a { color: var(--german-red); text-decoration: none; transition: var(--transition); }
+    a:hover { color: var(--german-black); }
+    ul { list-style: none; }
+    .wrapper { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+    .text-center { text-align: center; }
+    .section-padding { padding: 80px 0; }
+
+    /* ===== FLAG BAR & NAV ===== */
+    .flag-bar { height: 6px; width: 100%; display: flex; position: fixed; top: 0; z-index: 1001; }
+    .flag-bar .black { flex: 1; background: var(--german-black); }
+    .flag-bar .red { flex: 1; background: var(--german-red); }
+    .flag-bar .gold { flex: 1; background: var(--german-gold); }
+    nav { background: var(--german-black); padding: 1rem 0; position: sticky; top: 6px; z-index: 1000; box-shadow: var(--shadow-lg); }
+    .nav-container { display: flex; justify-content: space-between; align-items: center; }
+    .nav-logo { color: var(--white); font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 1.3rem; display: flex; align-items: center; gap: 10px; }
+    .nav-logo i { color: var(--german-gold); }
+    .nav-list { display: flex; gap: 1.5rem; margin: 0; padding: 0; }
+    .nav-list li a { color: rgba(255,255,255,0.85); font-weight: 500; font-size: 0.95rem; padding: 8px 12px; border-radius: var(--radius); transition: var(--transition); }
+    .nav-list li a:hover, .nav-list li a[aria-current="page"] { background: rgba(255,255,255,0.1); color: var(--white); }
+    .nav-list li a[aria-current="page"] { border-bottom: 2px solid var(--german-gold); }
+    .mobile-menu-toggle { display: none; background: transparent; border: none; color: var(--white); font-size: 1.5rem; cursor: pointer; }
+
+    /* ===== HERO ===== */
+    header.hero { background: linear-gradient(135deg, var(--german-black) 0%, #2d2d2d 100%); padding: 120px 1rem 60px; text-align: center; position: relative; color: var(--white); }
+    header.hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: radial-gradient(circle at 20% 50%, rgba(200, 16, 46, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(255, 206, 0, 0.1) 0%, transparent 50%); }
+    header.hero .wrapper { position: relative; z-index: 2; }
+    header.hero h1 { font-size: 3rem; margin-bottom: 1rem; }
+    header.hero h1 span { color: var(--german-gold); }
+    header.hero p { font-size: 1.2rem; color: rgba(255, 255, 255, 0.85); max-width: 700px; margin: 0 auto; }
+
+    /* ===== FILTERS & SEARCH ===== */
+    .filter-bar { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin: -30px auto 40px; position: relative; z-index: 10; }
+    .filter-btn {
+      background: var(--white); border: 1px solid var(--gray-light); color: var(--german-black);
+      padding: 10px 20px; border-radius: 50px; font-weight: 600; cursor: pointer;
+      transition: var(--transition); font-family: 'Inter', sans-serif; font-size: 0.95rem;
+      box-shadow: var(--shadow);
+    }
+    .filter-btn:hover { border-color: var(--german-red); color: var(--german-red); }
+    .filter-btn.active { background: var(--german-red); color: var(--white); border-color: var(--german-red); }
+
+    .search-container { max-width: 500px; margin: 0 auto 40px; position: relative; }
+    .search-container input {
+      width: 100%; padding: 15px 50px 15px 20px; border-radius: 50px; border: 1px solid var(--gray-light);
+      font-size: 1rem; font-family: 'Inter', sans-serif; box-shadow: var(--shadow); outline: none; transition: var(--transition);
+    }
+    .search-container input:focus { border-color: var(--german-red); box-shadow: 0 0 0 3px rgba(200, 16, 46, 0.1); }
+    .search-container i { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); color: var(--gray); }
+
+    /* ===== INSIGHTS GRID ===== */
+    .insights-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 30px; }
+    .insight-card {
+      background: var(--white); border-radius: var(--radius-lg); overflow: hidden;
+      box-shadow: var(--shadow); transition: var(--transition); display: flex; flex-direction: column;
+      border: 1px solid var(--gray-light);
+    }
+    .insight-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); border-color: var(--german-gold); }
+    .insight-image {
+      height: 180px; background: linear-gradient(135deg, var(--light) 0%, #d1d5db 100%);
+      display: flex; align-items: center; justify-content: center; color: var(--german-red); font-size: 3.5rem;
+    }
+    .insight-content { padding: 25px; flex-grow: 1; display: flex; flex-direction: column; }
+    .insight-meta { display: flex; gap: 15px; font-size: 0.85rem; color: var(--gray); margin-bottom: 12px; font-weight: 500; }
+    .insight-meta i { color: var(--german-red); margin-right: 5px; }
+    .insight-content h3 { font-size: 1.25rem; margin-bottom: 12px; line-height: 1.4; }
+    .insight-content h3 a { color: var(--german-black); }
+    .insight-content h3 a:hover { color: var(--german-red); }
+    .insight-content p { font-size: 0.95rem; flex-grow: 1; margin-bottom: 20px; line-height: 1.6; }
+    .read-more { 
+      color: var(--german-red); font-weight: 600; font-size: 0.95rem; display: inline-flex; 
+      align-items: center; gap: 8px; margin-top: auto; 
+    }
+    .read-more:hover { gap: 12px; }
+
+    .no-results { text-align: center; padding: 60px 20px; grid-column: 1 / -1; display: none; }
+    .no-results i { font-size: 3rem; color: var(--gray-light); margin-bottom: 15px; }
+
+    /* ===== FOOTER ===== */
+    footer { background: var(--german-black); color: var(--white); padding: 60px 0 30px; border-top: 4px solid var(--german-red); margin-top: 80px; }
+    .footer-content { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-bottom: 40px; }
+    .footer h4 { font-size: 1.1rem; margin-bottom: 1.5rem; color: var(--german-gold); display: flex; align-items: center; gap: 10px; }
+    .footer p { opacity: 0.8; color: rgba(255,255,255,0.8); }
+    .footer ul li { margin-bottom: 10px; }
+    .footer ul li a { color: rgba(255,255,255,0.8); font-size: 0.95rem; }
+    .footer ul li a:hover { opacity: 1; color: var(--german-gold); padding-left: 5px; }
+    .footer-bottom { border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 30px; text-align: center; opacity: 0.7; font-size: 0.9rem; }
+
+    @media (max-width: 768px) {
+      .mobile-menu-toggle { display: block; }
+      .nav-list { display: none; flex-direction: column; width: 100%; position: absolute; top: 100%; left: 0; background: var(--german-black); padding: 20px; box-shadow: var(--shadow-lg); }
+      .nav-list.active { display: flex; }
+      header.hero h1 { font-size: 2.2rem; }
+      .insights-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="flag-bar"><div class="black"></div><div class="red"></div><div class="gold"></div></div>
+
+  <nav>
+    <div class="wrapper nav-container">
+      <a href="index.html" class="nav-logo"><i class="fas fa-globe-africa"></i> Open Data Africa</a>
+      <button class="mobile-menu-toggle" aria-label="Toggle menu" onclick="toggleMenu()"><i class="fas fa-bars"></i></button>
+      <ul class="nav-list" id="navList">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="countries.html">Countries</a></li>
+        <li><a href="insights.html" aria-current="page">Insights</a></li>
+        <li><a href="datasets.html">Datasets</a></li>
+        <li><a href="aodria.html">AODRIA</a></li>
+        <li><a href="contribute.html">Contribute</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="wrapper">
+      <h1>Latest <span>Insights</span></h1>
+      <p>Reports, policy briefs, and real-world use cases showcasing the transformative power of open data across Africa.</p>
+    </div>
+  </header>
+
+  <main class="wrapper section-padding" style="padding-top: 40px;">
+    
+    <!-- Filters -->
+    <div class="filter-bar" id="categoryFilters">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="Report">Reports</button>
+      <button class="filter-btn" data-filter="Use Case">Use Cases</button>
+      <button class="filter-btn" data-filter="Policy Brief">Policy Briefs</button>
+      <button class="filter-btn" data-filter="Framework">Frameworks</button>
+    </div>
+
+    <!-- Search -->
+    <div class="search-container">
+      <input type="text" id="insightSearch" placeholder="Search insights by title, category, or keyword...">
+      <i class="fas fa-search"></i>
+    </div>
+
+    <!-- Grid -->
+    <div class="insights-grid" id="insightsGrid">
+      <!-- Populated by JS -->
+    </div>
+    
+    <div class="no-results" id="noResults">
+      <i class="fas fa-newspaper"></i>
+      <h3>No insights found</h3>
+      <p>Try adjusting your search or filter criteria.</p>
+    </div>
+
+  </main>
+
+  <footer>
+    <div class="wrapper">
+      <div class="footer-content">
+        <div>
+          <h4><i class="fas fa-globe-africa"></i> Open Data Africa</h4>
+          <p>Building open data ecosystems across Africa through benchmarking, recognition, and capacity building.</p>
+        </div>
+        <div>
+          <h4><i class="fas fa-compass"></i> Explore</h4>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="countries.html">Countries</a></li>
+            <li><a href="insights.html">Insights & Reports</a></li>
+            <li><a href="datasets.html">Datasets</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4><i class="fas fa-envelope"></i> Contact</h4>
+          <p><i class="fas fa-envelope" style="width: 20px;"></i> aimadeinafrica@giz.de</p>
+          <p><i class="fas fa-map-marker-alt" style="width: 20px;"></i> GIZ African Union, Addis Ababa, Ethiopia</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Open Data Africa | AI Made in Africa / GIZ AU. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Expanded Insights Data
+    const insightsData = [
+      { 
+        title: "Africa’s AI Revolution Needs You: Let’s Build It with Data", 
+        category: "Report", 
+        date: "Oct 2024", 
+        excerpt: "A comprehensive look at how open data is fueling the next wave of AI innovation across the continent, with actionable recommendations for policymakers.",
+        icon: "fa-file-pdf"
+      },
+      { 
+        title: "Open Data in African Agriculture: A Use Case Study", 
+        category: "Use Case", 
+        date: "Sep 2024", 
+        excerpt: "How smallholder farmers in East Africa are leveraging satellite and weather datasets to improve crop yields and build climate resilience.",
+        icon: "fa-seedling"
+      },
+      { 
+        title: "AODRIA 2024: Benchmarking Data Readiness", 
+        category: "Framework", 
+        date: "Aug 2024", 
+        excerpt: "Insights from the latest Africa Open Data Readiness Index for AI, highlighting top performers, methodology, and areas for ecosystem growth.",
+        icon: "fa-chart-bar"
+      },
+      { 
+        title: "Data Protection and Open Data: Finding the Balance", 
+        category: "Policy Brief", 
+        date: "Jul 2024", 
+        excerpt: "Navigating the intersection of personal data protection laws and the need for open, accessible datasets for public good in Africa.",
+        icon: "fa-balance-scale"
+      },
+      { 
+        title: "Healthcare Analytics: Predictive Modeling in Rwanda", 
+        category: "Use Case", 
+        date: "Jun 2024", 
+        excerpt: "A deep dive into how Rwanda's Ministry of Health utilizes open demographic and health survey data to optimize resource allocation.",
+        icon: "fa-heartbeat"
+      },
+      { 
+        title: "FAIR Forward: AI for All Initiative Overview", 
+        category: "Report", 
+        date: "May 2024", 
+        excerpt: "An overview of the GIZ FAIR Forward initiative, promoting open datasets and open-source AI to ensure inclusive technological development.",
+        icon: "fa-globe-africa"
+      }
+    ];
+
+    let currentCategory = 'all';
+
+    function renderInsights(data) {
+      const grid = document.getElementById('insightsGrid');
+      const noResults = document.getElementById('noResults');
+      grid.innerHTML = '';
+      
+      if (data.length === 0) {
+        noResults.style.display = 'block';
+        return;
+      }
+      noResults.style.display = 'none';
+
+      data.forEach(insight => {
+        const card = document.createElement('div');
+        card.className = 'insight-card';
+        card.innerHTML = `
+          <div class="insight-image">
+            <i class="fas ${insight.icon}"></i>
+          </div>
+          <div class="insight-content">
+            <div class="insight-meta">
+              <span><i class="fas fa-tag"></i> ${insight.category}</span>
+              <span><i class="fas fa-calendar"></i> ${insight.date}</span>
+            </div>
+            <h3><a href="#">${insight.title}</a></h3>
+            <p>${insight.excerpt}</p>
+            <a href="#" class="read-more">Read Full Insight <i class="fas fa-arrow-right"></i></a>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function filterData() {
+      const query = document.getElementById('insightSearch').value.toLowerCase();
+      
+      const filtered = insightsData.filter(i => {
+        const matchesCategory = currentCategory === 'all' || i.category === currentCategory;
+        const matchesSearch = i.title.toLowerCase().includes(query) || 
+                              i.category.toLowerCase().includes(query) ||
+                              i.excerpt.toLowerCase().includes(query);
+        return matchesCategory && matchesSearch;
+      });
+      
+      renderInsights(filtered);
+    }
+
+    // Event Listeners
+    document.getElementById('insightSearch').addEventListener('input', filterData);
+    
+    document.getElementById('categoryFilters').addEventListener('click', (e) => {
+      if (e.target.classList.contains('filter-btn')) {
+        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+        e.target.classList.add('active');
+        currentCategory = e.target.getAttribute('data-filter');
+        filterData();
+      }
+    });
+
+    // Mobile Menu
+    function toggleMenu() { document.getElementById('navList').classList.toggle('active'); }
+    document.addEventListener('click', function(event) {
+      const navList = document.getElementById('navList');
+      const toggle = document.querySelector('.mobile-menu-toggle');
+      if (!navList.contains(event.target) && !toggle.contains(event.target)) navList.classList.remove('active');
+    });
+
+    // Initial Render
+    document.addEventListener('DOMContentLoaded', () => renderInsights(insightsData));
+  </script>
+</body>
+</html>
