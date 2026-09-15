@@ -3,119 +3,103 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="Latest insights, reports, policy briefs, and real-world use cases showcasing the power of open data in Africa.">
-  <title>Insights & Reports | Open Data Africa</title>
+  <title>Insights & Trends | Open Data Africa</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
+  <link rel="stylesheet" href="css/style.css">
+
   <style>
-    /* ===== SHARED CSS VARIABLES & BASE ===== */
     :root {
-      --german-black: #1a1a1a; --german-red: #c8102e; --german-gold: #ffce00;
-      --white: #ffffff; --light: #f8f9fa; --gray: #6c757d; --gray-light: #e9ecef;
-      --shadow: 0 4px 6px rgba(0, 0, 0, 0.05); --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
-      --radius: 8px; --radius-lg: 12px; --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --primary: #c8102e; --secondary: #ffce00; --dark: #1a1a1a; 
+      --light: #f8f9fa; --gray: #6c757d; --border: #e9ecef;
+      --shadow: 0 4px 6px rgba(0,0,0,0.05); --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
+      --radius: 12px; --transition: all 0.3s ease;
     }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body { font-family: 'Inter', sans-serif; line-height: 1.6; color: var(--german-black); background: var(--white); overflow-x: hidden; }
-    h1, h2, h3, h4 { font-family: 'Poppins', sans-serif; font-weight: 700; line-height: 1.2; margin-bottom: 1rem; }
-    p { margin-bottom: 1rem; color: var(--gray); }
-    a { color: var(--german-red); text-decoration: none; transition: var(--transition); }
-    a:hover { color: var(--german-black); }
-    ul { list-style: none; }
-    .wrapper { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-    .text-center { text-align: center; }
-    .section-padding { padding: 80px 0; }
+    body { font-family: 'Inter', sans-serif; background: var(--light); color: var(--dark); margin: 0; }
+    .wrapper { max-width: 1300px; margin: 0 auto; padding: 0 24px; }
+    
+    /* Hero */
+    .insights-hero { background: linear-gradient(135deg, var(--dark) 0%, #2d2d2d 100%); padding: 60px 0 100px; color: white; text-align: center; position: relative; overflow: hidden; }
+    .insights-hero::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 60px; background: var(--light); clip-path: polygon(0 100%, 100% 100%, 100% 0); }
+    .insights-hero h1 { font-family: 'Poppins', sans-serif; font-size: 2.5rem; margin: 0 0 10px 0; }
+    .insights-hero h1 span { color: var(--secondary); }
+    .insights-hero p { opacity: 0.8; max-width: 700px; margin: 0 auto; font-size: 1.1rem; }
 
-    /* ===== FLAG BAR & NAV ===== */
-    .flag-bar { height: 6px; width: 100%; display: flex; position: fixed; top: 0; z-index: 1001; }
-    .flag-bar .black { flex: 1; background: var(--german-black); }
-    .flag-bar .red { flex: 1; background: var(--german-red); }
-    .flag-bar .gold { flex: 1; background: var(--german-gold); }
-    nav { background: var(--german-black); padding: 1rem 0; position: sticky; top: 6px; z-index: 1000; box-shadow: var(--shadow-lg); }
-    .nav-container { display: flex; justify-content: space-between; align-items: center; }
-    .nav-logo { color: var(--white); font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 1.3rem; display: flex; align-items: center; gap: 10px; }
-    .nav-logo i { color: var(--german-gold); }
-    .nav-list { display: flex; gap: 1.5rem; margin: 0; padding: 0; }
-    .nav-list li a { color: rgba(255,255,255,0.85); font-weight: 500; font-size: 0.95rem; padding: 8px 12px; border-radius: var(--radius); transition: var(--transition); }
-    .nav-list li a:hover, .nav-list li a[aria-current="page"] { background: rgba(255,255,255,0.1); color: var(--white); }
-    .nav-list li a[aria-current="page"] { border-bottom: 2px solid var(--german-gold); }
-    .mobile-menu-toggle { display: none; background: transparent; border: none; color: var(--white); font-size: 1.5rem; cursor: pointer; }
+    /* Stats / Takeaways */
+    .takeaways-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: -60px; position: relative; z-index: 10; margin-bottom: 40px; }
+    .takeaway-card { background: white; padding: 24px; border-radius: var(--radius); box-shadow: var(--shadow-lg); border-left: 5px solid var(--primary); transition: var(--transition); }
+    .takeaway-card:hover { transform: translateY(-5px); }
+    .takeaway-card .icon { font-size: 1.5rem; color: var(--primary); margin-bottom: 10px; }
+    .takeaway-card h3 { font-size: 1rem; color: var(--gray); margin: 0 0 8px 0; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+    .takeaway-card p { font-size: 1.1rem; font-weight: 700; color: var(--dark); margin: 0; line-height: 1.4; }
 
-    /* ===== HERO ===== */
-    header.hero { background: linear-gradient(135deg, var(--german-black) 0%, #2d2d2d 100%); padding: 120px 1rem 60px; text-align: center; position: relative; color: var(--white); }
-    header.hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: radial-gradient(circle at 20% 50%, rgba(200, 16, 46, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(255, 206, 0, 0.1) 0%, transparent 50%); }
-    header.hero .wrapper { position: relative; z-index: 2; }
-    header.hero h1 { font-size: 3rem; margin-bottom: 1rem; }
-    header.hero h1 span { color: var(--german-gold); }
-    header.hero p { font-size: 1.2rem; color: rgba(255, 255, 255, 0.85); max-width: 700px; margin: 0 auto; }
+    /* Controls */
+    .controls-section { background: white; padding: 20px 24px; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 30px; border: 1px solid var(--border); display: flex; flex-wrap: wrap; gap: 15px; align-items: center; justify-content: space-between; }
+    .search-wrap { position: relative; flex-grow: 1; max-width: 400px; }
+    .search-wrap input { width: 100%; padding: 12px 20px 12px 45px; border: 1px solid var(--border); border-radius: 50px; font-size: 1rem; outline: none; transition: var(--transition); font-family: inherit; }
+    .search-wrap input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(200, 16, 46, 0.1); }
+    .search-wrap i { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: var(--gray); }
+    
+    .filter-chips { display: flex; flex-wrap: wrap; gap: 10px; }
+    .chip { background: var(--light); border: 1px solid var(--border); padding: 8px 16px; border-radius: 50px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: var(--transition); }
+    .chip:hover { background: #e9ecef; }
+    .chip.active { background: var(--primary); color: white; border-color: var(--primary); }
 
-    /* ===== FILTERS & SEARCH ===== */
-    .filter-bar { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin: -30px auto 40px; position: relative; z-index: 10; }
-    .filter-btn {
-      background: var(--white); border: 1px solid var(--gray-light); color: var(--german-black);
-      padding: 10px 20px; border-radius: 50px; font-weight: 600; cursor: pointer;
-      transition: var(--transition); font-family: 'Inter', sans-serif; font-size: 0.95rem;
-      box-shadow: var(--shadow);
-    }
-    .filter-btn:hover { border-color: var(--german-red); color: var(--german-red); }
-    .filter-btn.active { background: var(--german-red); color: var(--white); border-color: var(--german-red); }
+    /* Tabs */
+    .tabs-container { display: flex; gap: 10px; margin-bottom: 30px; border-bottom: 2px solid var(--border); padding-bottom: 0; }
+    .tab-btn { background: none; border: none; padding: 15px 25px; font-size: 1rem; font-weight: 600; color: var(--gray); cursor: pointer; transition: var(--transition); border-bottom: 3px solid transparent; margin-bottom: -2px; font-family: inherit; }
+    .tab-btn:hover { color: var(--dark); }
+    .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
 
-    .search-container { max-width: 500px; margin: 0 auto 40px; position: relative; }
-    .search-container input {
-      width: 100%; padding: 15px 50px 15px 20px; border-radius: 50px; border: 1px solid var(--gray-light);
-      font-size: 1rem; font-family: 'Inter', sans-serif; box-shadow: var(--shadow); outline: none; transition: var(--transition);
-    }
-    .search-container input:focus { border-color: var(--german-red); box-shadow: 0 0 0 3px rgba(200, 16, 46, 0.1); }
-    .search-container i { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); color: var(--gray); }
+    /* Grid */
+    .insights-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 24px; margin-bottom: 60px; }
+    .insight-card { background: white; border-radius: var(--radius); padding: 24px; border: 1px solid var(--border); transition: var(--transition); cursor: pointer; display: flex; flex-direction: column; position: relative; overflow: hidden; }
+    .insight-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); border-color: var(--secondary); }
+    .insight-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--primary); }
+    .insight-card.challenge::before { background: var(--gray); }
+    
+    .ic-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
+    .ic-badge { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 4px 10px; border-radius: 20px; }
+    .badge-innovation { background: rgba(200, 16, 46, 0.1); color: var(--primary); }
+    .badge-gap { background: rgba(108, 117, 125, 0.1); color: var(--gray); }
+    
+    .ic-title { font-size: 1.1rem; font-weight: 700; margin: 0 0 10px 0; color: var(--dark); line-height: 1.4; flex-grow: 1; }
+    .ic-meta { font-size: 0.85rem; color: var(--gray); margin-bottom: 15px; display: flex; gap: 15px; flex-wrap: wrap; }
+    .ic-meta span { display: flex; align-items: center; gap: 5px; }
+    .ic-excerpt { font-size: 0.9rem; color: #495057; line-height: 1.6; margin: 0; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+    .ic-footer { margin-top: 20px; padding-top: 15px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+    .ic-read-more { font-size: 0.85rem; font-weight: 600; color: var(--primary); display: flex; align-items: center; gap: 5px; }
 
-    /* ===== INSIGHTS GRID ===== */
-    .insights-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 30px; }
-    .insight-card {
-      background: var(--white); border-radius: var(--radius-lg); overflow: hidden;
-      box-shadow: var(--shadow); transition: var(--transition); display: flex; flex-direction: column;
-      border: 1px solid var(--gray-light);
-    }
-    .insight-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); border-color: var(--german-gold); }
-    .insight-image {
-      height: 180px; background: linear-gradient(135deg, var(--light) 0%, #d1d5db 100%);
-      display: flex; align-items: center; justify-content: center; color: var(--german-red); font-size: 3.5rem;
-    }
-    .insight-content { padding: 25px; flex-grow: 1; display: flex; flex-direction: column; }
-    .insight-meta { display: flex; gap: 15px; font-size: 0.85rem; color: var(--gray); margin-bottom: 12px; font-weight: 500; }
-    .insight-meta i { color: var(--german-red); margin-right: 5px; }
-    .insight-content h3 { font-size: 1.25rem; margin-bottom: 12px; line-height: 1.4; }
-    .insight-content h3 a { color: var(--german-black); }
-    .insight-content h3 a:hover { color: var(--german-red); }
-    .insight-content p { font-size: 0.95rem; flex-grow: 1; margin-bottom: 20px; line-height: 1.6; }
-    .read-more { 
-      color: var(--german-red); font-weight: 600; font-size: 0.95rem; display: inline-flex; 
-      align-items: center; gap: 8px; margin-top: auto; 
-    }
-    .read-more:hover { gap: 12px; }
+    /* Modal */
+    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; opacity: 0; transition: opacity 0.3s ease; }
+    .modal-overlay.show { display: flex; opacity: 1; }
+    .modal-content { background: white; border-radius: 16px; max-width: 700px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative; transform: translateY(20px); transition: transform 0.3s ease; box-shadow: 0 25px 50px rgba(0,0,0,0.25); }
+    .modal-overlay.show .modal-content { transform: translateY(0); }
+    .modal-header { padding: 24px; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: white; z-index: 10; border-radius: 16px 16px 0 0; }
+    .modal-header h2 { margin: 0 0 10px 0; font-size: 1.4rem; line-height: 1.4; }
+    .modal-close { position: absolute; top: 24px; right: 24px; background: var(--light); border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; transition: var(--transition); }
+    .modal-close:hover { background: var(--primary); color: white; }
+    .modal-body { padding: 24px; }
+    .modal-section { margin-bottom: 24px; }
+    .modal-section h4 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: var(--gray); margin: 0 0 12px 0; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+    .modal-section p, .modal-section ul { font-size: 0.95rem; line-height: 1.7; color: #495057; margin: 0; }
+    .modal-section ul { padding-left: 20px; }
+    .modal-section ul li { margin-bottom: 8px; }
+    .modal-footer { padding: 24px; border-top: 1px solid var(--border); background: var(--light); border-radius: 0 0 16px 16px; display: flex; justify-content: flex-end; }
+    .btn-access { background: var(--primary); color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 8px; transition: var(--transition); }
+    .btn-access:hover { background: #a00d26; }
 
-    .no-results { text-align: center; padding: 60px 20px; grid-column: 1 / -1; display: none; }
-    .no-results i { font-size: 3rem; color: var(--gray-light); margin-bottom: 15px; }
-
-    /* ===== FOOTER ===== */
-    footer { background: var(--german-black); color: var(--white); padding: 60px 0 30px; border-top: 4px solid var(--german-red); margin-top: 80px; }
-    .footer-content { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-bottom: 40px; }
-    .footer h4 { font-size: 1.1rem; margin-bottom: 1.5rem; color: var(--german-gold); display: flex; align-items: center; gap: 10px; }
-    .footer p { opacity: 0.8; color: rgba(255,255,255,0.8); }
-    .footer ul li { margin-bottom: 10px; }
-    .footer ul li a { color: rgba(255,255,255,0.8); font-size: 0.95rem; }
-    .footer ul li a:hover { opacity: 1; color: var(--german-gold); padding-left: 5px; }
-    .footer-bottom { border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 30px; text-align: center; opacity: 0.7; font-size: 0.9rem; }
+    .empty-state { text-align: center; padding: 60px 20px; color: var(--gray); grid-column: 1 / -1; }
+    .empty-state i { font-size: 3rem; margin-bottom: 15px; opacity: 0.3; }
 
     @media (max-width: 768px) {
-      .mobile-menu-toggle { display: block; }
-      .nav-list { display: none; flex-direction: column; width: 100%; position: absolute; top: 100%; left: 0; background: var(--german-black); padding: 20px; box-shadow: var(--shadow-lg); }
-      .nav-list.active { display: flex; }
-      header.hero h1 { font-size: 2.2rem; }
+      .insights-hero h1 { font-size: 1.8rem; }
+      .controls-section { flex-direction: column; align-items: stretch; }
+      .search-wrap { max-width: 100%; }
       .insights-grid { grid-template-columns: 1fr; }
     }
   </style>
@@ -125,202 +109,300 @@
   <div class="flag-bar"><div class="black"></div><div class="red"></div><div class="gold"></div></div>
 
   <nav>
-    <div class="wrapper nav-container">
-      <a href="index.html" class="nav-logo"><i class="fas fa-globe-africa"></i> Open Data Africa</a>
-      <button class="mobile-menu-toggle" aria-label="Toggle menu" onclick="toggleMenu()"><i class="fas fa-bars"></i></button>
-      <ul class="nav-list" id="navList">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="countries.html">Countries</a></li>
-        <li><a href="insights.html" aria-current="page">Insights</a></li>
-        <li><a href="datasets.html">Datasets</a></li>
-        <li><a href="aodria.html">AODRIA</a></li>
-        <li><a href="contribute.html">Contribute</a></li>
+    <div class="wrapper" style="display: flex; justify-content: space-between; align-items: center;">
+      <a href="index.html" style="color: white; font-weight: 700; font-size: 1.2rem; text-decoration: none;"><i class="fas fa-globe-africa" style="color: var(--secondary);"></i> Open Data Africa</a>
+      <ul class="nav-list" style="display: flex; gap: 20px; list-style: none; margin: 0; padding: 0;">
+        <li><a href="index.html" style="color: rgba(255,255,255,0.8); text-decoration: none;">Home</a></li>
+        <li><a href="datasets.html" style="color: rgba(255,255,255,0.8); text-decoration: none;">Datasets</a></li>
+        <li><a href="dashboard.html" style="color: rgba(255,255,255,0.8); text-decoration: none;">Dashboard</a></li>
+        <li><a href="countries.html" style="color: rgba(255,255,255,0.8); text-decoration: none;">Countries</a></li>
+        <li><a href="insights.html" style="color: white; text-decoration: none; border-bottom: 2px solid var(--secondary);">Insights</a></li>
       </ul>
     </div>
   </nav>
 
-  <header class="hero">
+  <header class="insights-hero">
     <div class="wrapper">
-      <h1>Latest <span>Insights</span></h1>
-      <p>Reports, policy briefs, and real-world use cases showcasing the transformative power of open data across Africa.</p>
+      <h1>Data <span>Insights</span> & Trends</h1>
+      <p>Discover how open data is driving AI innovation across Africa, and identify the critical gaps we still need to fill.</p>
     </div>
   </header>
 
-  <main class="wrapper section-padding" style="padding-top: 40px;">
-    
-    <!-- Filters -->
-    <div class="filter-bar" id="categoryFilters">
-      <button class="filter-btn active" data-filter="all">All</button>
-      <button class="filter-btn" data-filter="Report">Reports</button>
-      <button class="filter-btn" data-filter="Use Case">Use Cases</button>
-      <button class="filter-btn" data-filter="Policy Brief">Policy Briefs</button>
-      <button class="filter-btn" data-filter="Framework">Frameworks</button>
+  <main class="wrapper">
+    <!-- Key Takeaways -->
+    <div class="takeaways-container" id="takeawaysContainer">
+      <div class="takeaway-card"><span class="num" style="font-size:1.5rem;">...</span></div>
     </div>
 
-    <!-- Search -->
-    <div class="search-container">
-      <input type="text" id="insightSearch" placeholder="Search insights by title, category, or keyword...">
-      <i class="fas fa-search"></i>
+    <!-- Controls -->
+    <div class="controls-section">
+      <div class="search-wrap">
+        <i class="fas fa-search"></i>
+        <input type="text" id="insightSearch" placeholder="Search insights, use cases, or challenges...">
+      </div>
+      <div class="filter-chips" id="domainFilters">
+        <div class="chip active" data-filter="all">All Domains</div>
+        <!-- Chips injected here -->
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs-container">
+      <button class="tab-btn active" data-tab="innovation"><i class="fas fa-lightbulb" style="margin-right:8px;"></i> Innovation Highlights</button>
+      <button class="tab-btn" data-tab="gaps"><i class="fas fa-exclamation-triangle" style="margin-right:8px;"></i> Data Gaps & Challenges</button>
     </div>
 
     <!-- Grid -->
     <div class="insights-grid" id="insightsGrid">
-      <!-- Populated by JS -->
+      <!-- Cards injected here -->
     </div>
-    
-    <div class="no-results" id="noResults">
-      <i class="fas fa-newspaper"></i>
+    <div id="emptyState" class="empty-state" style="display: none;">
+      <i class="fas fa-search"></i>
       <h3>No insights found</h3>
-      <p>Try adjusting your search or filter criteria.</p>
+      <p>Try adjusting your search or filters.</p>
     </div>
-
   </main>
 
-  <footer>
+  <!-- Detail Modal -->
+  <div class="modal-overlay" id="insightModal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+      <div class="modal-header">
+        <div id="modalBadges" style="margin-bottom: 10px;"></div>
+        <h2 id="modalTitle">Insight Title</h2>
+        <div id="modalMeta" style="color: var(--gray); font-size: 0.9rem; margin-top: 10px; display: flex; gap: 15px; flex-wrap: wrap;"></div>
+      </div>
+      <div class="modal-body">
+        <div class="modal-section">
+          <h4 id="modalSectionTitle"><i class="fas fa-info-circle"></i> Details</h4>
+          <div id="modalContent"></div>
+        </div>
+        <div class="modal-section" id="sourceSection">
+          <h4><i class="fas fa-database"></i> Source Dataset</h4>
+          <p id="modalSource"></p>
+        </div>
+      </div>
+      <div class="modal-footer" id="modalFooter">
+        <!-- Link injected here -->
+      </div>
+    </div>
+  </div>
+
+  <footer style="background: var(--dark); color: white; padding: 40px 0; text-align: center; margin-top: 40px;">
     <div class="wrapper">
-      <div class="footer-content">
-        <div>
-          <h4><i class="fas fa-globe-africa"></i> Open Data Africa</h4>
-          <p>Building open data ecosystems across Africa through benchmarking, recognition, and capacity building.</p>
-        </div>
-        <div>
-          <h4><i class="fas fa-compass"></i> Explore</h4>
-          <ul>
-            <li><a href="index.html">Home</a></li>
-            <li><a href="countries.html">Countries</a></li>
-            <li><a href="insights.html">Insights & Reports</a></li>
-            <li><a href="datasets.html">Datasets</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4><i class="fas fa-envelope"></i> Contact</h4>
-          <p><i class="fas fa-envelope" style="width: 20px;"></i> aimadeinafrica@giz.de</p>
-          <p><i class="fas fa-map-marker-alt" style="width: 20px;"></i> GIZ African Union, Addis Ababa, Ethiopia</p>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <p>&copy; 2026 Open Data Africa | AI Made in Africa / GIZ AU. All rights reserved.</p>
-      </div>
+      <p>&copy; 2026 Open Data Africa | AI Made in Africa / GIZ AU</p>
     </div>
   </footer>
 
   <script>
-    // Expanded Insights Data
-    const insightsData = [
-      { 
-        title: "Africa’s AI Revolution Needs You: Let’s Build It with Data", 
-        category: "Report", 
-        date: "Oct 2024", 
-        excerpt: "A comprehensive look at how open data is fueling the next wave of AI innovation across the continent, with actionable recommendations for policymakers.",
-        icon: "fa-file-pdf"
-      },
-      { 
-        title: "Open Data in African Agriculture: A Use Case Study", 
-        category: "Use Case", 
-        date: "Sep 2024", 
-        excerpt: "How smallholder farmers in East Africa are leveraging satellite and weather datasets to improve crop yields and build climate resilience.",
-        icon: "fa-seedling"
-      },
-      { 
-        title: "AODRIA 2024: Benchmarking Data Readiness", 
-        category: "Framework", 
-        date: "Aug 2024", 
-        excerpt: "Insights from the latest Africa Open Data Readiness Index for AI, highlighting top performers, methodology, and areas for ecosystem growth.",
-        icon: "fa-chart-bar"
-      },
-      { 
-        title: "Data Protection and Open Data: Finding the Balance", 
-        category: "Policy Brief", 
-        date: "Jul 2024", 
-        excerpt: "Navigating the intersection of personal data protection laws and the need for open, accessible datasets for public good in Africa.",
-        icon: "fa-balance-scale"
-      },
-      { 
-        title: "Healthcare Analytics: Predictive Modeling in Rwanda", 
-        category: "Use Case", 
-        date: "Jun 2024", 
-        excerpt: "A deep dive into how Rwanda's Ministry of Health utilizes open demographic and health survey data to optimize resource allocation.",
-        icon: "fa-heartbeat"
-      },
-      { 
-        title: "FAIR Forward: AI for All Initiative Overview", 
-        category: "Report", 
-        date: "May 2024", 
-        excerpt: "An overview of the GIZ FAIR Forward initiative, promoting open datasets and open-source AI to ensure inclusive technological development.",
-        icon: "fa-globe-africa"
+    let allData = [];
+    let insights = []; // Processed insights
+    let currentTab = 'innovation';
+    let currentDomain = 'all';
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const res = await fetch('data/catalog.json');
+        if (!res.ok) throw new Error('Failed to load');
+        allData = await res.json();
+        
+        processData();
+        renderTakeaways();
+        renderDomainChips();
+        renderInsights();
+
+        document.getElementById('insightSearch').addEventListener('input', renderInsights);
+        
+        document.querySelectorAll('.chip').forEach(chip => {
+          chip.addEventListener('click', (e) => {
+            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+            e.target.classList.add('active');
+            currentDomain = e.target.dataset.filter;
+            renderInsights();
+          });
+        });
+
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            e.currentTarget.classList.add('active');
+            currentTab = e.currentTarget.dataset.tab;
+            renderInsights();
+          });
+        });
+
+        document.getElementById('insightModal').addEventListener('click', (e) => {
+          if (e.target.id === 'insightModal') closeModal();
+        });
+
+      } catch (err) {
+        document.getElementById('takeawaysContainer').innerHTML = '<div class="takeaway-card" style="grid-column: 1/-1; border-color: red;"><p style="color: red;">Error loading data. Check data/catalog.json</p></div>';
       }
-    ];
+    });
 
-    let currentCategory = 'all';
+    // Clean and split text into readable points
+    function cleanText(text) {
+      if (!text) return [];
+      return text.split(/,|-|🔹|\n/).map(s => s.trim()).filter(s => s.length > 5 && !s.startsWith('http'));
+    }
 
-    function renderInsights(data) {
+    function processData() {
+      insights = [];
+      allData.forEach(d => {
+        // 1. Innovation (Use Cases)
+        const useCases = cleanText(d['Use Cases']);
+        useCases.forEach(uc => {
+          insights.push({
+            type: 'innovation',
+            title: uc,
+            domain: d['Domain'],
+            country: d['Country'],
+            source: d['Dataset Name'],
+            link: d['Link'],
+            fullText: useCases,
+            challenges: cleanText(d['Challenges/Notes'])
+          });
+        });
+
+        // 2. Gaps (Challenges)
+        const challenges = cleanText(d['Challenges/Notes']);
+        challenges.forEach(ch => {
+          insights.push({
+            type: 'gap',
+            title: ch,
+            domain: d['Domain'],
+            country: d['Country'],
+            source: d['Dataset Name'],
+            link: d['Link'],
+            fullText: challenges,
+            useCases: useCases
+          });
+        });
+      });
+    }
+
+    function renderTakeaways() {
+      const totalInnovations = insights.filter(i => i.type === 'innovation').length;
+      const totalGaps = insights.filter(i => i.type === 'gap').length;
+      const topDomain = Object.values(allData.reduce((acc, d) => { acc[d.Domain] = (acc[d.Domain]||0)+1; return acc; }, {})).sort((a,b)=>b-a)[0];
+      
+      document.getElementById('takeawaysContainer').innerHTML = `
+        <div class="takeaway-card">
+          <div class="icon"><i class="fas fa-lightbulb"></i></div>
+          <h3>AI Innovations Tracked</h3>
+          <p>${totalInnovations} unique use cases identified across the catalog.</p>
+        </div>
+        <div class="takeaway-card" style="border-left-color: var(--gray);">
+          <div class="icon" style="color: var(--gray);"><i class="fas fa-exclamation-triangle"></i></div>
+          <h3>Data Gaps Identified</h3>
+          <p>${totalGaps} challenges and limitations documented for researchers.</p>
+        </div>
+        <div class="takeaway-card" style="border-left-color: var(--secondary);">
+          <div class="icon" style="color: #d4af37;"><i class="fas fa-chart-line"></i></div>
+          <h3>Most Active Domain</h3>
+          <p>${topDomain || 'N/A'} leads in dataset availability.</p>
+        </div>
+      `;
+    }
+
+    function renderDomainChips() {
+      const domains = [...new Set(allData.map(d => d.Domain))].sort();
+      const container = document.getElementById('domainFilters');
+      domains.forEach(d => {
+        const chip = document.createElement('div');
+        chip.className = 'chip';
+        chip.dataset.filter = d;
+        chip.innerText = d;
+        container.appendChild(chip);
+      });
+    }
+
+    function renderInsights() {
       const grid = document.getElementById('insightsGrid');
-      const noResults = document.getElementById('noResults');
+      const emptyState = document.getElementById('emptyState');
+      const searchTerm = document.getElementById('insightSearch').value.toLowerCase();
+      
       grid.innerHTML = '';
       
-      if (data.length === 0) {
-        noResults.style.display = 'block';
+      const filtered = insights.filter(i => {
+        const matchesTab = i.type === currentTab;
+        const matchesDomain = currentDomain === 'all' || i.domain === currentDomain;
+        const matchesSearch = !searchTerm || 
+          i.title.toLowerCase().includes(searchTerm) || 
+          i.domain.toLowerCase().includes(searchTerm) ||
+          i.country.toLowerCase().includes(searchTerm);
+        return matchesTab && matchesDomain && matchesSearch;
+      });
+
+      if (filtered.length === 0) {
+        emptyState.style.display = 'block';
         return;
       }
-      noResults.style.display = 'none';
+      emptyState.style.display = 'none';
 
-      data.forEach(insight => {
+      // Show top 50 to prevent DOM overload, sorted by relevance
+      filtered.slice(0, 50).forEach((item, index) => {
+        const isGap = item.type === 'gap';
         const card = document.createElement('div');
-        card.className = 'insight-card';
+        card.className = `insight-card ${isGap ? 'challenge' : ''}`;
+        card.onclick = () => openModal(item);
         card.innerHTML = `
-          <div class="insight-image">
-            <i class="fas ${insight.icon}"></i>
+          <div class="ic-header">
+            <span class="ic-badge ${isGap ? 'badge-gap' : 'badge-innovation'}">${isGap ? 'Data Gap' : 'Innovation'}</span>
+            <span style="font-size:0.75rem; color:var(--gray);">#${index + 1}</span>
           </div>
-          <div class="insight-content">
-            <div class="insight-meta">
-              <span><i class="fas fa-tag"></i> ${insight.category}</span>
-              <span><i class="fas fa-calendar"></i> ${insight.date}</span>
-            </div>
-            <h3><a href="#">${insight.title}</a></h3>
-            <p>${insight.excerpt}</p>
-            <a href="#" class="read-more">Read Full Insight <i class="fas fa-arrow-right"></i></a>
+          <h3 class="ic-title">${item.title}</h3>
+          <div class="ic-meta">
+            <span><i class="fas fa-tag"></i> ${item.domain}</span>
+            <span><i class="fas fa-globe-africa"></i> ${item.country}</span>
+          </div>
+          <div class="ic-footer">
+            <span style="font-size:0.8rem; color:var(--gray);"><i class="fas fa-database"></i> ${item.source.substring(0, 30)}${item.source.length>30?'...':''}</span>
+            <span class="ic-read-more">Read More <i class="fas fa-arrow-right"></i></span>
           </div>
         `;
         grid.appendChild(card);
       });
     }
 
-    function filterData() {
-      const query = document.getElementById('insightSearch').value.toLowerCase();
+    function openModal(item) {
+      const isGap = item.type === 'gap';
+      document.getElementById('modalBadges').innerHTML = `
+        <span class="ic-badge ${isGap ? 'badge-gap' : 'badge-innovation'}" style="display:inline-block;">${isGap ? 'Data Gap / Challenge' : 'Innovation / Use Case'}</span>
+        <span class="ic-badge" style="background:#e9ecef; color:#495057; display:inline-block; margin-left:5px;">${item.domain}</span>
+      `;
+      document.getElementById('modalTitle').innerText = item.title;
+      document.getElementById('modalMeta').innerHTML = `
+        <span><i class="fas fa-globe-africa"></i> ${item.country}</span>
+        <span><i class="fas fa-database"></i> ${item.source}</span>
+      `;
       
-      const filtered = insightsData.filter(i => {
-        const matchesCategory = currentCategory === 'all' || i.category === currentCategory;
-        const matchesSearch = i.title.toLowerCase().includes(query) || 
-                              i.category.toLowerCase().includes(query) ||
-                              i.excerpt.toLowerCase().includes(query);
-        return matchesCategory && matchesSearch;
-      });
+      document.getElementById('modalSectionTitle').innerHTML = isGap 
+        ? '<i class="fas fa-exclamation-triangle"></i> Challenge Details' 
+        : '<i class="fas fa-lightbulb"></i> Use Case Details';
       
-      renderInsights(filtered);
+      const contentDiv = document.getElementById('modalContent');
+      const list = item.fullText.map(t => `<li>${t}</li>`).join('');
+      contentDiv.innerHTML = `<ul>${list}</ul>`;
+
+      document.getElementById('modalSource').innerText = `This insight was extracted from the dataset: "${item.source}"`;
+      
+      const footer = document.getElementById('modalFooter');
+      if (item.link && item.link.startsWith('http')) {
+        footer.innerHTML = `<a href="${item.link}" target="_blank" class="btn-access"><i class="fas fa-external-link-alt"></i> View Source Dataset</a>`;
+        footer.style.display = 'flex';
+      } else {
+        footer.style.display = 'none';
+      }
+
+      document.getElementById('insightModal').classList.add('show');
+      document.body.style.overflow = 'hidden';
     }
 
-    // Event Listeners
-    document.getElementById('insightSearch').addEventListener('input', filterData);
-    
-    document.getElementById('categoryFilters').addEventListener('click', (e) => {
-      if (e.target.classList.contains('filter-btn')) {
-        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-        e.target.classList.add('active');
-        currentCategory = e.target.getAttribute('data-filter');
-        filterData();
-      }
-    });
-
-    // Mobile Menu
-    function toggleMenu() { document.getElementById('navList').classList.toggle('active'); }
-    document.addEventListener('click', function(event) {
-      const navList = document.getElementById('navList');
-      const toggle = document.querySelector('.mobile-menu-toggle');
-      if (!navList.contains(event.target) && !toggle.contains(event.target)) navList.classList.remove('active');
-    });
-
-    // Initial Render
-    document.addEventListener('DOMContentLoaded', () => renderInsights(insightsData));
+    function closeModal() {
+      document.getElementById('insightModal').classList.remove('show');
+      document.body.style.overflow = 'auto';
+    }
   </script>
 </body>
 </html>
