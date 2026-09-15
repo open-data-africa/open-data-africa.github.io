@@ -13,9 +13,6 @@
   
   <!-- Shared Design System -->
   <link rel="stylesheet" href="css/style.css">
-  
-  <!-- Engagement Metrics Engine -->
-  <script src="js/metrics.js"></script>
 
   <style>
     /* Page-Specific Styles */
@@ -33,6 +30,66 @@
     .stat-box:hover { transform: translateY(-5px); }
     .stat-box .num { font-size: 2.5rem; font-weight: 800; color: var(--german-black); display: block; }
     .stat-box .lbl { font-size: 0.85rem; color: var(--gray); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+
+    /* Global Metrics Section */
+    .global-metrics {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      padding: 30px;
+      margin-bottom: 40px;
+      border: 1px solid var(--gray-light);
+    }
+    .global-metrics h3 {
+      font-size: 1.3rem;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--german-black);
+    }
+    .global-metrics h3 i { color: var(--german-red); }
+    
+    .metrics-summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    .metric-card {
+      background: rgba(200, 16, 46, 0.05);
+      border: 1px solid rgba(200, 16, 46, 0.2);
+      border-radius: var(--radius);
+      padding: 20px;
+      text-align: center;
+    }
+    .metric-card .val { font-size: 2rem; font-weight: 800; color: var(--german-red); display: block; }
+    .metric-card .lbl { font-size: 0.85rem; color: var(--gray); font-weight: 600; text-transform: uppercase; }
+
+    .stats-table-container { overflow-x: auto; }
+    .stats-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+    .stats-table th {
+      background: var(--light);
+      color: var(--german-black);
+      font-weight: 700;
+      text-align: left;
+      padding: 14px 16px;
+      border-bottom: 2px solid var(--gray-light);
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      letter-spacing: 0.5px;
+    }
+    .stats-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--gray-light);
+      color: var(--german-black);
+    }
+    .stats-table tr:hover td { background: var(--light); }
+    .stats-table td:first-child { font-weight: 600; display: flex; align-items: center; gap: 8px; }
 
     .controls-section { background: var(--white); padding: 24px; border-radius: var(--radius-lg); box-shadow: var(--shadow); margin-bottom: 30px; border: 1px solid var(--gray-light); display: flex; flex-wrap: wrap; gap: 15px; align-items: center; justify-content: space-between; }
     .search-wrap { position: relative; flex-grow: 1; max-width: 400px; }
@@ -78,7 +135,7 @@
     .btn-details { flex: 1; background: var(--light); color: var(--german-black); padding: 10px; border-radius: 8px; text-align: center; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: var(--transition); border: 1px solid var(--gray-light); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
     .btn-details:hover { background: var(--gray-light); border-color: var(--gray); }
 
-    /* Modal Styles (Reused from other pages for consistency) */
+    /* Modal Styles */
     .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; opacity: 0; transition: opacity 0.3s ease; }
     .modal-overlay.show { display: flex; opacity: 1; }
     .modal-content { background: var(--white); border-radius: 16px; max-width: 700px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative; transform: translateY(20px); transition: transform 0.3s ease; box-shadow: 0 25px 50px rgba(0,0,0,0.25); }
@@ -138,9 +195,35 @@
   </header>
 
   <main class="container">
-    <!-- Live Stats Row -->
-    <div class="stats-row" id="statsRow">
-      <div class="stat-box"><span class="num">...</span><span class="lbl">Loading</span></div>
+    <!-- Global Metrics Section (Restored & Upgraded) -->
+    <div class="global-metrics">
+      <h3><i class="fas fa-chart-line"></i> Global Engagement Metrics</h3>
+      <div class="metrics-summary">
+        <div class="metric-card">
+          <span class="val" id="globalVisits">Loading...</span>
+          <span class="lbl">Total Page Visits</span>
+        </div>
+        <div class="metric-card">
+          <span class="val" id="globalDownloads">Loading...</span>
+          <span class="lbl">Total Dataset Downloads</span>
+        </div>
+      </div>
+      
+      <h4 style="margin-bottom: 15px; font-size: 1rem; color: var(--gray);"><i class="fas fa-globe-africa"></i> Downloads & Visits by Country</h4>
+      <div class="stats-table-container">
+        <table class="stats-table">
+          <thead>
+            <tr>
+              <th>Country</th>
+              <th>Visits</th>
+              <th>Downloads</th>
+            </tr>
+          </thead>
+          <tbody id="countryStats">
+            <tr><td colspan="3" style="text-align: center; color: var(--gray);">Loading country data...</td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <!-- Search & Filter Controls -->
@@ -253,6 +336,91 @@
     // Mobile menu toggle
     function toggleMenu() { document.getElementById('navList').classList.toggle('active'); }
 
+    // ==========================================
+    // GLOBAL METRICS TRACKING (JSONBin.io)
+    // ==========================================
+    const BIN_ID = "693a77f7d0ea881f40216983";
+    const API_KEY = "$2a$10$OX/sVa0zzJhjrVuZ7Ntdn.vR1lJmoipoZ/2xxFrnc16mCaDHzw5m2";
+
+    async function getCountry() {
+      try {
+        const res = await fetch("https://ipapi.co/json/");
+        const data = await res.json();
+        return data.country_name || "Unknown";
+      } catch {
+        return "Unknown";
+      }
+    }
+
+    async function getStats() {
+      try {
+        const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+          headers: { "X-Master-Key": API_KEY }
+        });
+        const json = await res.json();
+        return json.record;
+      } catch (err) {
+        console.error("Failed to fetch stats:", err);
+        return { visitors: 0, downloads: 0, countries: {} };
+      }
+    }
+
+    async function updateStats(updated) {
+      try {
+        await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Master-Key": API_KEY
+          },
+          body: JSON.stringify(updated)
+        });
+      } catch (err) {
+        console.error("Failed to update stats:", err);
+      }
+    }
+
+    async function trackVisitor() {
+      const country = await getCountry();
+      const stats = await getStats();
+      stats.visitors = (stats.visitors || 0) + 1;
+      if (!stats.countries[country]) stats.countries[country] = { visits: 0, downloads: 0 };
+      stats.countries[country].visits += 1;
+      await updateStats(stats);
+      renderGlobalStats(stats);
+    }
+
+    async function trackDownload() {
+      const country = await getCountry();
+      const stats = await getStats();
+      stats.downloads = (stats.downloads || 0) + 1;
+      if (!stats.countries[country]) stats.countries[country] = { visits: 0, downloads: 0 };
+      stats.countries[country].downloads += 1;
+      await updateStats(stats);
+      renderGlobalStats(stats);
+    }
+
+    function renderGlobalStats(stats) {
+      document.getElementById("globalVisits").textContent = stats.visitors || 0;
+      document.getElementById("globalDownloads").textContent = stats.downloads || 0;
+
+      let rows = "";
+      const sortedCountries = Object.entries(stats.countries || {}).sort((a, b) => (b[1].visits + b[1].downloads) - (a[1].visits + a[1].downloads));
+      
+      for (const [country, data] of sortedCountries) {
+        rows += `
+          <tr>
+            <td><i class="fas fa-globe-africa" style="color: var(--german-gold);"></i> ${country}</td>
+            <td>${data.visits || 0}</td>
+            <td>${data.downloads || 0}</td>
+          </tr>`;
+      }
+      document.getElementById("countryStats").innerHTML = rows || '<tr><td colspan="3" style="text-align: center; color: var(--gray);">No country data available yet.</td></tr>';
+    }
+
+    // ==========================================
+    // DATASET RENDERING & LOCAL TRACKING
+    // ==========================================
     document.addEventListener('DOMContentLoaded', async () => {
       try {
         // 1. Load Data
@@ -269,37 +437,20 @@
         countries.forEach(c => document.getElementById('countryFilter').innerHTML += `<option value="${c}">${c}</option>`);
         types.forEach(t => document.getElementById('typeFilter').innerHTML += `<option value="${t}">${t}</option>`);
 
-        // 3. Render Stats
-        const totalDatasets = allData.length;
-        const totalDomains = domains.length;
-        const totalCountries = countries.length;
-        
-        // Calculate total global downloads from metrics
-        const globalMetrics = JSON.parse(localStorage.getItem('oda_engagement') || '{}');
-        const totalDownloads = Object.values(globalMetrics).reduce((sum, m) => sum + (m.downloads || 0), 0);
-
-        document.getElementById('statsRow').innerHTML = `
-          <div class="stat-box"><span class="num">${totalDatasets}</span><span class="lbl">Total Datasets</span></div>
-          <div class="stat-box"><span class="num">${totalDomains}</span><span class="lbl">Domains</span></div>
-          <div class="stat-box"><span class="num">${totalCountries}</span><span class="lbl">Countries</span></div>
-          <div class="stat-box"><span class="num">${totalDownloads}</span><span class="lbl">Total Downloads</span></div>
-        `;
-
-        // 4. Render Grid
+        // 3. Render Grid
         renderGrid();
 
-        // 5. Event Listeners
+        // 4. Event Listeners for Filters
         document.getElementById('datasetSearch').addEventListener('input', renderGrid);
         document.getElementById('domainFilter').addEventListener('change', renderGrid);
         document.getElementById('countryFilter').addEventListener('change', renderGrid);
         document.getElementById('typeFilter').addEventListener('change', renderGrid);
 
-        // Track Excel Download
-        document.getElementById('excelDownloadBtn').addEventListener('click', () => {
-          if (typeof EngagementTracker !== 'undefined') {
-            EngagementTracker.track('Full_Catalog_Excel', 'downloads');
-          }
-        });
+        // 5. Track Excel Download
+        document.getElementById('excelDownloadBtn').addEventListener('click', trackDownload);
+
+        // 6. Initialize Global Visitor Tracking
+        trackVisitor();
 
         // Modal close on outside click
         document.getElementById('detailModal').addEventListener('click', (e) => {
@@ -308,7 +459,7 @@
 
       } catch (err) {
         console.error(err);
-        document.getElementById('statsRow').innerHTML = '<div class="stat-box" style="grid-column: 1/-1; border-color: red;"><span class="num" style="color: red;">Error</span><span class="lbl">Check data/catalog.json</span></div>';
+        document.getElementById('datasetGrid').innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><h3>Error Loading Data</h3><p>Please ensure data/catalog.json exists.</p></div>';
       }
     });
 
@@ -349,15 +500,13 @@
         const useCases = cleanText(d['Use Cases']);
         const excerpt = useCases.length > 0 ? useCases[0] : 'No specific use cases listed.';
         
-        // Get engagement stats for this specific dataset
+        // Get local engagement stats for this specific dataset
         let views = 0, downloads = 0;
-        if (typeof EngagementTracker !== 'undefined') {
-          const id = EngagementTracker.getId(d['Dataset Name']);
-          const metrics = JSON.parse(localStorage.getItem('oda_engagement') || '{}');
-          const stats = metrics[id] || { views: 0, downloads: 0 };
-          views = stats.views;
-          downloads = stats.downloads;
-        }
+        const localMetrics = JSON.parse(localStorage.getItem('oda_engagement') || '{}');
+        const id = safeName.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 20);
+        const stats = localMetrics[id] || { views: 0, downloads: 0 };
+        views = stats.views;
+        downloads = stats.downloads;
 
         const card = document.createElement('div');
         card.className = 'ds-card';
@@ -365,7 +514,7 @@
           <div class="ds-header">
             <span class="ds-badge">${d.Domain}</span>
           </div>
-          <h3 class="ds-title"><a href="${d['Link']}" target="_blank" onclick="if(typeof EngagementTracker!=='undefined') EngagementTracker.track('${safeName}', 'views')">${d['Dataset Name']}</a></h3>
+          <h3 class="ds-title"><a href="${d['Link']}" target="_blank" onclick="trackLocalView('${safeName}')">${d['Dataset Name']}</a></h3>
           <div class="ds-meta">
             <span><i class="fas fa-globe-africa"></i> ${d.Country}</span>
             <span><i class="fas fa-shapes"></i> ${d['Data Type']}</span>
@@ -377,7 +526,7 @@
             <span><i class="fas fa-download"></i> ${downloads} Downloads</span>
           </div>
           <div class="ds-actions">
-            <a href="${d['Link']}" target="_blank" class="btn-access" onclick="if(typeof EngagementTracker!=='undefined') { EngagementTracker.track('${safeName}', 'views'); EngagementTracker.track('${safeName}', 'downloads'); }">
+            <a href="${d['Link']}" target="_blank" class="btn-access" onclick="trackLocalDownload('${safeName}'); trackDownload();">
               <i class="fas fa-external-link-alt"></i> Access
             </a>
             <button class="btn-details" onclick="openModal('${safeName}')">
@@ -389,12 +538,28 @@
       });
     }
 
+    // Local tracking helpers
+    function trackLocalView(name) {
+      const id = name.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 20);
+      let m = JSON.parse(localStorage.getItem('oda_engagement') || '{}');
+      if (!m[id]) m[id] = { views: 0, downloads: 0 };
+      m[id].views++;
+      localStorage.setItem('oda_engagement', JSON.stringify(m));
+    }
+
+    function trackLocalDownload(name) {
+      const id = name.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 20);
+      let m = JSON.parse(localStorage.getItem('oda_engagement') || '{}');
+      if (!m[id]) m[id] = { views: 0, downloads: 0 };
+      m[id].downloads++;
+      localStorage.setItem('oda_engagement', JSON.stringify(m));
+    }
+
     function openModal(name) {
       const d = allData.find(item => item['Dataset Name'] === name);
       if (!d) return;
 
-      // Track view on modal open
-      if (typeof EngagementTracker !== 'undefined') EngagementTracker.track(name, 'views');
+      trackLocalView(name);
 
       document.getElementById('modalTitle').innerText = d['Dataset Name'];
       document.getElementById('modalBadges').innerHTML = `
@@ -424,14 +589,12 @@
         ucList.innerHTML = '<li>No specific use cases listed.</li>';
       }
 
-      // Show engagement stats in modal
-      if (typeof EngagementTracker !== 'undefined') {
-        const id = EngagementTracker.getId(name);
-        const metrics = JSON.parse(localStorage.getItem('oda_engagement') || '{}');
-        const stats = metrics[id] || { views: 0, downloads: 0 };
-        document.getElementById('modalViews').innerText = stats.views;
-        document.getElementById('modalDownloads').innerText = stats.downloads;
-      }
+      // Show local engagement stats in modal
+      const id = name.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 20);
+      const metrics = JSON.parse(localStorage.getItem('oda_engagement') || '{}');
+      const stats = metrics[id] || { views: 0, downloads: 0 };
+      document.getElementById('modalViews').innerText = stats.views;
+      document.getElementById('modalDownloads').innerText = stats.downloads;
 
       document.getElementById('detailModal').classList.add('show');
       document.body.style.overflow = 'hidden';
