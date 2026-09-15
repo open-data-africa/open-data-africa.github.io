@@ -64,17 +64,102 @@
     .flag-bar .red { flex: 1; background: var(--german-red); }
     .flag-bar .gold { flex: 1; background: var(--german-gold); }
 
-    /* ===== NAVIGATION ===== */
-    nav { background: var(--german-black); padding: 1rem 0; position: sticky; top: 6px; z-index: 1000; box-shadow: var(--shadow-md); }
+    /* ===== IMPROVED NAVIGATION WITH DROPDOWN ===== */
+    nav {
+      background: var(--german-black);
+      padding: 1rem 0;
+      position: sticky;
+      top: 6px; /* Accounts for the 6px flag bar */
+      z-index: 1000;
+      box-shadow: var(--shadow-md);
+    }
     .nav-container { display: flex; justify-content: space-between; align-items: center; }
-    .nav-logo { color: var(--white); font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 1.2rem; display: flex; align-items: center; gap: 10px; text-decoration: none; }
-    .nav-logo:hover { color: var(--white); }
+    
+    .nav-logo {
+      color: var(--white); font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 1.2rem;
+      display: flex; align-items: center; gap: 10px; text-decoration: none; transition: var(--transition);
+    }
+    .nav-logo:hover { color: var(--german-gold); transform: scale(1.02); }
     .nav-logo i { color: var(--german-gold); }
-    .nav-list { display: flex; gap: 1.5rem; margin: 0; padding: 0; }
-    .nav-list li a { color: rgba(255,255,255,0.85); font-weight: 500; font-size: 0.95rem; padding: 8px 16px; border-radius: var(--radius); transition: var(--transition); text-decoration: none; display: flex; align-items: center; gap: 6px; }
-    .nav-list li a:hover, .nav-list li a[aria-current="page"] { background: rgba(255,255,255,0.1); color: var(--white); }
-    .nav-list li a[aria-current="page"] { border-bottom: 2px solid var(--german-gold); background: transparent; }
-    .mobile-menu-toggle { display: none; background: transparent; border: none; color: var(--white); font-size: 1.5rem; cursor: pointer; }
+    
+    .nav-list { display: flex; gap: 1.5rem; margin: 0; padding: 0; list-style: none; align-items: center; }
+    .nav-list li a {
+      color: rgba(255,255,255,0.85); font-weight: 500; font-size: 0.95rem;
+      padding: 8px 16px; border-radius: var(--radius); transition: var(--transition); text-decoration: none;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .nav-list li a:hover { background: rgba(255,255,255,0.1); color: var(--white); }
+    
+    /* Active State for regular links */
+    .nav-list li a[aria-current="page"] {
+      border-bottom: 2px solid var(--german-gold); background: transparent; color: var(--white);
+    }
+
+    /* ===== DROPDOWN STYLES ===== */
+    .nav-dropdown { position: relative; }
+    .dropdown-toggle { cursor: pointer; }
+    
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: var(--white);
+      min-width: 180px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      padding: 8px 0;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(10px);
+      transition: var(--transition);
+      z-index: 100;
+      list-style: none;
+      border: 1px solid var(--border);
+    }
+    
+    /* Show dropdown on hover (Desktop) */
+    .nav-dropdown:hover .dropdown-menu {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+    
+    .dropdown-menu li a {
+      color: var(--german-black);
+      padding: 10px 20px;
+      display: block;
+      font-size: 0.9rem;
+      border-bottom: none; /* Remove active border from dropdown items */
+    }
+    .dropdown-menu li a:hover {
+      background: var(--light);
+      color: var(--german-red);
+    }
+    
+    /* Active state for the dropdown parent when on a grouped page */
+    .nav-dropdown.active .dropdown-toggle {
+      color: var(--german-gold);
+      border-bottom: 2px solid var(--german-gold);
+    }
+
+    /* Contact CTA Button */
+    .nav-cta {
+      background: var(--german-red) !important;
+      color: var(--white) !important;
+      border-radius: 50px !important;
+      padding: 8px 20px !important;
+      font-weight: 600 !important;
+    }
+    .nav-cta:hover {
+      background: #a00d26 !important;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(200, 16, 46, 0.3);
+    }
+
+    .mobile-menu-toggle {
+      display: none; background: transparent; border: none; color: var(--white);
+      font-size: 1.5rem; cursor: pointer;
+    }
 
     /* ===== ANIMATED HERO SECTION ===== */
     header.hero {
@@ -256,11 +341,45 @@
     .footer-social a:hover { background: var(--german-red); color: var(--white); }
     .footer-bottom { border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 30px; text-align: center; opacity: 0.7; font-size: 0.9rem; }
 
-    /* ===== RESPONSIVE ===== */
+    /* ===== MOBILE RESPONSIVE ===== */
     @media (max-width: 768px) {
       .mobile-menu-toggle { display: block; }
-      .nav-list { display: none; flex-direction: column; width: 100%; position: absolute; top: 100%; left: 0; background: var(--german-black); padding: 20px; box-shadow: var(--shadow-lg); }
+      .nav-list {
+        display: none; flex-direction: column; width: 100%; position: absolute;
+        top: 100%; left: 0; background: var(--german-black); padding: 20px; 
+        box-shadow: var(--shadow-lg); align-items: flex-start; gap: 0;
+      }
       .nav-list.active { display: flex; }
+      .nav-list li { width: 100%; }
+      .nav-list li a { 
+        padding: 12px 16px; width: 100%; border-bottom: 1px solid rgba(255,255,255,0.05); 
+      }
+      .nav-list li a[aria-current="page"] { border-bottom: 1px solid rgba(255,255,255,0.05); border-left: 3px solid var(--german-gold); }
+      
+      /* Mobile Dropdown Behavior */
+      .nav-dropdown { width: 100%; }
+      .dropdown-menu {
+        position: static;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        box-shadow: none;
+        background: rgba(255,255,255,0.05);
+        margin-top: 0;
+        display: none; /* Hidden by default on mobile */
+        border: none;
+        padding-left: 20px;
+      }
+      .nav-dropdown.open .dropdown-menu { display: block; }
+      .dropdown-menu li a { color: rgba(255,255,255,0.7); font-size: 0.9rem; }
+      .dropdown-menu li a:hover { background: rgba(255,255,255,0.1); color: var(--german-gold); }
+      
+      .nav-cta { 
+        background: var(--german-gold) !important; 
+        color: var(--german-black) !important; 
+        text-align: center; justify-content: center; margin-top: 10px;
+      }
+
       header.hero h1 { font-size: 2.2rem; }
       header.hero p { font-size: 1.05rem; }
       .hero-cta { flex-direction: column; align-items: center; }
@@ -285,25 +404,38 @@
     <div class="gold"></div>
   </div>
 
-  <!-- UNIFORM NAVIGATION MENU -->
+  <!-- IMPROVED NAVIGATION MENU -->
   <nav>
     <div class="wrapper nav-container">
-      <a href="index.html" class="nav-logo">
+      <!-- Logo acts as the Home link -->
+      <a href="index.html" class="nav-logo" aria-current="page" title="Go to Home">
         <i class="fas fa-globe-africa"></i> Open Data Africa
       </a>
+      
       <button class="mobile-menu-toggle" aria-label="Toggle menu" onclick="toggleMenu()">
         <i class="fas fa-bars"></i>
       </button>
+      
       <ul class="nav-list" id="navList">
-        <li><a href="index.html" aria-current="page"><i class="fas fa-home"></i> Home</a></li>
-        <li><a href="about.html"><i class="fas fa-info-circle"></i> About</a></li>
-        <li><a href="datasets.html"><i class="fas fa-database"></i> Datasets</a></li>
-        <li><a href="use-cases.html"><i class="fas fa-lightbulb"></i> Use Cases</a></li>
-        <li><a href="dashboard.html"><i class="fas fa-chart-bar"></i> Dashboard</a></li>
-        <li><a href="countries.html"><i class="fas fa-map-marked-alt"></i> Countries</a></li>
-        <li><a href="insights.html"><i class="fas fa-file-alt"></i> Insights</a></li>
-        <li><a href="contribute.html"><i class="fas fa-upload"></i> Contribute</a></li>
-        <li><a href="aodria.html"><i class="fas fa-award"></i> AODRIA</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="datasets.html">Datasets</a></li>
+        <li><a href="use-cases.html">Use Cases</a></li>
+        <li><a href="dashboard.html">Dashboard</a></li>
+        
+        <!-- Grouped Dropdown -->
+        <li class="nav-dropdown" id="exploreDropdown">
+          <a href="#" class="dropdown-toggle" onclick="toggleMobileDropdown(event)">
+            Explore <i class="fas fa-chevron-down" style="font-size: 0.7rem; margin-left: 4px;"></i>
+          </a>
+          <ul class="dropdown-menu">
+            <li><a href="countries.html">Countries</a></li>
+            <li><a href="insights.html">Insights</a></li>
+            <li><a href="resources.html">Resources</a></li>
+          </ul>
+        </li>
+        
+        <li><a href="aodria.html">AODRIA</a></li>
+        <li><a href="contact.html" class="nav-cta">Contact</a></li>
       </ul>
     </div>
   </nav>
@@ -517,16 +649,28 @@
 
   <!-- SCRIPTS -->
   <script>
-    // Mobile Menu Toggle
+    // Toggle main mobile menu
     function toggleMenu() {
-      const navList = document.getElementById('navList');
-      navList.classList.toggle('active');
+      document.getElementById('navList').classList.toggle('active');
     }
+
+    // Toggle dropdown on mobile devices
+    function toggleMobileDropdown(event) {
+      if (window.innerWidth <= 768) {
+        event.preventDefault(); // Prevent jump to top
+        document.getElementById('exploreDropdown').classList.toggle('open');
+      }
+    }
+
+    // Close menu when clicking outside
     document.addEventListener('click', function(event) {
       const navList = document.getElementById('navList');
       const toggle = document.querySelector('.mobile-menu-toggle');
+      const exploreDropdown = document.getElementById('exploreDropdown');
+      
       if (!navList.contains(event.target) && !toggle.contains(event.target)) {
         navList.classList.remove('active');
+        if (exploreDropdown) exploreDropdown.classList.remove('open');
       }
     });
 
