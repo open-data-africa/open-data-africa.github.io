@@ -7,101 +7,143 @@
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   
   <link rel="stylesheet" href="css/style.css">
 
   <style>
-    /* Modern Dashboard Styles */
+    /* ===== BASE & LAYOUT ===== */
     :root {
       --primary: #c8102e; --secondary: #ffce00; --dark: #1a1a1a; 
-      --light: #f8f9fa; --gray: #6c757d; --border: #e9ecef;
-      --shadow: 0 4px 6px rgba(0,0,0,0.05); --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
-      --radius: 12px; --transition: all 0.3s ease;
+      --light: #f8f9fa; --gray: #6c757d; --border: #dee2e6;
+      --shadow-sm: 0 2px 4px rgba(0,0,0,0.04); --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+      --radius: 10px; --transition: all 0.2s ease;
     }
-    body { font-family: 'Inter', sans-serif; background: var(--light); color: var(--dark); margin: 0; }
+    body { font-family: 'Inter', sans-serif; background: #f0f2f5; color: var(--dark); margin: 0; }
     .wrapper { max-width: 1300px; margin: 0 auto; padding: 0 24px; }
-    
-    /* Hero & Stats */
-    .dash-hero { background: linear-gradient(135deg, var(--dark) 0%, #2d2d2d 100%); padding: 60px 0 100px; color: white; text-align: center; position: relative; overflow: hidden; }
-    .dash-hero::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 60px; background: var(--light); clip-path: polygon(0 100%, 100% 100%, 100% 0); }
-    .dash-hero h1 { font-family: 'Poppins', sans-serif; font-size: 2.5rem; margin: 0 0 10px 0; }
-    .dash-hero h1 span { color: var(--secondary); }
-    .dash-hero p { opacity: 0.8; max-width: 600px; margin: 0 auto; font-size: 1.1rem; }
-    
-    .stats-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: -60px; position: relative; z-index: 10; margin-bottom: 40px; }
-    .stat-card { background: white; padding: 24px; border-radius: var(--radius); box-shadow: var(--shadow-lg); text-align: center; border-top: 4px solid var(--primary); transition: var(--transition); }
-    .stat-card:hover { transform: translateY(-5px); }
-    .stat-card .num { font-size: 2.5rem; font-weight: 800; color: var(--dark); display: block; }
-    .stat-card .lbl { font-size: 0.85rem; color: var(--gray); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
 
-    /* Charts Section */
-    .charts-section { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 24px; margin-bottom: 40px; }
-    .chart-box { background: white; padding: 24px; border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--border); }
-    .chart-box h3 { margin: 0 0 20px 0; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; }
+    /* ===== ANIMATED HERO SECTION ===== */
+    .dash-hero { 
+      background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); 
+      padding: 80px 0 100px; text-align: center; color: white; position: relative; 
+      overflow: hidden; border-bottom: 4px solid var(--secondary);
+    }
+    .dash-hero::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background-image: radial-gradient(circle at 20% 50%, rgba(200, 16, 46, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(255, 206, 0, 0.1) 0%, transparent 50%);
+      opacity: 0.6; pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255, 206, 0, 0.15); color: var(--secondary);
+      padding: 8px 16px; border-radius: 50px; font-size: 0.85rem; font-weight: 600;
+      margin-bottom: 20px; border: 1px solid rgba(255, 206, 0, 0.3);
+      animation: fadeInDown 0.8s ease both; position: relative; z-index: 2;
+    }
+    .dash-hero h1 { 
+      font-family: 'Poppins', sans-serif; 
+      font-size: 3.2rem; 
+      font-weight: 800;
+      margin: 0 0 15px 0; 
+      color: #ffffff; 
+      text-shadow: 0 4px 20px rgba(255, 206, 0, 0.3);
+      animation: fadeInUp 0.8s ease 0.1s both;
+      letter-spacing: -1px;
+      position: relative; z-index: 2;
+    }
+    .dash-hero h1 span { 
+      color: var(--secondary); 
+      display: inline-block;
+      animation: pulseGlow 2.5s ease-in-out infinite alternate;
+    }
+    @keyframes pulseGlow {
+      from { text-shadow: 0 0 10px rgba(255, 206, 0, 0.4); }
+      to { text-shadow: 0 0 25px rgba(255, 206, 0, 0.8), 0 0 10px rgba(255, 255, 255, 0.6); }
+    }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+    
+    .dash-hero p { 
+      opacity: 0.9; max-width: 700px; margin: 0 auto; font-size: 1.1rem; line-height: 1.6; 
+      animation: fadeInUp 0.8s ease 0.2s both; position: relative; z-index: 2;
+    }
+
+    /* ===== DASHBOARD CONTAINERS (Clear Borders & Intuitive Look) ===== */
+    .stats-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: -50px; position: relative; z-index: 10; margin-bottom: 30px; }
+    .stat-card { background: white; padding: 24px; border-radius: var(--radius); box-shadow: var(--shadow-sm); text-align: center; border: 1px solid var(--border); border-top: 4px solid var(--primary); transition: var(--transition); }
+    .stat-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border-color: var(--secondary); }
+    .stat-card .num { font-size: 2.2rem; font-weight: 800; color: var(--primary); display: block; }
+    .stat-card .lbl { font-size: 0.8rem; color: var(--gray); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 5px; }
+
+    .charts-section { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 24px; margin-bottom: 30px; }
+    .chart-box { background: white; padding: 24px; border-radius: var(--radius); box-shadow: var(--shadow-sm); border: 1px solid var(--border); }
+    .chart-box h3 { margin: 0 0 20px 0; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--light); padding-bottom: 12px; }
     .chart-box h3 i { color: var(--primary); }
     .chart-wrap { position: relative; height: 280px; }
 
-    /* Search & Filters */
-    .controls-section { background: white; padding: 24px; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 30px; border: 1px solid var(--border); }
-    .search-wrap { position: relative; margin-bottom: 20px; }
-    .search-wrap input { width: 100%; padding: 14px 20px 14px 50px; border: 1px solid var(--border); border-radius: 50px; font-size: 1rem; outline: none; transition: var(--transition); font-family: inherit; }
-    .search-wrap input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(200, 16, 46, 0.1); }
-    .search-wrap i { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: var(--gray); }
+    .controls-section { background: white; padding: 20px 24px; border-radius: var(--radius); box-shadow: var(--shadow-sm); margin-bottom: 24px; border: 1px solid var(--border); display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between; }
+    .search-wrap { position: relative; flex-grow: 1; max-width: 400px; }
+    .search-wrap input { width: 100%; padding: 12px 16px 12px 42px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.95rem; outline: none; transition: var(--transition); font-family: inherit; background: var(--light); }
+    .search-wrap input:focus { border-color: var(--primary); background: white; box-shadow: 0 0 0 3px rgba(200, 16, 46, 0.1); }
+    .search-wrap i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--gray); }
     
     .chips-container { display: flex; flex-wrap: wrap; gap: 10px; }
-    .chip { background: var(--light); border: 1px solid var(--border); padding: 8px 16px; border-radius: 50px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: var(--transition); display: flex; align-items: center; gap: 6px; }
+    .chip { background: var(--light); border: 1px solid var(--border); padding: 8px 16px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: var(--transition); display: flex; align-items: center; gap: 6px; }
     .chip:hover { background: #e9ecef; }
     .chip.active { background: var(--primary); color: white; border-color: var(--primary); }
     .chip i { font-size: 0.7rem; }
 
-    /* Data Table */
-    .table-container { background: white; border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; border: 1px solid var(--border); margin-bottom: 60px; }
-    .table-header { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-    .table-header h3 { margin: 0; font-size: 1.2rem; }
-    .table-header span { color: var(--gray); font-size: 0.9rem; }
+    .table-container { background: white; border-radius: var(--radius); box-shadow: var(--shadow-sm); overflow: hidden; border: 1px solid var(--border); margin-bottom: 60px; }
+    .table-header { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--light); }
+    .table-header h3 { margin: 0; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; }
+    .table-header h3 i { color: var(--primary); }
+    .table-header span { color: var(--gray); font-size: 0.9rem; font-weight: 600; }
     
     table { width: 100%; border-collapse: collapse; }
-    th { background: var(--light); padding: 16px 24px; text-align: left; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gray); cursor: pointer; user-select: none; transition: var(--transition); }
-    th:hover { background: #e9ecef; color: var(--dark); }
+    th { background: var(--light); padding: 14px 20px; text-align: left; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--dark); cursor: pointer; user-select: none; transition: var(--transition); border-bottom: 2px solid var(--border); position: sticky; top: 0; z-index: 2; }
+    th:hover { background: #e9ecef; color: var(--primary); }
     th i { margin-left: 5px; font-size: 0.7rem; opacity: 0.5; }
-    td { padding: 16px 24px; border-bottom: 1px solid var(--border); font-size: 0.95rem; vertical-align: middle; }
+    td { padding: 16px 20px; border-bottom: 1px solid var(--border); font-size: 0.9rem; vertical-align: middle; color: var(--dark); }
     tr:last-child td { border-bottom: none; }
-    tr:hover td { background: #fafbfc; }
+    tr:hover td { background: rgba(255, 206, 0, 0.05); }
     
-    .badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; display: inline-block; }
-    .badge-domain { background: rgba(200, 16, 46, 0.1); color: var(--primary); }
-    .badge-type { background: rgba(255, 206, 0, 0.2); color: #8a6d00; }
+    .badge { padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; display: inline-block; text-transform: uppercase; letter-spacing: 0.5px; }
+    .badge-domain { background: rgba(200, 16, 46, 0.1); color: var(--primary); border: 1px solid rgba(200, 16, 46, 0.2); }
+    .badge-type { background: rgba(255, 206, 0, 0.15); color: #8a6d00; border: 1px solid rgba(255, 206, 0, 0.3); }
     
-    .btn-view { background: transparent; border: 1px solid var(--primary); color: var(--primary); padding: 6px 14px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: var(--transition); }
-    .btn-view:hover { background: var(--primary); color: white; }
+    .btn-view { background: white; border: 1px solid var(--border); color: var(--dark); padding: 6px 14px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: var(--transition); display: inline-flex; align-items: center; gap: 6px; }
+    .btn-view:hover { background: var(--primary); color: white; border-color: var(--primary); }
 
     /* Modal */
     .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; opacity: 0; transition: opacity 0.3s ease; }
     .modal-overlay.show { display: flex; opacity: 1; }
-    .modal-content { background: white; border-radius: 16px; max-width: 700px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative; transform: translateY(20px); transition: transform 0.3s ease; box-shadow: 0 25px 50px rgba(0,0,0,0.25); }
+    .modal-content { background: white; border-radius: 12px; max-width: 700px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative; transform: translateY(20px); transition: transform 0.3s ease; box-shadow: 0 25px 50px rgba(0,0,0,0.25); border: 1px solid var(--border); }
     .modal-overlay.show .modal-content { transform: translateY(0); }
-    .modal-header { padding: 24px; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: white; z-index: 10; border-radius: 16px 16px 0 0; }
-    .modal-header h2 { margin: 0 0 10px 0; font-size: 1.5rem; padding-right: 30px; }
-    .modal-close { position: absolute; top: 24px; right: 24px; background: var(--light); border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; transition: var(--transition); }
-    .modal-close:hover { background: var(--primary); color: white; }
+    .modal-header { padding: 24px; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: white; z-index: 10; border-radius: 12px 12px 0 0; }
+    .modal-header h2 { margin: 0 0 10px 0; font-size: 1.4rem; line-height: 1.4; }
+    .modal-close { position: absolute; top: 24px; right: 24px; background: var(--light); border: 1px solid var(--border); width: 32px; height: 32px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; transition: var(--transition); }
+    .modal-close:hover { background: var(--primary); color: white; border-color: var(--primary); }
     .modal-body { padding: 24px; }
-    .modal-section { margin-bottom: 24px; }
-    .modal-section h4 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: var(--gray); margin: 0 0 12px 0; font-weight: 700; }
-    .modal-section p, .modal-section ul { font-size: 0.95rem; line-height: 1.6; color: #495057; margin: 0; }
+    .modal-section { margin-bottom: 24px; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: var(--light); }
+    .modal-section h4 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: var(--gray); margin: 0 0 12px 0; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+    .modal-section p, .modal-section ul { font-size: 0.95rem; line-height: 1.7; color: var(--dark); margin: 0; }
     .modal-section ul { padding-left: 20px; }
-    .modal-footer { padding: 24px; border-top: 1px solid var(--border); background: var(--light); border-radius: 0 0 16px 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
-    .btn-access { background: var(--primary); color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; transition: var(--transition); border: none; cursor: pointer; }
-    .btn-access:hover { background: #a00d26; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(200, 16, 46, 0.3); }
+    .modal-section ul li { margin-bottom: 8px; }
+    .modal-footer { padding: 24px; border-top: 1px solid var(--border); background: var(--light); border-radius: 0 0 12px 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+    .btn-access { background: var(--primary); color: white; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 8px; transition: var(--transition); border: 1px solid var(--primary); }
+    .btn-access:hover { background: #a00d26; border-color: #a00d26; transform: translateY(-2px); }
 
     .empty-state { text-align: center; padding: 60px 20px; color: var(--gray); }
     .empty-state i { font-size: 3rem; margin-bottom: 15px; opacity: 0.3; }
 
     @media (max-width: 768px) {
-      .dash-hero h1 { font-size: 1.8rem; }
+      .dash-hero h1 { font-size: 2.2rem; }
       .charts-section { grid-template-columns: 1fr; }
+      .controls-section { flex-direction: column; align-items: stretch; }
+      .search-wrap { max-width: 100%; }
       th, td { padding: 12px 16px; font-size: 0.85rem; }
       .hide-mobile { display: none; }
     }
@@ -124,6 +166,9 @@
 
   <header class="dash-hero">
     <div class="wrapper">
+      <div class="hero-badge">
+        <i class="fas fa-chart-line"></i> Real-Time Analytics & Insights
+      </div>
       <h1>Interactive Data <span>Dashboard</span></h1>
       <p>Explore, filter, and analyze the African AI data ecosystem in real-time.</p>
     </div>
@@ -165,7 +210,7 @@
     <!-- Data Table -->
     <div class="table-container">
       <div class="table-header">
-        <h3><i class="fas fa-database" style="color: var(--primary); margin-right: 10px;"></i> Dataset Catalog</h3>
+        <h3><i class="fas fa-database"></i> Dataset Catalog</h3>
         <span id="resultCount">0 datasets</span>
       </div>
       <div style="overflow-x: auto;">
@@ -177,7 +222,7 @@
               <th onclick="sortTable('Country')" class="hide-mobile">Country <i class="fas fa-sort"></i></th>
               <th onclick="sortTable('Data Type')" class="hide-mobile">Type <i class="fas fa-sort"></i></th>
               <th onclick="sortTable('Last Updated')">Updated <i class="fas fa-sort"></i></th>
-              <th style="cursor: default;">Actions</th>
+              <th style="cursor: default; width: 120px;">Actions</th>
             </tr>
           </thead>
           <tbody id="tableBody">
@@ -212,20 +257,20 @@
           <p id="modalChallenges"></p>
         </div>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-          <div class="modal-section">
+          <div class="modal-section" style="margin-bottom: 0;">
             <h4>License</h4>
             <p id="modalLicense"></p>
           </div>
-          <div class="modal-section">
+          <div class="modal-section" style="margin-bottom: 0;">
             <h4>Last Updated</h4>
             <p id="modalUpdated"></p>
           </div>
         </div>
       </div>
       <div class="modal-footer">
-        <div style="font-size: 0.85rem; color: var(--gray);">
-          <i class="fas fa-eye"></i> <span id="modalViews">0</span> views &nbsp;|&nbsp; 
-          <i class="fas fa-download"></i> <span id="modalDownloads">0</span> downloads
+        <div style="font-size: 0.85rem; color: var(--gray); font-weight: 600;">
+          <i class="fas fa-eye" style="color: var(--primary);"></i> <span id="modalViews">0</span> views &nbsp;|&nbsp; 
+          <i class="fas fa-download" style="color: var(--primary);"></i> <span id="modalDownloads">0</span> downloads
         </div>
         <a href="#" id="modalLink" target="_blank" class="btn-access">
           <i class="fas fa-external-link-alt"></i> Access Dataset
@@ -234,7 +279,7 @@
     </div>
   </div>
 
-  <footer style="background: var(--dark); color: white; padding: 40px 0; text-align: center; margin-top: 40px;">
+  <footer style="background: var(--dark); color: white; padding: 40px 0; text-align: center; margin-top: 40px; border-top: 4px solid var(--primary);">
     <div class="wrapper">
       <p>&copy; 2026 Open Data Africa | AI Made in Africa / GIZ AU</p>
     </div>
@@ -245,7 +290,7 @@
     let allData = [];
     let filteredData = [];
     let currentSort = { key: 'Dataset Name', dir: 'asc' };
-    let activeFilters = {}; // { Domain: 'NLP', Country: 'Kenya' }
+    let activeFilters = {}; 
     let charts = {};
 
     document.addEventListener('DOMContentLoaded', async () => {
@@ -260,12 +305,10 @@
         renderTable();
         renderChips();
 
-        // Search Listener
         document.getElementById('globalSearch').addEventListener('input', (e) => {
           applyFilters(e.target.value);
         });
 
-        // Close modal on outside click
         document.getElementById('detailModal').addEventListener('click', (e) => {
           if (e.target.id === 'detailModal') closeModal();
         });
@@ -337,7 +380,7 @@
       } else {
         activeFilters[key] = value;
       }
-      document.getElementById('globalSearch').value = ''; // Clear search when using chips
+      document.getElementById('globalSearch').value = ''; 
       applyFilters('');
     }
 
@@ -413,7 +456,7 @@
             <td class="hide-mobile">${d.Country}</td>
             <td class="hide-mobile"><span class="badge badge-type">${d['Data Type']}</span></td>
             <td>${d['Last Updated']}</td>
-            <td><button class="btn-view" onclick="openModal('${safeName}')">View Details</button></td>
+            <td><button class="btn-view" onclick="openModal('${safeName}')"><i class="fas fa-eye"></i> View</button></td>
           </tr>
         `;
       }).join('');
@@ -423,7 +466,6 @@
       const d = allData.find(item => item['Dataset Name'] === name);
       if (!d) return;
 
-      // Track View
       if (typeof EngagementTracker !== 'undefined') EngagementTracker.track(name, 'views');
 
       document.getElementById('modalTitle').innerText = d['Dataset Name'];
@@ -433,7 +475,6 @@
       document.getElementById('modalChallenges').innerText = d['Challenges/Notes'] || 'No specific challenges noted.';
       document.getElementById('modalLink').href = d.Link;
 
-      // Use Cases as list
       const ucList = document.getElementById('modalUseCases');
       ucList.innerHTML = '';
       if (d['Use Cases']) {
@@ -446,14 +487,12 @@
         ucList.innerHTML = '<li>No specific use cases listed.</li>';
       }
 
-      // Badges
       document.getElementById('modalBadges').innerHTML = `
         <span class="badge badge-domain">${d.Domain}</span>
         <span class="badge badge-type">${d['Data Type']}</span>
-        <span class="badge" style="background:#e9ecef; color:#495057;">${d.Country}</span>
+        <span class="badge" style="background:#e9ecef; color:#495057; border: 1px solid var(--border);">${d.Country}</span>
       `;
 
-      // Engagement Stats
       if (typeof EngagementTracker !== 'undefined') {
         const id = EngagementTracker.getId(name);
         const data = JSON.parse(localStorage.getItem('oda_engagement') || '{}');
