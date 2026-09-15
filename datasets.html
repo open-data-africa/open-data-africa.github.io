@@ -135,7 +135,7 @@
     /* ===== ANIMATED HERO SECTION ===== */
     .ds-hero { 
       background: linear-gradient(135deg, var(--german-black) 0%, #2d2d2d 100%); 
-      padding: 80px 0 100px; text-align: center; color: white; position: relative; 
+      padding: 80px 0 120px; text-align: center; color: white; position: relative; 
       border-bottom: 4px solid var(--german-gold);
       overflow: hidden;
     }
@@ -186,8 +186,22 @@
       position: relative; z-index: 2;
     }
 
+    /* Excel Download Button */
+    .btn-download-hero {
+      background: var(--german-gold); color: var(--german-black); padding: 16px 32px; border-radius: 50px; 
+      text-decoration: none; font-weight: 700; font-size: 1.05rem; display: inline-flex; align-items: center; gap: 10px; 
+      transition: var(--transition); border: 2px solid var(--german-gold); box-shadow: 0 4px 15px rgba(255, 206, 0, 0.3);
+      animation: fadeInUp 0.8s ease 0.3s both;
+      position: relative; z-index: 2; margin-top: 10px;
+    }
+    .btn-download-hero:hover { 
+      background: #e6b800; 
+      transform: translateY(-2px); 
+      box-shadow: 0 6px 20px rgba(255, 206, 0, 0.4); 
+    }
+
     /* ===== CONTROLS ===== */
-    .controls-section { background: white; padding: 20px 24px; border-radius: var(--radius); box-shadow: var(--shadow-sm); margin-bottom: 24px; border: 1px solid var(--border); display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between; }
+    .controls-section { background: white; padding: 20px 24px; border-radius: var(--radius); box-shadow: var(--shadow-sm); margin-top: -40px; position: relative; z-index: 10; margin-bottom: 24px; border: 1px solid var(--border); display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between; }
     .search-wrap { position: relative; flex-grow: 1; max-width: 400px; }
     .search-wrap input { width: 100%; padding: 12px 16px 12px 42px; border: 1px solid var(--border); border-radius: 50px; font-size: 0.95rem; outline: none; transition: var(--transition); font-family: inherit; background: var(--light); }
     .search-wrap input:focus { border-color: var(--german-red); background: white; box-shadow: 0 0 0 3px rgba(200, 16, 46, 0.1); }
@@ -361,6 +375,11 @@
       </div>
       <h1>Discover <span>Open Datasets</span></h1>
       <p>Explore high-quality, AI-ready datasets across Africa's most critical sectors — from agriculture and health to language and climate.</p>
+      
+      <!-- EXCEL DOWNLOAD BUTTON -->
+      <a href="datasets/Open%20Datasets%20and%20Use%20Cases%20Africa.xlsx" class="btn-download-hero" id="excelDownloadBtn" download>
+        <i class="fas fa-file-excel"></i> Download Full Catalog (Excel)
+      </a>
     </div>
   </header>
 
@@ -520,6 +539,16 @@
         document.getElementById('detailModal').addEventListener('click', (e) => {
           if (e.target.id === 'detailModal') closeModal();
         });
+
+        // Track Excel Download
+        const excelBtn = document.getElementById('excelDownloadBtn');
+        if (excelBtn) {
+          excelBtn.addEventListener('click', () => {
+            if (typeof EngagementTracker !== 'undefined') {
+              EngagementTracker.track('Full_Catalog_Excel', 'downloads');
+            }
+          });
+        }
 
       } catch (err) {
         console.error(err);
