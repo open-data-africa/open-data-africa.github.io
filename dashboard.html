@@ -14,19 +14,35 @@
   <link rel="stylesheet" href="css/style.css">
 
   <style>
-    /* ===== BASE & LAYOUT ===== */
+    /* ===== CSS VARIABLES - CONSISTENT WITH INDEX.HTML ===== */
     :root {
-      --primary: #c8102e; --secondary: #ffce00; --dark: #1a1a1a; 
-      --white: #ffffff; --light: #f8f9fa; --gray: #6c757d; --border: #dee2e6;
-      --shadow-sm: 0 2px 4px rgba(0,0,0,0.04); --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
-      --radius: 10px; --transition: all 0.2s ease;
+      --german-black: #1a1a1a;
+      --german-red: #c8102e;
+      --german-gold: #ffce00;
+      --white: #ffffff;
+      --light: #f8f9fa;
+      --gray: #6c757d;
+      --gray-light: #e9ecef;
+      --border: #dee2e6;
+      --shadow-sm: 0 2px 4px rgba(0,0,0,0.04);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+      --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
+      --radius: 10px;
+      --radius-lg: 12px;
+      --transition: all 0.3s ease;
     }
-    body { font-family: 'Inter', sans-serif; background: #f0f2f5; color: var(--dark); margin: 0; }
+    body { font-family: 'Inter', sans-serif; background: #f0f2f5; color: var(--german-black); margin: 0; }
     .wrapper { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
 
-    /* ===== UNIFORM NAVIGATION ===== */
+    /* ===== FLAG BAR ===== */
+    .flag-bar { height: 6px; width: 100%; display: flex; position: fixed; top: 0; z-index: 1001; }
+    .flag-bar .black { flex: 1; background: var(--german-black); }
+    .flag-bar .red { flex: 1; background: var(--german-red); }
+    .flag-bar .gold { flex: 1; background: var(--german-gold); }
+
+    /* ===== IMPROVED NAVIGATION WITH DROPDOWN ===== */
     nav {
-      background: var(--dark);
+      background: var(--german-black);
       padding: 1rem 0;
       position: sticky;
       top: 6px;
@@ -36,31 +52,51 @@
     .nav-container { display: flex; justify-content: space-between; align-items: center; }
     .nav-logo {
       color: var(--white); font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 1.2rem;
-      display: flex; align-items: center; gap: 10px; text-decoration: none;
+      display: flex; align-items: center; gap: 10px; text-decoration: none; transition: var(--transition);
     }
-    .nav-logo:hover { color: var(--white); }
-    .nav-logo i { color: var(--secondary); }
-    .nav-list { display: flex; gap: 1.5rem; margin: 0; padding: 0; list-style: none; }
+    .nav-logo:hover { color: var(--german-gold); transform: scale(1.02); }
+    .nav-logo i { color: var(--german-gold); }
+    .nav-list { display: flex; gap: 1.5rem; margin: 0; padding: 0; list-style: none; align-items: center; }
     .nav-list li a {
       color: rgba(255,255,255,0.85); font-weight: 500; font-size: 0.95rem;
       padding: 8px 16px; border-radius: var(--radius); transition: var(--transition); text-decoration: none;
+      display: flex; align-items: center; gap: 6px;
     }
-    .nav-list li a:hover, .nav-list li a[aria-current="page"] {
-      background: rgba(255,255,255,0.1); color: var(--white);
-    }
+    .nav-list li a:hover { background: rgba(255,255,255,0.1); color: var(--white); }
     .nav-list li a[aria-current="page"] {
-      border-bottom: 2px solid var(--secondary); background: transparent;
+      border-bottom: 2px solid var(--german-gold); background: transparent; color: var(--white);
     }
-    .mobile-menu-toggle {
-      display: none; background: transparent; border: none; color: var(--white);
-      font-size: 1.5rem; cursor: pointer;
+
+    /* ===== DROPDOWN STYLES ===== */
+    .nav-dropdown { position: relative; }
+    .dropdown-toggle { cursor: pointer; }
+    .dropdown-menu {
+      position: absolute; top: 100%; left: 0; background: var(--white); min-width: 180px;
+      border-radius: var(--radius); box-shadow: var(--shadow-lg); padding: 8px 0;
+      opacity: 0; visibility: hidden; transform: translateY(10px); transition: var(--transition);
+      z-index: 100; list-style: none; border: 1px solid var(--border);
     }
+    .nav-dropdown:hover .dropdown-menu { opacity: 1; visibility: visible; transform: translateY(0); }
+    .dropdown-menu li a {
+      color: var(--german-black); padding: 10px 20px; display: block; font-size: 0.9rem; border-bottom: none;
+    }
+    .dropdown-menu li a:hover { background: var(--light); color: var(--german-red); }
+    .nav-dropdown.active .dropdown-toggle { color: var(--german-gold); border-bottom: 2px solid var(--german-gold); }
+
+    .nav-cta {
+      background: var(--german-red) !important; color: var(--white) !important;
+      border-radius: 50px !important; padding: 8px 20px !important; font-weight: 600 !important;
+    }
+    .nav-cta:hover {
+      background: #a00d26 !important; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(200, 16, 46, 0.3);
+    }
+    .mobile-menu-toggle { display: none; background: transparent; border: none; color: var(--white); font-size: 1.5rem; cursor: pointer; }
 
     /* ===== ANIMATED HERO SECTION ===== */
     .dash-hero { 
-      background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); 
-      padding: 80px 0 100px; text-align: center; color: white; position: relative; 
-      overflow: hidden; border-bottom: 4px solid var(--secondary);
+      background: linear-gradient(135deg, var(--german-black) 0%, #2d2d2d 100%); 
+      padding: 80px 0 120px; text-align: center; color: white; position: relative; 
+      border-bottom: 4px solid var(--german-gold); overflow: hidden;
     }
     .dash-hero::before {
       content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
@@ -70,25 +106,18 @@
     }
     .hero-badge {
       display: inline-flex; align-items: center; gap: 8px;
-      background: rgba(255, 206, 0, 0.15); color: var(--secondary);
+      background: rgba(255, 206, 0, 0.15); color: var(--german-gold);
       padding: 8px 16px; border-radius: 50px; font-size: 0.85rem; font-weight: 600;
       margin-bottom: 20px; border: 1px solid rgba(255, 206, 0, 0.3);
       animation: fadeInDown 0.8s ease both; position: relative; z-index: 2;
     }
     .dash-hero h1 { 
-      font-family: 'Poppins', sans-serif; 
-      font-size: 3.2rem; 
-      font-weight: 800;
-      margin: 0 0 15px 0; 
-      color: #ffffff; 
-      text-shadow: 0 4px 20px rgba(255, 206, 0, 0.3);
-      animation: fadeInUp 0.8s ease 0.1s both;
-      letter-spacing: -1px;
-      position: relative; z-index: 2;
+      font-family: 'Poppins', sans-serif; font-size: 3.2rem; font-weight: 800;
+      margin: 0 0 15px 0; color: #ffffff; text-shadow: 0 4px 20px rgba(255, 206, 0, 0.3);
+      animation: fadeInUp 0.8s ease 0.1s both; letter-spacing: -1px; position: relative; z-index: 2;
     }
     .dash-hero h1 span { 
-      color: var(--secondary); 
-      display: inline-block;
+      color: var(--german-gold); display: inline-block;
       animation: pulseGlow 2.5s ease-in-out infinite alternate;
     }
     @keyframes pulseGlow {
@@ -97,122 +126,165 @@
     }
     @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-    
     .dash-hero p { 
-      opacity: 0.9; max-width: 700px; margin: 0 auto; font-size: 1.1rem; line-height: 1.6; 
+      opacity: 0.9; max-width: 700px; margin: 0 auto 30px; font-size: 1.1rem; line-height: 1.6; 
       animation: fadeInUp 0.8s ease 0.2s both; position: relative; z-index: 2;
     }
 
-    /* ===== DASHBOARD CONTAINERS (Clear Borders & Intuitive Look) ===== */
-    .stats-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: -50px; position: relative; z-index: 10; margin-bottom: 30px; }
-    .stat-card { background: white; padding: 24px; border-radius: var(--radius); box-shadow: var(--shadow-sm); text-align: center; border: 1px solid var(--border); border-top: 4px solid var(--primary); transition: var(--transition); }
-    .stat-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border-color: var(--secondary); }
-    .stat-card .num { font-size: 2.2rem; font-weight: 800; color: var(--primary); display: block; }
+    /* ===== STATS ROW ===== */
+    .stats-row {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px; margin-top: -60px; position: relative; z-index: 10; margin-bottom: 40px;
+    }
+    .stat-card {
+      background: var(--white); padding: 24px; border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md); text-align: center; border: 1px solid var(--border);
+      border-top: 4px solid var(--german-red); transition: var(--transition);
+    }
+    .stat-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); border-color: var(--german-gold); }
+    .stat-card .num { font-size: 2.2rem; font-weight: 800; color: var(--german-black); display: block; }
     .stat-card .lbl { font-size: 0.8rem; color: var(--gray); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 5px; }
 
-    .charts-section { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 24px; margin-bottom: 30px; }
+    /* ===== CHARTS SECTION ===== */
+    .charts-section { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; margin-bottom: 40px; }
     .chart-box { background: white; padding: 24px; border-radius: var(--radius); box-shadow: var(--shadow-sm); border: 1px solid var(--border); }
-    .chart-box h3 { margin: 0 0 20px 0; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--light); padding-bottom: 12px; }
-    .chart-box h3 i { color: var(--primary); }
+    .chart-box h3 { margin: 0 0 20px 0; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
+    .chart-box h3 i { color: var(--german-red); }
     .chart-wrap { position: relative; height: 280px; }
 
+    /* ===== CONTROLS ===== */
     .controls-section { background: white; padding: 20px 24px; border-radius: var(--radius); box-shadow: var(--shadow-sm); margin-bottom: 24px; border: 1px solid var(--border); display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between; }
     .search-wrap { position: relative; flex-grow: 1; max-width: 400px; }
-    .search-wrap input { width: 100%; padding: 12px 16px 12px 42px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.95rem; outline: none; transition: var(--transition); font-family: inherit; background: var(--light); }
-    .search-wrap input:focus { border-color: var(--primary); background: white; box-shadow: 0 0 0 3px rgba(200, 16, 46, 0.1); }
+    .search-wrap input { width: 100%; padding: 12px 16px 12px 42px; border: 1px solid var(--border); border-radius: 50px; font-size: 0.95rem; outline: none; transition: var(--transition); font-family: inherit; background: var(--light); }
+    .search-wrap input:focus { border-color: var(--german-red); background: white; box-shadow: 0 0 0 3px rgba(200, 16, 46, 0.1); }
     .search-wrap i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--gray); }
     
-    .chips-container { display: flex; flex-wrap: wrap; gap: 10px; }
-    .chip { background: var(--light); border: 1px solid var(--border); padding: 8px 16px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: var(--transition); display: flex; align-items: center; gap: 6px; }
-    .chip:hover { background: #e9ecef; }
-    .chip.active { background: var(--primary); color: white; border-color: var(--primary); }
+    .filter-chips { display: flex; flex-wrap: wrap; gap: 10px; }
+    .chip { background: var(--light); border: 1px solid var(--border); padding: 8px 16px; border-radius: 50px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: var(--transition); display: flex; align-items: center; gap: 6px; }
+    .chip:hover { background: var(--gray-light); }
+    .chip.active { background: var(--german-red); color: white; border-color: var(--german-red); }
     .chip i { font-size: 0.7rem; }
 
+    /* ===== TABLE SECTION ===== */
     .table-container { background: white; border-radius: var(--radius); box-shadow: var(--shadow-sm); overflow: hidden; border: 1px solid var(--border); margin-bottom: 60px; }
-    .table-header { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--light); }
+    .table-header { padding: 20px 24px; border-bottom: 1px solid var(--border); background: var(--light); display: flex; justify-content: space-between; align-items: center; }
     .table-header h3 { margin: 0; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; }
-    .table-header h3 i { color: var(--primary); }
+    .table-header h3 i { color: var(--german-red); }
     .table-header span { color: var(--gray); font-size: 0.9rem; font-weight: 600; }
     
     table { width: 100%; border-collapse: collapse; }
-    th { background: var(--light); padding: 14px 20px; text-align: left; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--dark); cursor: pointer; user-select: none; transition: var(--transition); border-bottom: 2px solid var(--border); position: sticky; top: 0; z-index: 2; }
-    th:hover { background: #e9ecef; color: var(--primary); }
+    th { background: var(--light); padding: 14px 20px; text-align: left; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--german-black); cursor: pointer; user-select: none; transition: var(--transition); border-bottom: 2px solid var(--border); position: sticky; top: 0; z-index: 2; }
+    th:hover { background: #e9ecef; color: var(--german-red); }
     th i { margin-left: 5px; font-size: 0.7rem; opacity: 0.5; }
-    td { padding: 16px 20px; border-bottom: 1px solid var(--border); font-size: 0.9rem; vertical-align: middle; color: var(--dark); }
+    td { padding: 16px 20px; border-bottom: 1px solid var(--border); font-size: 0.9rem; vertical-align: middle; color: var(--german-black); }
     tr:last-child td { border-bottom: none; }
     tr:hover td { background: rgba(255, 206, 0, 0.05); }
     
     .badge { padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; display: inline-block; text-transform: uppercase; letter-spacing: 0.5px; }
-    .badge-domain { background: rgba(200, 16, 46, 0.1); color: var(--primary); border: 1px solid rgba(200, 16, 46, 0.2); }
+    .badge-domain { background: rgba(200, 16, 46, 0.1); color: var(--german-red); border: 1px solid rgba(200, 16, 46, 0.2); }
     .badge-type { background: rgba(255, 206, 0, 0.15); color: #8a6d00; border: 1px solid rgba(255, 206, 0, 0.3); }
     
-    .btn-view { background: white; border: 1px solid var(--border); color: var(--dark); padding: 6px 14px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: var(--transition); display: inline-flex; align-items: center; gap: 6px; }
-    .btn-view:hover { background: var(--primary); color: white; border-color: var(--primary); }
+    .btn-view { background: white; border: 1px solid var(--border); color: var(--german-black); padding: 6px 14px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: var(--transition); display: inline-flex; align-items: center; gap: 6px; }
+    .btn-view:hover { background: var(--german-red); color: white; border-color: var(--german-red); }
 
-    /* Modal */
-    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; opacity: 0; transition: opacity 0.3s ease; }
+    /* ===== MODAL ===== */
+    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 20px; opacity: 0; transition: opacity 0.3s ease; }
     .modal-overlay.show { display: flex; opacity: 1; }
     .modal-content { background: white; border-radius: 12px; max-width: 700px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative; transform: translateY(20px); transition: transform 0.3s ease; box-shadow: 0 25px 50px rgba(0,0,0,0.25); border: 1px solid var(--border); }
     .modal-overlay.show .modal-content { transform: translateY(0); }
     .modal-header { padding: 24px; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: white; z-index: 10; border-radius: 12px 12px 0 0; }
     .modal-header h2 { margin: 0 0 10px 0; font-size: 1.4rem; line-height: 1.4; }
     .modal-close { position: absolute; top: 24px; right: 24px; background: var(--light); border: 1px solid var(--border); width: 32px; height: 32px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; transition: var(--transition); }
-    .modal-close:hover { background: var(--primary); color: white; border-color: var(--primary); }
+    .modal-close:hover { background: var(--german-red); color: white; border-color: var(--german-red); }
     .modal-body { padding: 24px; }
     .modal-section { margin-bottom: 24px; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: var(--light); }
     .modal-section h4 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: var(--gray); margin: 0 0 12px 0; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-    .modal-section p, .modal-section ul { font-size: 0.95rem; line-height: 1.7; color: var(--dark); margin: 0; }
+    .modal-section p, .modal-section ul { font-size: 0.95rem; line-height: 1.7; color: var(--german-black); margin: 0; }
     .modal-section ul { padding-left: 20px; }
     .modal-section ul li { margin-bottom: 8px; }
     .modal-footer { padding: 24px; border-top: 1px solid var(--border); background: var(--light); border-radius: 0 0 12px 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
-    .btn-access { background: var(--primary); color: white; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 8px; transition: var(--transition); border: 1px solid var(--primary); }
+    .btn-access { background: var(--german-red); color: white; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 8px; transition: var(--transition); border: 1px solid var(--german-red); }
     .btn-access:hover { background: #a00d26; border-color: #a00d26; transform: translateY(-2px); }
 
-    .empty-state { text-align: center; padding: 60px 20px; color: var(--gray); }
-    .empty-state i { font-size: 3rem; margin-bottom: 15px; opacity: 0.3; }
+    /* ===== FOOTER ===== */
+    footer { background: var(--german-black); color: var(--white); padding: 40px 0; text-align: center; margin-top: 40px; border-top: 4px solid var(--german-red); }
+    footer p { color: rgba(255,255,255,0.8); margin: 0; }
 
+    /* ===== MOBILE RESPONSIVE ===== */
     @media (max-width: 768px) {
       .mobile-menu-toggle { display: block; }
       .nav-list {
         display: none; flex-direction: column; width: 100%; position: absolute;
-        top: 100%; left: 0; background: var(--dark); padding: 20px; box-shadow: var(--shadow-md);
+        top: 100%; left: 0; background: var(--german-black); padding: 20px; 
+        box-shadow: var(--shadow-lg); align-items: flex-start; gap: 0;
       }
       .nav-list.active { display: flex; }
+      .nav-list li { width: 100%; }
+      .nav-list li a { padding: 12px 16px; width: 100%; border-bottom: 1px solid rgba(255,255,255,0.05); }
+      .nav-list li a[aria-current="page"] { border-bottom: 1px solid rgba(255,255,255,0.05); border-left: 3px solid var(--german-gold); }
+      
+      .nav-dropdown { width: 100%; }
+      .dropdown-menu {
+        position: static; opacity: 1; visibility: visible; transform: none; box-shadow: none;
+        background: rgba(255,255,255,0.05); margin-top: 0; display: none; border: none; padding-left: 20px;
+      }
+      .nav-dropdown.open .dropdown-menu { display: block; }
+      .dropdown-menu li a { color: rgba(255,255,255,0.7); font-size: 0.9rem; }
+      .dropdown-menu li a:hover { background: rgba(255,255,255,0.1); color: var(--german-gold); }
+      
+      .nav-cta { background: var(--german-gold) !important; color: var(--german-black) !important; text-align: center; justify-content: center; margin-top: 10px; }
+
       .dash-hero h1 { font-size: 2.2rem; }
       .charts-section { grid-template-columns: 1fr; }
       .controls-section { flex-direction: column; align-items: stretch; }
       .search-wrap { max-width: 100%; }
-      th, td { padding: 12px 16px; font-size: 0.85rem; }
       .hide-mobile { display: none; }
     }
   </style>
 </head>
 <body>
 
-  <div class="flag-bar"><div class="black"></div><div class="red"></div><div class="gold"></div></div>
+  <div class="flag-bar">
+    <div class="black"></div>
+    <div class="red"></div>
+    <div class="gold"></div>
+  </div>
 
-  <!-- UNIFORM NAVIGATION MENU -->
+  <!-- IMPROVED NAVIGATION MENU -->
   <nav>
     <div class="wrapper nav-container">
-      <a href="index.html" class="nav-logo">
+      <a href="index.html" class="nav-logo" title="Go to Home">
         <i class="fas fa-globe-africa"></i> Open Data Africa
       </a>
+      
       <button class="mobile-menu-toggle" aria-label="Toggle menu" onclick="toggleMenu()">
         <i class="fas fa-bars"></i>
       </button>
+      
       <ul class="nav-list" id="navList">
-        <li><a href="index.html">Home</a></li>
         <li><a href="about.html">About</a></li>
         <li><a href="datasets.html">Datasets</a></li>
         <li><a href="use-cases.html">Use Cases</a></li>
         <li><a href="dashboard.html" aria-current="page">Dashboard</a></li>
-        <li><a href="countries.html">Countries</a></li>
-        <li><a href="insights.html">Insights</a></li>
-        <li><a href="contribute.html">Contribute</a></li>
+        
+        <li class="nav-dropdown" id="exploreDropdown">
+          <a href="#" class="dropdown-toggle" onclick="toggleMobileDropdown(event)">
+            Explore <i class="fas fa-chevron-down" style="font-size: 0.7rem; margin-left: 4px;"></i>
+          </a>
+          <ul class="dropdown-menu">
+            <li><a href="countries.html">Countries</a></li>
+            <li><a href="insights.html">Insights</a></li>
+            <li><a href="resources.html">Resources</a></li>
+          </ul>
+        </li>
+        
+        <li><a href="aodria.html">AODRIA</a></li>
+        <li><a href="contact.html" class="nav-cta">Contact</a></li>
       </ul>
     </div>
   </nav>
 
+  <!-- HERO SECTION -->
   <header class="dash-hero">
     <div class="wrapper">
       <div class="hero-badge">
@@ -224,12 +296,12 @@
   </header>
 
   <main class="wrapper">
-    <!-- Stats -->
-    <div class="stats-container" id="statsContainer">
+    <!-- Stats Row -->
+    <div class="stats-row" id="statsContainer">
       <div class="stat-card"><span class="num">...</span><span class="lbl">Loading</span></div>
     </div>
 
-    <!-- Charts -->
+    <!-- Charts Section -->
     <div class="charts-section">
       <div class="chart-box">
         <h3><i class="fas fa-chart-pie"></i> Datasets by Domain</h3>
@@ -245,13 +317,13 @@
       </div>
     </div>
 
-    <!-- Search & Filters -->
+    <!-- Controls Section -->
     <div class="controls-section">
       <div class="search-wrap">
         <i class="fas fa-search"></i>
         <input type="text" id="globalSearch" placeholder="Search datasets, sources, use cases, or challenges...">
       </div>
-      <div class="chips-container" id="activeFilters">
+      <div class="filter-chips" id="activeFilters">
         <!-- Chips injected here -->
       </div>
     </div>
@@ -279,11 +351,6 @@
           </tbody>
         </table>
       </div>
-      <div id="emptyState" class="empty-state" style="display: none;">
-        <i class="fas fa-search"></i>
-        <h3>No datasets found</h3>
-        <p>Try adjusting your search or filters.</p>
-      </div>
     </div>
   </main>
 
@@ -298,11 +365,11 @@
       </div>
       <div class="modal-body">
         <div class="modal-section">
-          <h4><i class="fas fa-lightbulb" style="color: var(--secondary);"></i> Research Use Cases</h4>
+          <h4><i class="fas fa-lightbulb" style="color: var(--german-gold);"></i> Research Use Cases</h4>
           <ul id="modalUseCases"></ul>
         </div>
         <div class="modal-section">
-          <h4><i class="fas fa-exclamation-triangle" style="color: var(--primary);"></i> Challenges & Notes</h4>
+          <h4><i class="fas fa-exclamation-triangle" style="color: var(--german-red);"></i> Challenges & Notes</h4>
           <p id="modalChallenges"></p>
         </div>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
@@ -318,8 +385,8 @@
       </div>
       <div class="modal-footer">
         <div style="font-size: 0.85rem; color: var(--gray); font-weight: 600;">
-          <i class="fas fa-eye" style="color: var(--primary);"></i> <span id="modalViews">0</span> views &nbsp;|&nbsp; 
-          <i class="fas fa-download" style="color: var(--primary);"></i> <span id="modalDownloads">0</span> downloads
+          <i class="fas fa-eye" style="color: var(--german-red);"></i> <span id="modalViews">0</span> views &nbsp;|&nbsp; 
+          <i class="fas fa-download" style="color: var(--german-red);"></i> <span id="modalDownloads">0</span> downloads
         </div>
         <a href="#" id="modalLink" target="_blank" class="btn-access">
           <i class="fas fa-external-link-alt"></i> Access Dataset
@@ -328,7 +395,7 @@
     </div>
   </div>
 
-  <footer style="background: var(--dark); color: white; padding: 40px 0; text-align: center; margin-top: 40px; border-top: 4px solid var(--primary);">
+  <footer>
     <div class="wrapper">
       <p>&copy; 2026 Open Data Africa | AI Made in Africa / GIZ AU</p>
     </div>
@@ -342,10 +409,22 @@
     let activeFilters = {}; 
     let charts = {};
 
-    // Mobile menu toggle function
-    function toggleMenu() { 
-      document.getElementById('navList').classList.toggle('active'); 
+    function toggleMenu() { document.getElementById('navList').classList.toggle('active'); }
+    function toggleMobileDropdown(event) {
+      if (window.innerWidth <= 768) {
+        event.preventDefault();
+        document.getElementById('exploreDropdown').classList.toggle('open');
+      }
     }
+    document.addEventListener('click', function(event) {
+      const navList = document.getElementById('navList');
+      const toggle = document.querySelector('.mobile-menu-toggle');
+      const exploreDropdown = document.getElementById('exploreDropdown');
+      if (!navList.contains(event.target) && !toggle.contains(event.target)) {
+        navList.classList.remove('active');
+        if (exploreDropdown) exploreDropdown.classList.remove('open');
+      }
+    });
 
     document.addEventListener('DOMContentLoaded', async () => {
       try {
@@ -368,8 +447,8 @@
         });
 
       } catch (err) {
-        document.getElementById('statsContainer').innerHTML = '<div class="stat-card" style="grid-column: 1/-1; border-color: red;"><span class="num" style="color: red;">Error</span><span class="lbl">Check data/catalog.json</span></div>';
         console.error(err);
+        document.getElementById('statsContainer').innerHTML = '<div class="stat-card" style="grid-column: 1/-1; border-color: red;"><span class="num" style="color: red;">Error</span><span class="lbl">Check data/catalog.json</span></div>';
       }
     });
 
@@ -491,15 +570,7 @@
 
     function renderTable() {
       const tbody = document.getElementById('tableBody');
-      const emptyState = document.getElementById('emptyState');
       document.getElementById('resultCount').innerText = `${filteredData.length} datasets`;
-
-      if (filteredData.length === 0) {
-        tbody.innerHTML = '';
-        emptyState.style.display = 'block';
-        return;
-      }
-      emptyState.style.display = 'none';
 
       tbody.innerHTML = filteredData.map(d => {
         const safeName = d['Dataset Name'].replace(/'/g, "\\'");
