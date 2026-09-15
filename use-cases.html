@@ -96,18 +96,6 @@
     }
     .hero-search-wrap button:hover { background: #a00d26; transform: scale(1.02); }
 
-    .hero-stats {
-      display: flex; justify-content: center; gap: 50px; flex-wrap: wrap;
-      animation: fadeInUp 0.8s ease 0.4s both;
-    }
-    .hero-stat-item { text-align: center; }
-    .hero-stat-item .stat-val { 
-      font-size: 2.2rem; font-weight: 800; color: var(--secondary); display: block; 
-    }
-    .hero-stat-item .stat-lbl { 
-      font-size: 0.8rem; color: rgba(255,255,255,0.7); text-transform: uppercase; letter-spacing: 1px; font-weight: 600;
-    }
-
     /* ===== REST OF THE STYLES ===== */
     .stats-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: -60px; position: relative; z-index: 10; margin-bottom: 40px; }
     .stat-card { background: white; padding: 24px; border-radius: var(--radius); box-shadow: var(--shadow-lg); text-align: center; border-top: 4px solid var(--primary); transition: var(--transition); }
@@ -171,7 +159,6 @@
       .hero-search-wrap input { padding: 14px 20px 14px 45px; margin-bottom: 10px; }
       .hero-search-wrap button { width: 100%; }
       .uc-grid { grid-template-columns: 1fr; }
-      .hero-stats { gap: 30px; }
     }
   </style>
 </head>
@@ -192,7 +179,7 @@
     </div>
   </nav>
 
-  <!-- BEAUTIFIED HERO SECTION -->
+  <!-- BEAUTIFIED HERO SECTION (Stats Removed) -->
   <header class="uc-hero">
     <div class="hero-bg-pattern"></div>
     <div class="wrapper">
@@ -207,8 +194,6 @@
         <input type="text" id="heroSearch" placeholder="Search for a use case, domain, or country (e.g., 'Agriculture', 'Kenya')...">
         <button id="heroSearchBtn">Explore</button>
       </div>
-
-      
     </div>
   </header>
 
@@ -346,11 +331,6 @@
       const totalDomains = new Set(allData.map(d => d.Domain)).size;
       const totalCountries = new Set(allData.map(d => d.Country)).size;
       
-      // Update Hero Stats
-      document.getElementById('heroUseCasesCount').innerText = totalDatasets + '+';
-      document.getElementById('heroDomainsCount').innerText = totalDomains + '+';
-      document.getElementById('heroCountriesCount').innerText = totalCountries + '+';
-
       // Update Main Stats
       document.getElementById('statsContainer').innerHTML = `
         <div class="stat-card"><span class="num">${totalDatasets}</span><span class="lbl">Total Datasets</span></div>
