@@ -7,7 +7,7 @@
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <link rel="stylesheet" href="css/style.css">
@@ -22,20 +22,66 @@
     body { font-family: 'Inter', sans-serif; background: var(--light); color: var(--dark); margin: 0; }
     .wrapper { max-width: 1300px; margin: 0 auto; padding: 0 24px; }
     
-    /* Hero & Stats */
-    .dash-hero { background: linear-gradient(135deg, var(--dark) 0%, #2d2d2d 100%); padding: 60px 0 100px; color: white; text-align: center; position: relative; overflow: hidden; }
-    .dash-hero::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 60px; background: var(--light); clip-path: polygon(0 100%, 100% 100%, 100% 0); }
-    .dash-hero h1 { font-family: 'Poppins', sans-serif; font-size: 2.5rem; margin: 0 0 10px 0; }
-    .dash-hero h1 span { color: var(--secondary); }
-    .dash-hero p { opacity: 0.8; max-width: 600px; margin: 0 auto; font-size: 1.1rem; }
+    /* ===== ANIMATED & BEAUTIFIED HERO SECTION ===== */
+    .dash-hero { 
+      background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); 
+      padding: 80px 0 120px; 
+      text-align: center; 
+      position: relative; 
+      overflow: hidden; 
+    }
+    .hero-bg-pattern {
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background-image: radial-gradient(circle at 20% 50%, rgba(200, 16, 46, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(255, 206, 0, 0.1) 0%, transparent 50%);
+      opacity: 0.6;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255, 206, 0, 0.15); color: var(--secondary);
+      padding: 8px 16px; border-radius: 50px; font-size: 0.85rem; font-weight: 600;
+      margin-bottom: 20px; border: 1px solid rgba(255, 206, 0, 0.3);
+      animation: fadeInDown 0.8s ease both;
+    }
     
+    /* HIGHLY READABLE, ANIMATED TITLE (NO BLACK) */
+    .dash-hero h1 { 
+      font-family: 'Poppins', sans-serif; 
+      font-size: 3.8rem; 
+      font-weight: 800;
+      margin: 0 0 15px 0; 
+      color: #ffffff; /* Pure white for maximum readability */
+      text-shadow: 0 4px 20px rgba(255, 206, 0, 0.3); /* Subtle gold glow */
+      animation: fadeInUp 0.8s ease 0.1s both;
+      letter-spacing: -1px;
+    }
+    .dash-hero h1 span { 
+      color: var(--secondary); /* Bright Gold */
+      display: inline-block;
+      animation: pulseGlow 2.5s ease-in-out infinite alternate;
+    }
+    
+    @keyframes pulseGlow {
+      from { text-shadow: 0 0 10px rgba(255, 206, 0, 0.4); }
+      to { text-shadow: 0 0 25px rgba(255, 206, 0, 0.8), 0 0 10px rgba(255, 255, 255, 0.6); }
+    }
+
+    .dash-hero p { 
+      color: rgba(255, 255, 255, 0.85); 
+      max-width: 700px; 
+      margin: 0 auto 30px; 
+      font-size: 1.2rem; 
+      line-height: 1.6;
+      animation: fadeInUp 0.8s ease 0.2s both;
+    }
+
+    /* ===== REST OF THE STYLES ===== */
     .stats-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: -60px; position: relative; z-index: 10; margin-bottom: 40px; }
     .stat-card { background: white; padding: 24px; border-radius: var(--radius); box-shadow: var(--shadow-lg); text-align: center; border-top: 4px solid var(--primary); transition: var(--transition); }
     .stat-card:hover { transform: translateY(-5px); }
     .stat-card .num { font-size: 2.5rem; font-weight: 800; color: var(--dark); display: block; }
     .stat-card .lbl { font-size: 0.85rem; color: var(--gray); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
 
-    /* Controls */
     .controls-section { background: white; padding: 24px; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 30px; border: 1px solid var(--border); display: flex; flex-wrap: wrap; gap: 15px; align-items: center; justify-content: space-between; }
     .search-wrap { position: relative; flex-grow: 1; max-width: 400px; }
     .search-wrap input { width: 100%; padding: 12px 20px 12px 45px; border: 1px solid var(--border); border-radius: 50px; font-size: 1rem; outline: none; transition: var(--transition); font-family: inherit; }
@@ -47,7 +93,6 @@
     .chip:hover { background: #e9ecef; }
     .chip.active { background: var(--primary); color: white; border-color: var(--primary); }
 
-    /* Country Grid */
     .country-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; margin-bottom: 60px; }
     .country-card { background: white; border-radius: var(--radius); padding: 24px; border: 1px solid var(--border); transition: var(--transition); cursor: pointer; position: relative; overflow: hidden; }
     .country-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); border-color: var(--secondary); }
@@ -91,8 +136,11 @@
     .empty-state { text-align: center; padding: 60px 20px; color: var(--gray); grid-column: 1 / -1; }
     .empty-state i { font-size: 3rem; margin-bottom: 15px; opacity: 0.3; }
 
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+
     @media (max-width: 768px) {
-      .dash-hero h1 { font-size: 1.8rem; }
+      .dash-hero h1 { font-size: 2.4rem; }
       .controls-section { flex-direction: column; align-items: stretch; }
       .search-wrap { max-width: 100%; }
       .modal-stats { grid-template-columns: 1fr; }
@@ -111,12 +159,18 @@
         <li><a href="datasets.html" style="color: rgba(255,255,255,0.8); text-decoration: none;">Datasets</a></li>
         <li><a href="dashboard.html" style="color: rgba(255,255,255,0.8); text-decoration: none;">Dashboard</a></li>
         <li><a href="countries.html" style="color: white; text-decoration: none; border-bottom: 2px solid var(--secondary);">Countries</a></li>
+        <li><a href="use-cases.html" style="color: rgba(255,255,255,0.8); text-decoration: none;">Use Cases</a></li>
       </ul>
     </div>
   </nav>
 
+  <!-- ANIMATED HERO SECTION -->
   <header class="dash-hero">
+    <div class="hero-bg-pattern"></div>
     <div class="wrapper">
+      <div class="hero-badge">
+        <i class="fas fa-map-marked-alt"></i> Geographic Data Mapping
+      </div>
       <h1>Explore Data by <span>Country & Region</span></h1>
       <p>Discover open datasets mapped across the African continent, from continental initiatives to local innovations.</p>
     </div>
@@ -186,13 +240,13 @@
 
     // Simple flag mapping for major countries
     const flagMap = {
-      'Kenya': '🇪', 'Ethiopia': '🇪🇹', 'Nigeria': '🇳🇬', 'Ghana': '🇬🇭', 'South Africa': '🇿🇦',
-      'Rwanda': '🇷🇼', 'Uganda': '🇺🇬', 'Tanzania': '🇹', 'Senegal': '🇸', 'Morocco': '🇲',
+      'Kenya': '🇰🇪', 'Ethiopia': '🇪🇹', 'Nigeria': '🇳🇬', 'Ghana': '🇬🇭', 'South Africa': '🇿🇦',
+      'Rwanda': '🇷🇼', 'Uganda': '🇺', 'Tanzania': '🇹', 'Senegal': '🇸', 'Morocco': '🇲',
       'Egypt': '🇪🇬', 'Tunisia': '🇳', 'Mali': '🇱', 'Zambia': '🇲', 'Botswana': '🇼',
-      'Cameroon': '🇨🇲', 'Madagascar': '🇲🇬', 'Mauritius': '🇲🇺', 'Namibia': '🇳🇦', 'Niger': '🇳🇪',
-      'DRC': '🇩', 'Côte d\'Ivoire': '🇨', 'Benin': '🇧', 'Liberia': '🇱', 'Malawi': '🇲',
-      'Mozambique': '🇲🇿', 'Somalia': '🇸🇴', 'Togo': '🇬', 'Algeria': '🇩🇿', 'Africa-wide': '🌍',
-      'East Africa': '🌍', 'West Africa': '🌍', 'North Africa': '', 'Southern Africa': '🌍'
+      'Cameroon': '🇨🇲', 'Madagascar': '🇲🇬', 'Mauritius': '🇲🇺', 'Namibia': '🇳🇦', 'Niger': '🇳',
+      'DRC': '🇨🇩', 'Côte d\'Ivoire': '🇨🇮', 'Benin': '🇧🇯', 'Liberia': '🇱🇷', 'Malawi': '🇲🇼',
+      'Mozambique': '🇲', 'Somalia': '🇸🇴', 'Togo': '🇹🇬', 'Algeria': '🇩', 'Africa-wide': '🌍',
+      'East Africa': '🌍', 'West Africa': '🌍', 'North Africa': '🌍', 'Southern Africa': '🌍'
     };
 
     document.addEventListener('DOMContentLoaded', async () => {
@@ -289,7 +343,7 @@
 
       filtered.forEach(loc => {
         const type = getLocationType(loc.name);
-        const flag = flagMap[loc.name] || (type === 'continental' ? '🌍' : '📍');
+        const flag = flagMap[loc.name] || (type === 'continental' ? '🌍' : '');
         const topDomains = Object.entries(loc.domains).sort((a,b) => b[1]-a[1]).slice(0, 3).map(d => d[0]);
         
         const card = document.createElement('div');
