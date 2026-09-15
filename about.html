@@ -11,6 +11,7 @@
   <meta property="og:title" content="About – Open Data Africa">
   <meta property="og:description" content="Empowering AI Innovation Across Africa through open data accessibility">
   <meta property="og:type" content="website">
+  <meta property="og:url" content="https://open-data-africa.github.io/about.html">
   
   <title>About – Open Data Africa | AI Made in Africa Initiative</title>
   
@@ -22,7 +23,7 @@
   <!-- Font Awesome for Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
-  <!-- This loads ALL shared styles (Nav, Footer, Variables, Animations, etc.) -->
+  <!-- Shared Global Styles (Nav, Footer, Variables, Animations, etc.) -->
   <link rel="stylesheet" href="css/style.css">
 
   <style>
@@ -95,7 +96,7 @@
       display: flex; align-items: center; gap: 12px;
     }
     .info-card h3 i { font-size: 1.8rem; color: var(--german-red); }
-    .info-card p { color: var(--gray); font-size: 1rem; line-height: 1.7; text-align: left; }
+    .info-card p { color: var(--gray); font-size: 1rem; line-height: 1.7; text-align: left; margin-bottom: 0; }
 
     /* Download Button */
     .download-btn {
@@ -110,7 +111,7 @@
     }
     .download-btn i { font-size: 1.2rem; }
 
-    /* Contact Section */
+    /* Contact Box */
     .contact-box {
       background: linear-gradient(135deg, var(--german-black) 0%, #2d2d2d 100%);
       color: var(--white); padding: 50px; border-radius: var(--radius-lg);
@@ -120,7 +121,7 @@
       content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
       background: linear-gradient(90deg, var(--german-black), var(--german-red), var(--german-gold));
     }
-    .contact-box h2 { color: var(--white); }
+    .contact-box h2 { color: var(--white); margin-bottom: 1rem; }
     .contact-box h2::after {
       background: linear-gradient(90deg, var(--german-gold), var(--german-red));
       left: 50%; transform: translateX(-50%);
@@ -133,6 +134,7 @@
     .partners-section {
       background: var(--light); padding: 60px 0; text-align: center;
       border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+      border-radius: var(--radius-lg);
     }
     .partners-section h3 {
       color: var(--gray); font-size: 1rem; text-transform: uppercase;
@@ -157,6 +159,7 @@
       .contact-box { padding: 30px 20px; }
       main { padding: 40px 0; }
       section { margin-bottom: 40px; }
+      section h2 { font-size: 1.8rem; }
     }
   </style>
 </head>
@@ -169,7 +172,7 @@
     <div class="gold"></div>
   </div>
 
-  <!-- IMPROVED NAVIGATION MENU -->
+  <!-- UNIFORM NAVIGATION MENU -->
   <nav>
     <div class="wrapper nav-container">
       <a href="index.html" class="nav-logo" title="Go to Home">
@@ -251,7 +254,7 @@
     </section>
 
     <!-- Partners Section -->
-    <section class="partners-section" style="margin: 60px -24px; padding: 60px 24px; border-radius: var(--radius-lg);">
+    <section class="partners-section">
       <h3>Supported By</h3>
       <div class="partners-logos">
         <div class="partner-item">
@@ -275,15 +278,44 @@
 
   </main>
 
-  <!-- Footer -->
+  <!-- FULL COMPREHENSIVE FOOTER -->
   <footer>
     <div class="wrapper">
       <div class="footer-content">
+        
+        <div>
+          <h4><i class="fas fa-globe-africa"></i> Open Data Africa</h4>
+          <p>Open data ecosystems across Africa through benchmarking, recognition, and capacity building.</p>
+          <div class="footer-social">
+            <a href="https://www.linkedin.com/company/giz-african-union/posts/?feedView=all" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+          </div>
+        </div>
+
+        <div>
+          <h4><i class="fas fa-link"></i> Quick Links</h4>
+          <ul>
+            <li><a href="index.html"><i class="fas fa-chevron-right"></i> Home</a></li>
+            <li><a href="about.html"><i class="fas fa-chevron-right"></i> About Us</a></li>
+            <li><a href="datasets.html"><i class="fas fa-chevron-right"></i> Datasets</a></li>
+            <li><a href="aodria.html"><i class="fas fa-chevron-right"></i> AODRIA Framework</a></li>
+            <li><a href="contribute.html"><i class="fas fa-chevron-right"></i> Submit Data</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4><i class="fas fa-file-alt"></i> Resources</h4>
+          <ul>
+            <li><a href="resources.html"><i class="fas fa-chevron-right"></i> Publications</a></li>
+            <li><a href="faq.html"><i class="fas fa-chevron-right"></i> FAQ</a></li>
+          </ul>
+        </div>
+
         <div>
           <h4><i class="fas fa-envelope"></i> Contact</h4>
           <p><i class="fas fa-envelope"></i> aimadeinafrica@giz.de</p>
           <p><i class="fas fa-map-marker-alt"></i> GIZ African Union, Addis Ababa, Ethiopia</p>
         </div>
+
       </div>
 
       <div class="footer-bottom">
