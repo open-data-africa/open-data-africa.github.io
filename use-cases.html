@@ -8,7 +8,7 @@
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <link rel="stylesheet" href="css/style.css">
@@ -23,11 +23,10 @@
     body { font-family: 'Inter', sans-serif; background: var(--light); color: var(--dark); margin: 0; }
     .wrapper { max-width: 1300px; margin: 0 auto; padding: 0 24px; }
     
-    /* ===== BEAUTIFIED HERO SECTION ===== */
+    /* ===== BEAUTIFIED & ANIMATED HERO SECTION ===== */
     .uc-hero { 
-      background: linear-gradient(135deg, var(--dark) 0%, #2d2d2d 100%); 
+      background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); 
       padding: 80px 0 120px; 
-      color: white; 
       text-align: center; 
       position: relative; 
       overflow: hidden; 
@@ -43,17 +42,33 @@
       background: rgba(255, 206, 0, 0.15); color: var(--secondary);
       padding: 8px 16px; border-radius: 50px; font-size: 0.85rem; font-weight: 600;
       margin-bottom: 20px; border: 1px solid rgba(255, 206, 0, 0.3);
-      animation: fadeInDown 0.8s ease;
+      animation: fadeInDown 0.8s ease both;
     }
+    
+    /* HIGHLY READABLE, ANIMATED TITLE (NO BLACK) */
     .uc-hero h1 { 
       font-family: 'Poppins', sans-serif; 
-      font-size: 3.5rem; 
+      font-size: 3.8rem; 
+      font-weight: 800;
       margin: 0 0 15px 0; 
+      color: #ffffff; /* Pure white for maximum readability */
+      text-shadow: 0 4px 20px rgba(255, 206, 0, 0.3); /* Subtle gold glow */
       animation: fadeInUp 0.8s ease 0.1s both;
+      letter-spacing: -1px;
     }
-    .uc-hero h1 span { color: var(--secondary); }
+    .uc-hero h1 span { 
+      color: var(--secondary); /* Bright Gold */
+      display: inline-block;
+      animation: pulseGlow 2.5s ease-in-out infinite alternate;
+    }
+    
+    @keyframes pulseGlow {
+      from { text-shadow: 0 0 10px rgba(255, 206, 0, 0.4); }
+      to { text-shadow: 0 0 25px rgba(255, 206, 0, 0.8), 0 0 10px rgba(255, 255, 255, 0.6); }
+    }
+
     .hero-subtitle { 
-      opacity: 0.85; 
+      color: rgba(255, 255, 255, 0.85); 
       max-width: 700px; 
       margin: 0 auto 30px; 
       font-size: 1.2rem; 
@@ -63,7 +78,7 @@
     .hero-search-wrap {
       max-width: 600px; margin: 0 auto 40px; position: relative;
       display: flex; background: white; border-radius: 50px; padding: 6px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
       animation: fadeInUp 0.8s ease 0.3s both;
     }
     .hero-search-wrap i {
@@ -79,7 +94,7 @@
       border-radius: 50px; font-weight: 600; cursor: pointer; transition: var(--transition);
       font-family: inherit; font-size: 1rem;
     }
-    .hero-search-wrap button:hover { background: #a00d26; }
+    .hero-search-wrap button:hover { background: #a00d26; transform: scale(1.02); }
 
     .hero-stats {
       display: flex; justify-content: center; gap: 50px; flex-wrap: wrap;
@@ -151,7 +166,7 @@
     @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
 
     @media (max-width: 768px) {
-      .uc-hero h1 { font-size: 2.2rem; }
+      .uc-hero h1 { font-size: 2.4rem; }
       .hero-search-wrap { flex-direction: column; padding: 10px; border-radius: 16px; }
       .hero-search-wrap input { padding: 14px 20px 14px 45px; margin-bottom: 10px; }
       .hero-search-wrap button { width: 100%; }
