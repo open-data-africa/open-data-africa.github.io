@@ -17,7 +17,7 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
   
   <!-- Font Awesome for Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -25,598 +25,237 @@
   <style>
     /* ===== CSS VARIABLES - GERMAN FLAG COLORS ===== */
     :root {
-      /* German Flag Colors */
       --german-black: #1a1a1a;
       --german-red: #c8102e;
       --german-gold: #ffce00;
-      
-      /* Supporting Colors */
       --white: #ffffff;
       --light: #f8f9fa;
       --gray: #6c757d;
       --gray-light: #e9ecef;
-      --dark: #264653;
-      
-      /* UI Elements */
-      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
-      --radius: 8px;
+      --border: #dee2e6;
+      --shadow-sm: 0 2px 4px rgba(0,0,0,0.04);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+      --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
+      --radius: 10px;
       --radius-lg: 12px;
       --transition: all 0.3s ease;
     }
 
     /* ===== RESET & BASE ===== */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body, html {
-      font-family: 'Inter', sans-serif;
-      line-height: 1.6;
-      color: var(--german-black);
-      background: var(--white);
-      overflow-x: hidden;
-    }
-
-    h1, h2, h3, h4, h5, h6 {
-      font-family: 'Poppins', sans-serif;
-      font-weight: 700;
-      line-height: 1.3;
-      margin-bottom: 1rem;
-    }
-
-    p {
-      margin-bottom: 1rem;
-    }
-
-    a {
-      color: var(--german-red);
-      text-decoration: none;
-      transition: var(--transition);
-    }
-
-    a:hover {
-      color: var(--german-black);
-    }
-
-    ul {
-      list-style: none;
-    }
-
-    img {
-      max-width: 100%;
-      height: auto;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; line-height: 1.6; color: var(--german-black); background: var(--white); overflow-x: hidden; }
+    h1, h2, h3, h4 { font-family: 'Poppins', sans-serif; font-weight: 700; line-height: 1.3; margin-bottom: 1rem; }
+    p { margin-bottom: 1rem; color: var(--gray); }
+    a { color: var(--german-red); text-decoration: none; transition: var(--transition); }
+    a:hover { color: var(--german-black); }
+    ul { list-style: none; }
+    img { max-width: 100%; height: auto; }
 
     /* ===== UTILITIES ===== */
-    .wrapper {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 20px;
-    }
-
-    .full-width {
-      width: 100%;
-    }
-
-    .text-center {
-      text-align: center;
-    }
-
-    .mb-2 {
-      margin-bottom: 2rem;
-    }
-
-    .mb-3 {
-      margin-bottom: 3rem;
-    }
+    .wrapper { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+    .text-center { text-align: center; }
+    .section { padding: 80px 0; }
 
     /* ===== FLAG BAR ===== */
-    .flag-bar {
-      height: 6px;
-      width: 100%;
-      display: flex;
-    }
+    .flag-bar { height: 6px; width: 100%; display: flex; position: fixed; top: 0; z-index: 1001; }
+    .flag-bar .black { flex: 1; background: var(--german-black); }
+    .flag-bar .red { flex: 1; background: var(--german-red); }
+    .flag-bar .gold { flex: 1; background: var(--german-gold); }
 
-    .flag-bar .black {
-      flex: 1;
-      background: var(--german-black);
-    }
-
-    .flag-bar .red {
-      flex: 1;
-      background: var(--german-red);
-    }
-
-    .flag-bar .gold {
-      flex: 1;
-      background: var(--german-gold);
-    }
-
-    /* ===== NAVIGATION ===== */
+    /* ===== UNIFORM NAVIGATION ===== */
     nav {
       background: var(--german-black);
       padding: 1rem 0;
       position: sticky;
-      top: 0;
+      top: 6px;
       z-index: 1000;
-      box-shadow: var(--shadow);
+      box-shadow: var(--shadow-md);
     }
-
-    .nav-list {
-      list-style: none;
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 1.5rem;
-      margin: 0;
-      padding: 0;
+    .nav-container { display: flex; justify-content: space-between; align-items: center; }
+    .nav-logo {
+      color: var(--white); font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 1.2rem;
+      display: flex; align-items: center; gap: 10px; text-decoration: none;
     }
-
+    .nav-logo:hover { color: var(--white); }
+    .nav-logo i { color: var(--german-gold); }
+    .nav-list { display: flex; gap: 1.5rem; margin: 0; padding: 0; list-style: none; }
     .nav-list li a {
-      color: var(--white);
-      text-decoration: none;
-      font-weight: 500;
-      padding: 8px 16px;
-      border-radius: var(--radius);
-      transition: var(--transition);
-      display: inline-block;
+      color: rgba(255,255,255,0.85); font-weight: 500; font-size: 0.95rem;
+      padding: 8px 16px; border-radius: var(--radius); transition: var(--transition); text-decoration: none;
+      display: flex; align-items: center; gap: 6px;
     }
-
-    .nav-list li a:hover {
-      background: var(--german-red);
-      color: var(--white);
+    .nav-list li a:hover, .nav-list li a[aria-current="page"] {
+      background: rgba(255,255,255,0.1); color: var(--white);
     }
-
-    .nav-list a[aria-current="page"] {
-      background: var(--german-gold);
-      color: var(--german-black);
-      font-weight: 600;
+    .nav-list li a[aria-current="page"] {
+      border-bottom: 2px solid var(--german-gold); background: transparent;
     }
-
-    /* Mobile Menu Toggle */
     .mobile-menu-toggle {
-      display: none;
-      background: transparent;
-      border: none;
-      color: var(--white);
-      font-size: 1.5rem;
-      cursor: pointer;
-      position: absolute;
-      right: 20px;
-      top: 50%;
-      transform: translateY(-50%);
+      display: none; background: transparent; border: none; color: var(--white);
+      font-size: 1.5rem; cursor: pointer;
     }
 
     /* ===== HERO SECTION ===== */
     .hero {
-      background: linear-gradient(135deg, var(--german-black) 0%, #3a3a3a 100%);
+      background: linear-gradient(135deg, var(--german-black) 0%, #2d2d2d 100%);
       padding: 100px 1rem 80px;
       text-align: center;
       position: relative;
       overflow: hidden;
       color: var(--white);
     }
-
     .hero::before {
       content: '';
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: url('image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,206,0,0.1)"/></svg>');
-      background-size: 30px 30px;
-      opacity: 0.3;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image: radial-gradient(circle at 20% 50%, rgba(200, 16, 46, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(255, 206, 0, 0.1) 0%, transparent 50%);
+      opacity: 0.6; pointer-events: none;
     }
-
-    .hero .wrapper {
-      position: relative;
-      z-index: 2;
-    }
-
+    .hero .wrapper { position: relative; z-index: 2; }
     .hero h1 {
-      font-size: 3rem;
-      margin-bottom: 1.5rem;
+      font-size: 3rem; margin-bottom: 1.5rem; color: var(--white);
       animation: fadeInUp 0.8s ease;
     }
-
-    .hero h1 span {
-      color: var(--german-gold);
-    }
-
+    .hero h1 span { color: var(--german-gold); }
     .hero p {
-      font-size: 1.3rem;
-      color: rgba(255, 255, 255, 0.9);
-      max-width: 800px;
-      margin: 0 auto 2rem;
-      animation: fadeInUp 0.8s ease 0.2s both;
+      font-size: 1.3rem; color: rgba(255, 255, 255, 0.9); max-width: 800px;
+      margin: 0 auto 2rem; animation: fadeInUp 0.8s ease 0.2s both;
     }
-
     .hero-accent {
-      height: 4px;
-      width: 100px;
+      height: 4px; width: 100px;
       background: linear-gradient(90deg, var(--german-red), var(--german-gold));
-      margin: 0 auto;
-      border-radius: 2px;
+      margin: 0 auto; border-radius: 2px;
       animation: fadeInUp 0.8s ease 0.4s both;
     }
 
     /* ===== MAIN CONTENT ===== */
-    main {
-      padding: 80px 0;
-    }
-
-    section {
-      margin-bottom: 60px;
-    }
-
+    main { padding: 80px 0; }
+    section { margin-bottom: 60px; }
     section h2 {
-      font-size: 2.5rem;
-      color: var(--german-black);
-      margin-bottom: 1.5rem;
-      position: relative;
-      padding-bottom: 15px;
+      font-size: 2.2rem; color: var(--german-black); margin-bottom: 1.5rem;
+      position: relative; padding-bottom: 15px;
     }
-
     section h2::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 80px;
-      height: 4px;
-      background: linear-gradient(90deg, var(--german-black), var(--german-red));
-      border-radius: 2px;
+      content: ''; position: absolute; bottom: 0; left: 0; width: 80px; height: 4px;
+      background: linear-gradient(90deg, var(--german-black), var(--german-red)); border-radius: 2px;
     }
-
-    section p {
-      font-size: 1.1rem;
-      color: var(--gray);
-      line-height: 1.8;
-      text-align: justify;
-    }
+    section p { font-size: 1.1rem; color: var(--gray); line-height: 1.8; text-align: justify; }
 
     /* ===== INFO CARDS ===== */
     .info-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 30px;
-      margin: 40px 0;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px; margin: 40px 0;
     }
-
     .info-card {
-      background: var(--white);
-      padding: 40px 30px;
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow);
-      transition: var(--transition);
-      border-left: 5px solid var(--german-red);
-      position: relative;
-      overflow: hidden;
+      background: var(--white); padding: 40px 30px; border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md); transition: var(--transition);
+      border-left: 5px solid var(--german-red); position: relative; overflow: hidden;
     }
-
-    .info-card:hover {
-      transform: translateY(-5px);
-      box-shadow: var(--shadow-lg);
-    }
-
+    .info-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); }
     .info-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
       background: linear-gradient(90deg, var(--german-black), var(--german-red), var(--german-gold));
     }
-
     .info-card h3 {
-      color: var(--german-black);
-      font-size: 1.5rem;
-      margin-bottom: 1rem;
-      display: flex;
-      align-items: center;
-      gap: 12px;
+      color: var(--german-black); font-size: 1.5rem; margin-bottom: 1rem;
+      display: flex; align-items: center; gap: 12px;
     }
-
-    .info-card h3 i {
-      font-size: 1.8rem;
-      color: var(--german-red);
-    }
-
-    .info-card p {
-      color: var(--gray);
-      font-size: 1rem;
-      line-height: 1.7;
-      text-align: left;
-    }
+    .info-card h3 i { font-size: 1.8rem; color: var(--german-red); }
+    .info-card p { color: var(--gray); font-size: 1rem; line-height: 1.7; text-align: left; }
 
     /* ===== DOWNLOAD BUTTON ===== */
     .download-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 16px 32px;
+      display: inline-flex; align-items: center; gap: 10px; padding: 16px 32px;
       background: linear-gradient(135deg, var(--german-red) 0%, #a00d26 100%);
-      color: var(--white);
-      border-radius: var(--radius);
-      font-weight: 600;
-      font-size: 1rem;
-      transition: var(--transition);
-      margin-top: 20px;
-      box-shadow: var(--shadow);
+      color: var(--white); border-radius: var(--radius); font-weight: 600; font-size: 1rem;
+      transition: var(--transition); margin-top: 20px; box-shadow: var(--shadow-md); text-decoration: none;
     }
-
     .download-btn:hover {
       background: linear-gradient(135deg, #a00d26 0%, var(--german-red) 100%);
-      color: var(--white);
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-lg);
+      color: var(--white); transform: translateY(-2px); box-shadow: var(--shadow-lg);
     }
-
-    .download-btn i {
-      font-size: 1.2rem;
-    }
+    .download-btn i { font-size: 1.2rem; }
 
     /* ===== CONTACT SECTION ===== */
     .contact-box {
       background: linear-gradient(135deg, var(--german-black) 0%, #3a3a3a 100%);
-      color: var(--white);
-      padding: 50px;
-      border-radius: var(--radius-lg);
-      text-align: center;
-      position: relative;
-      overflow: hidden;
+      color: var(--white); padding: 50px; border-radius: var(--radius-lg);
+      text-align: center; position: relative; overflow: hidden;
     }
-
     .contact-box::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
       background: linear-gradient(90deg, var(--german-black), var(--german-red), var(--german-gold));
     }
-
-    .contact-box h2 {
-      color: var(--white);
-    }
-
+    .contact-box h2 { color: var(--white); }
     .contact-box h2::after {
       background: linear-gradient(90deg, var(--german-gold), var(--german-red));
-      left: 50%;
-      transform: translateX(-50%);
+      left: 50%; transform: translateX(-50%);
     }
-
-    .contact-box p {
-      color: rgba(255, 255, 255, 0.9);
-      text-align: center;
-      max-width: 600px;
-      margin: 0 auto;
-    }
-
-    .contact-box a {
-      color: var(--german-gold);
-      font-weight: 600;
-    }
-
-    .contact-box a:hover {
-      color: var(--white);
-    }
+    .contact-box p { color: rgba(255, 255, 255, 0.9); text-align: center; max-width: 600px; margin: 0 auto; }
+    .contact-box a { color: var(--german-gold); font-weight: 600; }
+    .contact-box a:hover { color: var(--white); }
 
     /* ===== PARTNERS SECTION ===== */
     .partners-section {
-      background: var(--light);
-      padding: 60px 0;
-      text-align: center;
+      background: var(--light); padding: 60px 0; text-align: center;
+      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
     }
-
     .partners-section h3 {
-      color: var(--gray);
-      font-size: 1rem;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      margin-bottom: 2rem;
+      color: var(--gray); font-size: 1rem; text-transform: uppercase;
+      letter-spacing: 2px; margin-bottom: 2rem;
     }
-
-    .partners-logos {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 40px;
-      flex-wrap: wrap;
-    }
-
+    .partners-logos { display: flex; justify-content: center; align-items: center; gap: 40px; flex-wrap: wrap; }
     .partner-item {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      padding: 20px 30px;
-      background: var(--white);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow);
-      transition: var(--transition);
+      display: flex; align-items: center; gap: 15px; padding: 20px 30px;
+      background: var(--white); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm);
+      transition: var(--transition); border: 1px solid var(--border);
     }
-
-    .partner-item:hover {
-      transform: translateY(-3px);
-      box-shadow: var(--shadow-lg);
-    }
-
-    .partner-item i {
-      font-size: 2rem;
-      color: var(--german-red);
-    }
-
-    .partner-item span {
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: var(--german-black);
-    }
+    .partner-item:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border-color: var(--german-gold); }
+    .partner-item i { font-size: 2rem; color: var(--german-red); }
+    .partner-item span { font-size: 1.1rem; font-weight: 600; color: var(--german-black); }
 
     /* ===== FOOTER ===== */
-    footer {
-      background: var(--german-black);
-      color: var(--white);
-      padding: 60px 0 30px;
-      border-top: 4px solid var(--german-red);
-    }
-
-    .footer-content {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 40px;
-      margin-bottom: 40px;
-    }
-
-    .footer h4 {
-      font-size: 1.2rem;
-      margin-bottom: 1.5rem;
-      color: var(--german-gold);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .footer p {
-      opacity: 0.8;
-      line-height: 1.8;
-    }
-
-    .footer ul li {
-      margin-bottom: 12px;
-    }
-
-    .footer ul li a {
-      color: var(--white);
-      opacity: 0.8;
-    }
-
-    .footer ul li a:hover {
-      opacity: 1;
-      color: var(--german-gold);
-    }
-
-    .footer-social {
-      display: flex;
-      gap: 15px;
-      margin-top: 20px;
-    }
-
+    footer { background: var(--german-black); color: var(--white); padding: 60px 0 30px; border-top: 4px solid var(--german-red); }
+    .footer-content { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-bottom: 40px; }
+    .footer h4 { font-size: 1.2rem; margin-bottom: 1.5rem; color: var(--german-gold); display: flex; align-items: center; gap: 10px; }
+    .footer p { opacity: 0.8; line-height: 1.8; color: rgba(255,255,255,0.8); }
+    .footer ul li { margin-bottom: 12px; }
+    .footer ul li a { color: rgba(255,255,255,0.8); font-size: 0.95rem; }
+    .footer ul li a:hover { opacity: 1; color: var(--german-gold); padding-left: 5px; }
+    .footer-social { display: flex; gap: 15px; margin-top: 20px; }
     .footer-social a {
-      width: 40px;
-      height: 40px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--white);
-      font-size: 1.2rem;
+      width: 40px; height: 40px; background: rgba(255, 255, 255, 0.1); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; color: var(--white); font-size: 1.2rem;
     }
-
-    .footer-social a:hover {
-      background: var(--german-red);
-      color: var(--white);
-    }
-
-    .footer-bottom {
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      padding-top: 30px;
-      text-align: center;
-      opacity: 0.7;
-      font-size: 0.9rem;
-    }
-
-    .footer-bottom a {
-      color: var(--german-gold);
-    }
+    .footer-social a:hover { background: var(--german-red); color: var(--white); }
+    .footer-bottom { border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 30px; text-align: center; opacity: 0.7; font-size: 0.9rem; }
 
     /* ===== ANIMATIONS ===== */
     @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     /* ===== RESPONSIVE ===== */
     @media (max-width: 768px) {
-      .mobile-menu-toggle {
-        display: block;
-      }
-
+      .mobile-menu-toggle { display: block; }
       .nav-list {
-        display: none;
-        flex-direction: column;
-        width: 100%;
-        margin-top: 20px;
+        display: none; flex-direction: column; width: 100%; position: absolute;
+        top: 100%; left: 0; background: var(--german-black); padding: 20px; box-shadow: var(--shadow-lg);
       }
-
-      .nav-list.active {
-        display: flex;
-      }
-
-      .hero h1 {
-        font-size: 2rem;
-      }
-
-      .hero p {
-        font-size: 1.1rem;
-      }
-
-      .info-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .partners-logos {
-        flex-direction: column;
-        gap: 20px;
-      }
-
-      .contact-box {
-        padding: 30px 20px;
-      }
-
-      main {
-        padding: 40px 0;
-      }
-
-      section {
-        margin-bottom: 40px;
-      }
+      .nav-list.active { display: flex; }
+      .hero h1 { font-size: 2rem; }
+      .hero p { font-size: 1.1rem; }
+      .info-grid { grid-template-columns: 1fr; }
+      .partners-logos { flex-direction: column; gap: 20px; }
+      .contact-box { padding: 30px 20px; }
+      main { padding: 40px 0; }
+      section { margin-bottom: 40px; }
     }
-
-    /* ===== ACCESSIBILITY ===== */
     @media (prefers-reduced-motion: reduce) {
-      * {
-        animation: none !important;
-        transition: none !important;
-      }
-    }
-
-    .sr-only {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border: 0;
+      * { animation: none !important; transition: none !important; }
     }
   </style>
 </head>
@@ -629,9 +268,12 @@
     <div class="gold"></div>
   </div>
 
-  <!-- Navigation -->
+  <!-- UNIFORM NAVIGATION MENU -->
   <nav>
-    <div class="wrapper">
+    <div class="wrapper nav-container">
+      <a href="index.html" class="nav-logo">
+        <i class="fas fa-globe-africa"></i> Open Data Africa
+      </a>
       <button class="mobile-menu-toggle" aria-label="Toggle menu" onclick="toggleMenu()">
         <i class="fas fa-bars"></i>
       </button>
@@ -640,11 +282,11 @@
         <li><a href="about.html" aria-current="page"><i class="fas fa-info-circle"></i> About</a></li>
         <li><a href="datasets.html"><i class="fas fa-database"></i> Datasets</a></li>
         <li><a href="use-cases.html"><i class="fas fa-lightbulb"></i> Use Cases</a></li>
-        <li><a href="resources.html"><i class="fas fa-book"></i> Resources</a></li>
-        <li><a href="contribute.html"><i class="fas fa-upload"></i> Contribute</a></li>
         <li><a href="dashboard.html"><i class="fas fa-chart-bar"></i> Dashboard</a></li>
+        <li><a href="countries.html"><i class="fas fa-map-marked-alt"></i> Countries</a></li>
+        <li><a href="insights.html"><i class="fas fa-file-alt"></i> Insights</a></li>
+        <li><a href="contribute.html"><i class="fas fa-upload"></i> Contribute</a></li>
         <li><a href="aodria.html"><i class="fas fa-award"></i> AODRIA</a></li>
-        <li><a href="contact.html"><i class="fas fa-envelope"></i> Contact</a></li>
       </ul>
     </div>
   </nav>
@@ -672,7 +314,6 @@
         we aim to bridge data gaps and promote responsible data governance across sectors like health, 
         agriculture, environment, and digital economy.
       </p>
-     
     </section>
 
     <!-- AI Made in Africa Section -->
@@ -686,7 +327,6 @@
         The program supports African startups, researchers, governments and private sector innovators to advance AI sovereignty while championing responsible, inclusive, and locally relevant open AI innovations and open datasets that address continental priorities in areas such as agriculture, healthcare, education, climate action, and sustainable economic development.
       </p>
 
-      
       <!-- Factsheet Download Button -->
       <div class="text-center">
         <a 
@@ -699,14 +339,13 @@
     </section>
 
     <!-- Partners Section -->
-    <section class="partners-section" style="margin: 60px -20px; padding: 60px 20px; border-radius: var(--radius-lg);">
+    <section class="partners-section" style="margin: 60px -24px; padding: 60px 24px; border-radius: var(--radius-lg);">
       <h3>Supported By</h3>
       <div class="partners-logos">
         <div class="partner-item">
           <i class="fas fa-landmark"></i>
           <span>GIZ African Union</span>
         </div>
-        
       </div>
     </section>
 
@@ -728,19 +367,15 @@
   <footer>
     <div class="wrapper">
       <div class="footer-content">
-        
-        
         <div>
           <h4><i class="fas fa-envelope"></i> Contact</h4>
           <p><i class="fas fa-envelope"></i> aimadeinafrica@giz.de</p>
           <p><i class="fas fa-map-marker-alt"></i> GIZ African Union, Addis Ababa, Ethiopia</p>
         </div>
-
       </div>
 
       <div class="footer-bottom">
-        <p>&copy; 2026 Open Data Africa 
-        </p>
+        <p>&copy; 2026 Open Data Africa | AI Made in Africa / GIZ AU</p>
       </div>
     </div>
   </footer>
@@ -772,7 +407,7 @@
     "publisher": {
       "@type": "Organization",
       "name": "AI Made in Africa / GIZ / African Union",
-      "url": ""
+      "url": "https://open-data-africa.github.io/"
     },
     "funder": {
       "@type": "Organization",
