@@ -9,120 +9,64 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <!-- Link to your main stylesheet -->
   <link rel="stylesheet" href="css/style.css">
-  
-  <!-- Chart.js for Visualizations -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
-    /* Fallback CSS Variables to ensure it looks good even if style.css is missing */
-    :root {
-      --german-black: #1a1a1a;
-      --german-red: #c8102e;
-      --german-gold: #ffce00;
-      --white: #ffffff;
-      --light: #f8f9fa;
-      --gray: #6c757d;
-      --gray-light: #e9ecef;
-      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
-      --radius: 8px;
-      --radius-lg: 12px;
-      --transition: all 0.3s ease;
-    }
-
-    body { font-family: 'Inter', sans-serif; margin: 0; background: var(--light); color: var(--german-black); }
-    .wrapper { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-    
-    /* Navigation */
-    nav { background: var(--german-black); padding: 1rem 0; position: sticky; top: 0; z-index: 1000; box-shadow: var(--shadow); }
-    .nav-list { list-style: none; display: flex; justify-content: center; flex-wrap: wrap; gap: 1.5rem; margin: 0; padding: 0; }
-    .nav-list li a { color: var(--white); text-decoration: none; font-weight: 500; padding: 8px 16px; border-radius: var(--radius); transition: var(--transition); }
-    .nav-list li a:hover, .nav-list a[aria-current="page"] { background: var(--german-red); color: var(--white); }
-    .mobile-menu-toggle { display: none; background: transparent; border: none; color: var(--white); font-size: 1.5rem; cursor: pointer; }
-
-    /* Hero */
+    /* Dashboard Specific Styles */
     .dashboard-hero { background: linear-gradient(135deg, var(--german-black) 0%, #3a3a3a 100%); padding: 80px 1rem 60px; text-align: center; color: var(--white); }
-    .dashboard-hero h1 { font-size: 2.5rem; margin-bottom: 1rem; font-family: 'Poppins', sans-serif; }
+    .dashboard-hero h1 { font-size: 2.5rem; margin-bottom: 1rem; }
     .dashboard-hero h1 span { color: var(--german-gold); }
-    .dashboard-hero p { font-size: 1.1rem; opacity: 0.9; max-width: 700px; margin: 0 auto; }
-
-    /* Stats */
+    
     .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: -40px; position: relative; z-index: 10; max-width: 1200px; margin-left: auto; margin-right: auto; padding: 0 20px; }
     .stat-box { background: var(--white); padding: 25px; border-radius: var(--radius-lg); text-align: center; box-shadow: var(--shadow-lg); border-top: 4px solid var(--german-red); }
     .stat-box .number { font-size: 2.5rem; font-weight: 800; color: var(--german-black); display: block; }
     .stat-box .label { font-size: 0.9rem; color: var(--gray); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
 
-    /* Charts */
     .charts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; max-width: 1200px; margin: 60px auto; padding: 0 20px; }
     .chart-card { background: var(--white); padding: 30px; border-radius: var(--radius-lg); box-shadow: var(--shadow); border: 1px solid var(--gray-light); }
-    .chart-card h3 { font-size: 1.2rem; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; font-family: 'Poppins', sans-serif; }
+    .chart-card h3 { font-size: 1.2rem; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
     .chart-card h3 i { color: var(--german-red); }
     .chart-container { position: relative; height: 300px; }
 
-    /* Trending */
+    /* Trending Section Styles */
     .trending-section { max-width: 1200px; margin: 0 auto 80px; padding: 0 20px; }
-    .trending-section h2 { text-align: center; margin-bottom: 30px; font-size: 2rem; font-family: 'Poppins', sans-serif; }
+    .trending-header { text-align: center; margin-bottom: 40px; }
+    .trending-header h2 { font-size: 2rem; margin-bottom: 10px; }
+    .trending-header h2 i { color: var(--german-red); }
+    .trending-header p { color: var(--gray); max-width: 600px; margin: 0 auto; }
+    
     .trending-card { display: flex; align-items: center; justify-content: space-between; background: var(--white); padding: 20px; border-radius: var(--radius); margin-bottom: 15px; border: 1px solid var(--gray-light); transition: var(--transition); }
     .trending-card:hover { transform: translateX(5px); border-color: var(--german-gold); box-shadow: var(--shadow); }
-    .trending-info h4 { font-size: 1.1rem; margin-bottom: 5px; margin: 0 0 5px 0; }
+    .trending-rank { font-size: 1.5rem; font-weight: 800; color: var(--german-gold); width: 40px; }
+    .trending-info { flex-grow: 1; padding: 0 20px; }
+    .trending-info h4 { font-size: 1.1rem; margin-bottom: 5px; }
     .trending-info h4 a { color: var(--german-black); text-decoration: none; }
     .trending-info h4 a:hover { color: var(--german-red); }
     .trending-meta { font-size: 0.85rem; color: var(--gray); display: flex; gap: 15px; flex-wrap: wrap; }
     .trending-score { background: var(--german-gold); color: var(--german-black); padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 0.9rem; display: flex; align-items: center; gap: 6px; }
     
-    /* Debug/Error */
-    .debug-error { background: #fee2e2; color: #991b1b; padding: 20px; border-radius: 8px; text-align: center; margin: 20px auto; max-width: 800px; display: none; border: 1px solid #fca5a5; }
-
-    /* Footer */
-    footer { background: var(--german-black); color: var(--white); padding: 60px 0 30px; margin-top: 60px; }
-    .footer-content { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-bottom: 40px; }
-    .footer h4 { font-size: 1.2rem; margin-bottom: 1.5rem; color: var(--german-gold); }
-    .footer p, .footer a { color: rgba(255,255,255,0.8); text-decoration: none; line-height: 1.8; }
-    .footer ul { list-style: none; padding: 0; }
-    .footer ul li { margin-bottom: 12px; }
-    .footer ul li a:hover { color: var(--german-gold); }
-    .footer-bottom { border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 30px; text-align: center; opacity: 0.7; font-size: 0.9rem; }
-
-    @media (max-width: 768px) {
-      .dashboard-hero h1 { font-size: 2rem; }
-      .charts-grid { grid-template-columns: 1fr; }
-      .trending-card { flex-direction: column; align-items: flex-start; gap: 15px; }
-      .mobile-menu-toggle { display: block; }
-      .nav-list { display: none; flex-direction: column; width: 100%; text-align: center; padding-top: 20px; }
-      .nav-list.active { display: flex; }
-    }
+    .debug-error { background: #fee2e2; color: #991b1b; padding: 20px; border-radius: 8px; text-align: center; margin: 20px auto; max-width: 800px; display: none; }
   </style>
 </head>
 <body>
 
-  <!-- Flag Bar -->
-  <div style="height: 6px; width: 100%; display: flex;">
-    <div style="flex: 1; background: var(--german-black);"></div>
-    <div style="flex: 1; background: var(--german-red);"></div>
-    <div style="flex: 1; background: var(--german-gold);"></div>
-  </div>
+  <div class="flag-bar"><div class="black"></div><div class="red"></div><div class="gold"></div></div>
 
-  <!-- Navigation -->
   <nav>
     <div class="wrapper" style="display: flex; justify-content: space-between; align-items: center;">
-      <a href="index.html" style="color: var(--white); font-weight: 700; font-size: 1.2rem; text-decoration: none; display: flex; align-items: center; gap: 10px;">
-        <i class="fas fa-globe-africa" style="color: var(--german-gold);"></i> Open Data Africa
-      </a>
-      <button class="mobile-menu-toggle" aria-label="Toggle menu" onclick="toggleMenu()"><i class="fas fa-bars"></i></button>
+      <a href="index.html" style="color: var(--white); font-weight: 700; font-size: 1.2rem; text-decoration: none;"><i class="fas fa-globe-africa" style="color: var(--german-gold);"></i> Open Data Africa</a>
+      <button class="mobile-menu-toggle" onclick="toggleMenu()"><i class="fas fa-bars"></i></button>
       <ul class="nav-list" id="navList">
-        <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
-        <li><a href="about.html"><i class="fas fa-info-circle"></i> About</a></li>
-        <li><a href="datasets.html"><i class="fas fa-database"></i> Datasets</a></li>
-        <li><a href="dashboard.html" aria-current="page"><i class="fas fa-chart-bar"></i> Dashboard</a></li>
-        <li><a href="contribute.html"><i class="fas fa-upload"></i> Contribute</a></li>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="datasets.html">Datasets</a></li>
+        <li><a href="dashboard.html" aria-current="page">Dashboard</a></li>
+        <li><a href="contribute.html">Contribute</a></li>
       </ul>
     </div>
   </nav>
 
-  <!-- Hero -->
   <header class="dashboard-hero">
     <div class="wrapper">
       <h1>Interactive Data <span>Dashboard</span></h1>
@@ -131,201 +75,127 @@
   </header>
 
   <main>
-    <!-- Error Message -->
     <div id="debugError" class="debug-error wrapper">
-      <i class="fas fa-exclamation-triangle"></i> 
-      <strong>Error loading data.</strong> Please ensure <code>data/catalog.json</code> exists in your repository.
+      <i class="fas fa-exclamation-triangle"></i> <strong>Error loading data.</strong> Please ensure <code>data/catalog.json</code> exists.
     </div>
 
-    <!-- Live Stats Row -->
     <div class="stats-row" id="statsRow">
       <div class="stat-box"><span class="number">...</span><span class="label">Loading Data</span></div>
     </div>
 
-    <!-- Charts Grid -->
     <div class="charts-grid" id="chartsGrid" style="display: none;">
-      <div class="chart-card">
-        <h3><i class="fas fa-chart-pie"></i> Datasets by Domain</h3>
-        <div class="chart-container"><canvas id="domainChart"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <h3><i class="fas fa-chart-bar"></i> Top Countries</h3>
-        <div class="chart-container"><canvas id="countryChart"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <h3><i class="fas fa-chart-column"></i> Data Types</h3>
-        <div class="chart-container"><canvas id="typeChart"></canvas></div>
-      </div>
+      <div class="chart-card"><h3><i class="fas fa-chart-pie"></i> Datasets by Domain</h3><div class="chart-container"><canvas id="domainChart"></canvas></div></div>
+      <div class="chart-card"><h3><i class="fas fa-chart-bar"></i> Top Countries</h3><div class="chart-container"><canvas id="countryChart"></canvas></div></div>
+      <div class="chart-card"><h3><i class="fas fa-chart-column"></i> Data Types</h3><div class="chart-container"><canvas id="typeChart"></canvas></div></div>
     </div>
 
-    <!-- Trending Datasets -->
+    <!-- NEW: Trending Section -->
     <section class="trending-section" id="trendingSection" style="display: none;">
-      <h2><i class="fas fa-fire" style="color: var(--german-red);"></i> Trending Datasets</h2>
-      <p style="text-align: center; color: var(--gray); margin-bottom: 30px; max-width: 600px; margin-left: auto; margin-right: auto;">
-        Based on community engagement (views, metadata downloads, and link copies).
-      </p>
+      <div class="trending-header">
+        <h2><i class="fas fa-fire"></i> Trending Datasets</h2>
+        <p>Based on real-time community engagement (views, downloads, and link copies).</p>
+      </div>
       <div id="trendingList"></div>
     </section>
   </main>
 
-  <!-- Footer -->
   <footer>
     <div class="wrapper">
       <div class="footer-content">
-        <div>
-          <h4><i class="fas fa-globe-africa"></i> Open Data Africa</h4>
-          <p>Open data ecosystems across Africa through benchmarking, recognition, and capacity building.</p>
-        </div>
-        <div>
-          <h4><i class="fas fa-link"></i> Quick Links</h4>
-          <ul>
-            <li><a href="index.html">Home</a></li>
-            <li><a href="datasets.html">Datasets</a></li>
-            <li><a href="dashboard.html">Dashboard</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4><i class="fas fa-envelope"></i> Contact</h4>
-          <p><i class="fas fa-envelope"></i> aimadeinafrica@giz.de</p>
-          <p><i class="fas fa-map-marker-alt"></i> GIZ African Union, Addis Ababa, Ethiopia</p>
-        </div>
+        <div><h4><i class="fas fa-globe-africa"></i> Open Data Africa</h4><p>Open data ecosystems across Africa.</p></div>
+        <div><h4><i class="fas fa-link"></i> Quick Links</h4><ul><li><a href="index.html">Home</a></li><li><a href="datasets.html">Datasets</a></li><li><a href="dashboard.html">Dashboard</a></li></ul></div>
+        <div><h4><i class="fas fa-envelope"></i> Contact</h4><p><i class="fas fa-envelope"></i> aimadeinafrica@giz.de</p></div>
       </div>
-      <div class="footer-bottom">
-        <p>&copy; 2026 Open Data Africa | AI Made in Africa / GIZ AU </p>
-      </div>
+      <div class="footer-bottom"><p>&copy; 2026 Open Data Africa | AI Made in Africa / GIZ AU</p></div>
     </div>
   </footer>
 
-  <!-- Metrics Engine (Optional but recommended) -->
+  <!-- Load the new Metrics Engine -->
   <script src="js/metrics.js"></script>
   
   <script>
-    function toggleMenu() { 
-      document.getElementById('navList').classList.toggle('active'); 
-    }
+    function toggleMenu() { document.getElementById('navList').classList.toggle('active'); }
 
     document.addEventListener('DOMContentLoaded', async () => {
       try {
-        // UPDATED: Fetching from catalog.json
         const response = await fetch('data/catalog.json');
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const catalog = await response.json();
 
-        // Hide error, show content
         document.getElementById('debugError').style.display = 'none';
         document.getElementById('chartsGrid').style.display = 'grid';
         document.getElementById('trendingSection').style.display = 'block';
 
-        // 1. Calculate Stats using exact column names from your CSV/JSON
+        // 1. Stats
         const totalDatasets = catalog.length;
         const uniqueCountries = [...new Set(catalog.map(d => d['Country']))].filter(Boolean).length;
         const uniqueDomains = [...new Set(catalog.map(d => d['Domain']))].filter(Boolean).length;
-        const uniqueDataTypes = [...new Set(catalog.map(d => d['Data Type']))].filter(Boolean).length;
         
-        let totalEngagement = 0;
-        if (typeof DatasetMetrics !== 'undefined') {
-          const allMetrics = DatasetMetrics.get();
-          totalEngagement = Object.values(allMetrics).reduce((sum, m) => sum + (m.views || 0) + (m.downloads || 0) + (m.copies || 0), 0);
-        }
+        // Calculate total engagement
+        const allMetrics = JSON.parse(localStorage.getItem('oda_engagement') || '{}');
+        const totalEngagement = Object.values(allMetrics).reduce((sum, m) => sum + (m.views || 0) + (m.downloads || 0) + (m.copies || 0), 0);
 
         document.getElementById('statsRow').innerHTML = `
           <div class="stat-box"><span class="number">${totalDatasets}</span><span class="label">Total Datasets</span></div>
           <div class="stat-box"><span class="number">${uniqueCountries}</span><span class="label">Countries</span></div>
           <div class="stat-box"><span class="number">${uniqueDomains}</span><span class="label">Domains</span></div>
-          <div class="stat-box"><span class="number">${uniqueDataTypes}</span><span class="label">Data Types</span></div>
           <div class="stat-box"><span class="number">${totalEngagement}</span><span class="label">Total Interactions</span></div>
         `;
 
-        // 2. Render Charts with brand colors
-        const brandColors = ['#c8102e', '#ffce00', '#1a1a1a', '#6c757d', '#e9ecef', '#a00d26', '#d4af37', '#495057'];
-
-        function renderChart(canvasId, type, labels, key, isHorizontal = false) {
+        // 2. Charts
+        const brandColors = ['#c8102e', '#ffce00', '#1a1a1a', '#6c757d', '#e9ecef', '#a00d26'];
+        function renderChart(canvasId, type, labels, key) {
           const counts = labels.map(l => catalog.filter(d => d[key] === l).length);
           new Chart(document.getElementById(canvasId), {
             type: type,
-            data: {
-              labels: labels,
-              datasets: [{
-                data: counts,
-                backgroundColor: brandColors.slice(0, labels.length),
-                borderWidth: 0,
-                borderRadius: type === 'bar' ? 4 : 0
-              }]
-            },
-            options: {
-              responsive: true,
-              maintainAspectRatio: false,
-              indexAxis: isHorizontal ? 'y' : 'x',
-              plugins: {
-                legend: { 
-                  display: type === 'doughnut', 
-                  position: 'bottom', 
-                  labels: { boxWidth: 12, font: { size: 11 } } 
-                }
-              },
-              scales: type === 'doughnut' ? {} : { 
-                y: { beginAtZero: true, ticks: { stepSize: 1 } },
-                x: { ticks: { font: { size: 10 } } }
-              }
-            }
+            data: { labels: labels, datasets: [{ data: counts, backgroundColor: brandColors.slice(0, labels.length), borderWidth: 0, borderRadius: type === 'bar' ? 4 : 0 }] },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: type === 'doughnut', position: 'bottom' } }, scales: type === 'doughnut' ? {} : { y: { beginAtZero: true } } }
           });
         }
-
-        // Get unique values sorted by count (descending)
         function getTopValues(key, limit = 8) {
-          const counts = {};
-          catalog.forEach(d => {
-            const val = d[key];
-            if (val) counts[val] = (counts[val] || 0) + 1;
-          });
-          return Object.entries(counts)
-            .sort((a, b) => b[1] - a[1])
-            .slice(0, limit)
-            .map(([name]) => name);
+          const counts = {}; catalog.forEach(d => { if(d[key]) counts[d[key]] = (counts[d[key]] || 0) + 1; });
+          return Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, limit).map(([name]) => name);
         }
-
-        const topDomains = getTopValues('Domain', 8);
-        const topCountries = getTopValues('Country', 8);
-        const topDataTypes = getTopValues('Data Type', 8);
-
-        renderChart('domainChart', 'doughnut', topDomains, 'Domain');
-        renderChart('countryChart', 'bar', topCountries, 'Country');
-        renderChart('typeChart', 'bar', topDataTypes, 'Data Type', true);
+        renderChart('domainChart', 'doughnut', getTopValues('Domain', 6), 'Domain');
+        renderChart('countryChart', 'bar', getTopValues('Country', 6), 'Country');
+        renderChart('typeChart', 'bar', getTopValues('Data Type', 6), 'Data Type');
 
         // 3. Render Trending Datasets
+        const trending = EngagementTracker.getTrending(catalog, 5);
         const trendingList = document.getElementById('trendingList');
-        if (typeof DatasetMetrics !== 'undefined') {
-          const trending = DatasetMetrics.getTopDatasets(catalog, 5);
-          if (trending.length > 0 && trending[0].engagementScore > 0) {
-            trending.forEach(d => {
-              const safeName = d['Dataset Name'].replace(/'/g, "\\'");
-              const card = document.createElement('div');
-              card.className = 'trending-card';
-              card.innerHTML = `
-                <div class="trending-info">
-                  <h4><a href="${d['Link']}" target="_blank" onclick="DatasetMetrics.trackView('${safeName}')">${d['Dataset Name']}</a></h4>
-                  <div class="trending-meta">
-                    <span><i class="fas fa-globe-africa"></i> ${d['Country']}</span>
-                    <span><i class="fas fa-tag"></i> ${d['Domain']}</span>
-                    <span><i class="fas fa-eye"></i> ${d.stats.views} Views</span>
-                    <span><i class="fas fa-download"></i> ${d.stats.downloads} Downloads</span>
-                  </div>
+        
+        if (trending.length > 0 && trending[0].score > 0) {
+          trending.forEach((d, index) => {
+            const safeName = d['Dataset Name'].replace(/'/g, "\\'");
+            const card = document.createElement('div');
+            card.className = 'trending-card';
+            card.innerHTML = `
+              <div class="trending-rank">#${index + 1}</div>
+              <div class="trending-info">
+                <h4>
+                  <!-- Track View on Click -->
+                  <a href="${d['Link']}" target="_blank" onclick="EngagementTracker.track('${safeName}', 'views')">
+                    ${d['Dataset Name']}
+                  </a>
+                </h4>
+                <div class="trending-meta">
+                  <span><i class="fas fa-globe-africa"></i> ${d['Country']}</span>
+                  <span><i class="fas fa-tag"></i> ${d['Domain']}</span>
+                  <span><i class="fas fa-eye"></i> ${d.stats.views} Views</span>
+                  <span><i class="fas fa-download"></i> ${d.stats.downloads} Downloads</span>
                 </div>
-                <div class="trending-score"><i class="fas fa-fire"></i> Score: ${d.engagementScore}</div>
-              `;
-              trendingList.appendChild(card);
-            });
-          } else {
-            trendingList.innerHTML = '<p style="text-align:center; color: var(--gray); padding: 40px;">Interact with datasets on the site to see trending analytics here!</p>';
-          }
+              </div>
+              <div class="trending-score"><i class="fas fa-fire"></i> Score: ${d.score}</div>
+            `;
+            trendingList.appendChild(card);
+          });
         } else {
-          trendingList.innerHTML = '<p style="text-align:center; color: var(--gray); padding: 40px;">Engagement tracking is currently initializing.</p>';
+          trendingList.innerHTML = '<p style="text-align:center; color: var(--gray); padding: 40px; background: var(--white); border-radius: var(--radius);">Click on dataset links below to start tracking engagement and see trending analytics here!</p>';
         }
 
       } catch (error) {
         console.error('Dashboard Error:', error);
         document.getElementById('debugError').style.display = 'block';
-        document.getElementById('statsRow').innerHTML = '<div class="stat-box" style="grid-column: 1/-1;"><span class="number" style="color: var(--german-red);">Error</span><span class="label">Check Console & File Paths</span></div>';
       }
     });
   </script>
