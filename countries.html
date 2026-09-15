@@ -15,13 +15,47 @@
   <style>
     :root {
       --primary: #c8102e; --secondary: #ffce00; --dark: #1a1a1a; 
-      --light: #f8f9fa; --gray: #6c757d; --border: #e9ecef;
-      --shadow: 0 4px 6px rgba(0,0,0,0.05); --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
-      --radius: 12px; --transition: all 0.3s ease;
+      --light: #f8f9fa; --gray: #6c757d; --border: #dee2e6;
+      --shadow-sm: 0 2px 4px rgba(0,0,0,0.04); --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+      --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
+      --radius: 10px; --transition: all 0.3s ease;
     }
-    body { font-family: 'Inter', sans-serif; background: var(--light); color: var(--dark); margin: 0; }
-    .wrapper { max-width: 1300px; margin: 0 auto; padding: 0 24px; }
-    
+    body { font-family: 'Inter', sans-serif; background: #f0f2f5; color: var(--dark); margin: 0; }
+    .wrapper { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+    /* ===== UNIFORM NAVIGATION ===== */
+    nav {
+      background: var(--dark);
+      padding: 1rem 0;
+      position: sticky;
+      top: 6px;
+      z-index: 1000;
+      box-shadow: var(--shadow-md);
+    }
+    .nav-container { display: flex; justify-content: space-between; align-items: center; }
+    .nav-logo {
+      color: var(--white); font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 1.2rem;
+      display: flex; align-items: center; gap: 10px; text-decoration: none;
+    }
+    .nav-logo:hover { color: var(--white); }
+    .nav-logo i { color: var(--secondary); }
+    .nav-list { display: flex; gap: 1.5rem; margin: 0; padding: 0; list-style: none; }
+    .nav-list li a {
+      color: rgba(255,255,255,0.85); font-weight: 500; font-size: 0.95rem;
+      padding: 8px 16px; border-radius: var(--radius); transition: var(--transition); text-decoration: none;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .nav-list li a:hover, .nav-list li a[aria-current="page"] {
+      background: rgba(255,255,255,0.1); color: var(--white);
+    }
+    .nav-list li a[aria-current="page"] {
+      border-bottom: 2px solid var(--secondary); background: transparent;
+    }
+    .mobile-menu-toggle {
+      display: none; background: transparent; border: none; color: var(--white);
+      font-size: 1.5rem; cursor: pointer;
+    }
+
     /* ===== ANIMATED & BEAUTIFIED HERO SECTION ===== */
     .dash-hero { 
       background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); 
@@ -43,46 +77,45 @@
       margin-bottom: 20px; border: 1px solid rgba(255, 206, 0, 0.3);
       animation: fadeInDown 0.8s ease both;
     }
-    
-    /* HIGHLY READABLE, ANIMATED TITLE (NO BLACK) */
     .dash-hero h1 { 
       font-family: 'Poppins', sans-serif; 
-      font-size: 3.8rem; 
+      font-size: 3.2rem; 
       font-weight: 800;
       margin: 0 0 15px 0; 
-      color: #ffffff; /* Pure white for maximum readability */
-      text-shadow: 0 4px 20px rgba(255, 206, 0, 0.3); /* Subtle gold glow */
+      color: #ffffff;
+      text-shadow: 0 4px 20px rgba(255, 206, 0, 0.3);
       animation: fadeInUp 0.8s ease 0.1s both;
       letter-spacing: -1px;
     }
     .dash-hero h1 span { 
-      color: var(--secondary); /* Bright Gold */
+      color: var(--secondary);
       display: inline-block;
       animation: pulseGlow 2.5s ease-in-out infinite alternate;
     }
-    
     @keyframes pulseGlow {
       from { text-shadow: 0 0 10px rgba(255, 206, 0, 0.4); }
       to { text-shadow: 0 0 25px rgba(255, 206, 0, 0.8), 0 0 10px rgba(255, 255, 255, 0.6); }
     }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
 
     .dash-hero p { 
       color: rgba(255, 255, 255, 0.85); 
       max-width: 700px; 
       margin: 0 auto 30px; 
-      font-size: 1.2rem; 
+      font-size: 1.1rem; 
       line-height: 1.6;
       animation: fadeInUp 0.8s ease 0.2s both;
     }
 
     /* ===== REST OF THE STYLES ===== */
     .stats-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: -60px; position: relative; z-index: 10; margin-bottom: 40px; }
-    .stat-card { background: white; padding: 24px; border-radius: var(--radius); box-shadow: var(--shadow-lg); text-align: center; border-top: 4px solid var(--primary); transition: var(--transition); }
-    .stat-card:hover { transform: translateY(-5px); }
-    .stat-card .num { font-size: 2.5rem; font-weight: 800; color: var(--dark); display: block; }
-    .stat-card .lbl { font-size: 0.85rem; color: var(--gray); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+    .stat-card { background: white; padding: 24px; border-radius: var(--radius); box-shadow: var(--shadow-md); text-align: center; border: 1px solid var(--border); border-top: 4px solid var(--primary); transition: var(--transition); }
+    .stat-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); border-color: var(--secondary); }
+    .stat-card .num { font-size: 2.2rem; font-weight: 800; color: var(--primary); display: block; }
+    .stat-card .lbl { font-size: 0.8rem; color: var(--gray); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 5px; }
 
-    .controls-section { background: white; padding: 24px; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 30px; border: 1px solid var(--border); display: flex; flex-wrap: wrap; gap: 15px; align-items: center; justify-content: space-between; }
+    .controls-section { background: white; padding: 24px; border-radius: var(--radius); box-shadow: var(--shadow-sm); margin-bottom: 30px; border: 1px solid var(--border); display: flex; flex-wrap: wrap; gap: 15px; align-items: center; justify-content: space-between; }
     .search-wrap { position: relative; flex-grow: 1; max-width: 400px; }
     .search-wrap input { width: 100%; padding: 12px 20px 12px 45px; border: 1px solid var(--border); border-radius: 50px; font-size: 1rem; outline: none; transition: var(--transition); font-family: inherit; }
     .search-wrap input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(200, 16, 46, 0.1); }
@@ -95,7 +128,7 @@
 
     .country-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; margin-bottom: 60px; }
     .country-card { background: white; border-radius: var(--radius); padding: 24px; border: 1px solid var(--border); transition: var(--transition); cursor: pointer; position: relative; overflow: hidden; }
-    .country-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); border-color: var(--secondary); }
+    .country-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); border-color: var(--secondary); }
     .country-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: linear-gradient(to bottom, var(--primary), var(--secondary)); }
     
     .cc-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
@@ -115,8 +148,8 @@
     .modal-overlay.show .modal-content { transform: translateY(0); }
     .modal-header { padding: 24px; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: white; z-index: 10; border-radius: 16px 16px 0 0; display: flex; justify-content: space-between; align-items: center; }
     .modal-header h2 { margin: 0; font-size: 1.5rem; display: flex; align-items: center; gap: 10px; }
-    .modal-close { background: var(--light); border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; transition: var(--transition); }
-    .modal-close:hover { background: var(--primary); color: white; }
+    .modal-close { background: var(--light); border: 1px solid var(--border); width: 32px; height: 32px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; transition: var(--transition); }
+    .modal-close:hover { background: var(--primary); color: white; border-color: var(--primary); }
     .modal-body { padding: 24px; }
     
     .modal-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 30px; }
@@ -136,11 +169,14 @@
     .empty-state { text-align: center; padding: 60px 20px; color: var(--gray); grid-column: 1 / -1; }
     .empty-state i { font-size: 3rem; margin-bottom: 15px; opacity: 0.3; }
 
-    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-
     @media (max-width: 768px) {
-      .dash-hero h1 { font-size: 2.4rem; }
+      .mobile-menu-toggle { display: block; }
+      .nav-list {
+        display: none; flex-direction: column; width: 100%; position: absolute;
+        top: 100%; left: 0; background: var(--dark); padding: 20px; box-shadow: var(--shadow-md);
+      }
+      .nav-list.active { display: flex; }
+      .dash-hero h1 { font-size: 2.2rem; }
       .controls-section { flex-direction: column; align-items: stretch; }
       .search-wrap { max-width: 100%; }
       .modal-stats { grid-template-columns: 1fr; }
@@ -151,15 +187,25 @@
 
   <div class="flag-bar"><div class="black"></div><div class="red"></div><div class="gold"></div></div>
 
+  <!-- UNIFORM NAVIGATION MENU -->
   <nav>
-    <div class="wrapper" style="display: flex; justify-content: space-between; align-items: center;">
-      <a href="index.html" style="color: white; font-weight: 700; font-size: 1.2rem; text-decoration: none;"><i class="fas fa-globe-africa" style="color: var(--secondary);"></i> Open Data Africa</a>
-      <ul class="nav-list" style="display: flex; gap: 20px; list-style: none; margin: 0; padding: 0;">
-        <li><a href="index.html" style="color: rgba(255,255,255,0.8); text-decoration: none;">Home</a></li>
-        <li><a href="datasets.html" style="color: rgba(255,255,255,0.8); text-decoration: none;">Datasets</a></li>
-        <li><a href="dashboard.html" style="color: rgba(255,255,255,0.8); text-decoration: none;">Dashboard</a></li>
-        <li><a href="countries.html" style="color: white; text-decoration: none; border-bottom: 2px solid var(--secondary);">Countries</a></li>
-        <li><a href="use-cases.html" style="color: rgba(255,255,255,0.8); text-decoration: none;">Use Cases</a></li>
+    <div class="wrapper nav-container">
+      <a href="index.html" class="nav-logo">
+        <i class="fas fa-globe-africa"></i> Open Data Africa
+      </a>
+      <button class="mobile-menu-toggle" aria-label="Toggle menu" onclick="toggleMenu()">
+        <i class="fas fa-bars"></i>
+      </button>
+      <ul class="nav-list" id="navList">
+        <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="about.html"><i class="fas fa-info-circle"></i> About</a></li>
+        <li><a href="datasets.html"><i class="fas fa-database"></i> Datasets</a></li>
+        <li><a href="use-cases.html"><i class="fas fa-lightbulb"></i> Use Cases</a></li>
+        <li><a href="dashboard.html"><i class="fas fa-chart-bar"></i> Dashboard</a></li>
+        <li><a href="countries.html" aria-current="page"><i class="fas fa-map-marked-alt"></i> Countries</a></li>
+        <li><a href="insights.html"><i class="fas fa-file-alt"></i> Insights</a></li>
+        <li><a href="contribute.html"><i class="fas fa-upload"></i> Contribute</a></li>
+        <li><a href="aodria.html"><i class="fas fa-award"></i> AODRIA</a></li>
       </ul>
     </div>
   </nav>
@@ -227,7 +273,7 @@
     </div>
   </div>
 
-  <footer style="background: var(--dark); color: white; padding: 40px 0; text-align: center; margin-top: 40px;">
+  <footer style="background: var(--dark); color: white; padding: 40px 0; text-align: center; margin-top: 40px; border-top: 4px solid var(--primary);">
     <div class="wrapper">
       <p>&copy; 2026 Open Data Africa | AI Made in Africa / GIZ AU</p>
     </div>
@@ -238,14 +284,19 @@
     let locationData = {}; // Aggregated data
     let currentFilter = 'all';
 
+    // Mobile menu toggle function
+    function toggleMenu() { 
+      document.getElementById('navList').classList.toggle('active'); 
+    }
+
     // Simple flag mapping for major countries
     const flagMap = {
       'Kenya': '🇰🇪', 'Ethiopia': '🇪🇹', 'Nigeria': '🇳🇬', 'Ghana': '🇬🇭', 'South Africa': '🇿🇦',
-      'Rwanda': '🇷🇼', 'Uganda': '🇺', 'Tanzania': '🇹', 'Senegal': '🇸', 'Morocco': '🇲',
-      'Egypt': '🇪🇬', 'Tunisia': '🇳', 'Mali': '🇱', 'Zambia': '🇲', 'Botswana': '🇼',
-      'Cameroon': '🇨🇲', 'Madagascar': '🇲🇬', 'Mauritius': '🇲🇺', 'Namibia': '🇳🇦', 'Niger': '🇳',
+      'Rwanda': '🇷🇼', 'Uganda': '🇺🇬', 'Tanzania': '🇹🇿', 'Senegal': '🇸🇳', 'Morocco': '🇲🇦',
+      'Egypt': '🇪🇬', 'Tunisia': '🇹🇳', 'Mali': '🇲🇱', 'Zambia': '🇿🇲', 'Botswana': '🇧🇼',
+      'Cameroon': '🇨🇲', 'Madagascar': '🇲🇬', 'Mauritius': '🇲🇺', 'Namibia': '🇳🇦', 'Niger': '🇳🇪',
       'DRC': '🇨🇩', 'Côte d\'Ivoire': '🇨🇮', 'Benin': '🇧🇯', 'Liberia': '🇱🇷', 'Malawi': '🇲🇼',
-      'Mozambique': '🇲', 'Somalia': '🇸🇴', 'Togo': '🇹🇬', 'Algeria': '🇩', 'Africa-wide': '🌍',
+      'Mozambique': '🇲🇿', 'Somalia': '🇸🇴', 'Togo': '🇹🇬', 'Algeria': '🇩🇿', 'Africa-wide': '🌍',
       'East Africa': '🌍', 'West Africa': '🌍', 'North Africa': '🌍', 'Southern Africa': '🌍'
     };
 
@@ -343,7 +394,7 @@
 
       filtered.forEach(loc => {
         const type = getLocationType(loc.name);
-        const flag = flagMap[loc.name] || (type === 'continental' ? '🌍' : '');
+        const flag = flagMap[loc.name] || (type === 'continental' ? '🌍' : '📍');
         const topDomains = Object.entries(loc.domains).sort((a,b) => b[1]-a[1]).slice(0, 3).map(d => d[0]);
         
         const card = document.createElement('div');
