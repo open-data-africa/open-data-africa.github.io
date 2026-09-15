@@ -3,45 +3,112 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Data insights, AI innovation trends, and policy resources for open data in Africa.">
   <title>Insights & Trends | Open Data Africa</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <link rel="stylesheet" href="css/style.css">
 
   <style>
+    /* ===== BASE & LAYOUT ===== */
     :root {
       --primary: #c8102e; --secondary: #ffce00; --dark: #1a1a1a; 
-      --light: #f8f9fa; --gray: #6c757d; --border: #e9ecef;
-      --shadow: 0 4px 6px rgba(0,0,0,0.05); --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
-      --radius: 12px; --transition: all 0.3s ease;
+      --white: #ffffff; --light: #f8f9fa; --gray: #6c757d; --border: #dee2e6;
+      --shadow-sm: 0 2px 4px rgba(0,0,0,0.04); --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+      --radius: 10px; --transition: all 0.2s ease;
     }
-    body { font-family: 'Inter', sans-serif; background: var(--light); color: var(--dark); margin: 0; }
-    .wrapper { max-width: 1300px; margin: 0 auto; padding: 0 24px; }
-    
-    /* Hero */
-    .insights-hero { background: linear-gradient(135deg, var(--dark) 0%, #2d2d2d 100%); padding: 60px 0 100px; color: white; text-align: center; position: relative; overflow: hidden; }
-    .insights-hero::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 60px; background: var(--light); clip-path: polygon(0 100%, 100% 100%, 100% 0); }
-    .insights-hero h1 { font-family: 'Poppins', sans-serif; font-size: 2.5rem; margin: 0 0 10px 0; }
-    .insights-hero h1 span { color: var(--secondary); }
-    .insights-hero p { opacity: 0.8; max-width: 700px; margin: 0 auto; font-size: 1.1rem; }
+    body { font-family: 'Inter', sans-serif; background: #f0f2f5; color: var(--dark); margin: 0; }
+    .wrapper { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
 
-    /* Stats / Takeaways */
-    .takeaways-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: -60px; position: relative; z-index: 10; margin-bottom: 40px; }
-    .takeaway-card { background: white; padding: 24px; border-radius: var(--radius); box-shadow: var(--shadow-lg); border-left: 5px solid var(--primary); transition: var(--transition); }
-    .takeaway-card:hover { transform: translateY(-5px); }
+    /* ===== UNIFORM NAVIGATION ===== */
+    nav {
+      background: var(--dark);
+      padding: 1rem 0;
+      position: sticky;
+      top: 6px;
+      z-index: 1000;
+      box-shadow: var(--shadow-md);
+    }
+    .nav-container { display: flex; justify-content: space-between; align-items: center; }
+    .nav-logo {
+      color: var(--white); font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 1.2rem;
+      display: flex; align-items: center; gap: 10px; text-decoration: none;
+    }
+    .nav-logo:hover { color: var(--white); }
+    .nav-logo i { color: var(--secondary); }
+    .nav-list { display: flex; gap: 1.5rem; margin: 0; padding: 0; list-style: none; }
+    .nav-list li a {
+      color: rgba(255,255,255,0.85); font-weight: 500; font-size: 0.95rem;
+      padding: 8px 16px; border-radius: var(--radius); transition: var(--transition); text-decoration: none;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .nav-list li a:hover, .nav-list li a[aria-current="page"] {
+      background: rgba(255,255,255,0.1); color: var(--white);
+    }
+    .nav-list li a[aria-current="page"] {
+      border-bottom: 2px solid var(--secondary); background: transparent;
+    }
+    .mobile-menu-toggle {
+      display: none; background: transparent; border: none; color: var(--white);
+      font-size: 1.5rem; cursor: pointer;
+    }
+
+    /* ===== ANIMATED HERO SECTION ===== */
+    .insights-hero { 
+      background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); 
+      padding: 80px 0 100px; text-align: center; color: white; position: relative; overflow: hidden; 
+    }
+    .insights-hero::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background-image: radial-gradient(circle at 20% 50%, rgba(200, 16, 46, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(255, 206, 0, 0.1) 0%, transparent 50%);
+      opacity: 0.6; pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255, 206, 0, 0.15); color: var(--secondary);
+      padding: 8px 16px; border-radius: 50px; font-size: 0.85rem; font-weight: 600;
+      margin-bottom: 20px; border: 1px solid rgba(255, 206, 0, 0.3);
+      animation: fadeInDown 0.8s ease both; position: relative; z-index: 2;
+    }
+    .insights-hero h1 { 
+      font-family: 'Poppins', sans-serif; font-size: 3.2rem; font-weight: 800;
+      margin: 0 0 15px 0; color: #ffffff; text-shadow: 0 4px 20px rgba(255, 206, 0, 0.3);
+      animation: fadeInUp 0.8s ease 0.1s both; letter-spacing: -1px; position: relative; z-index: 2;
+    }
+    .insights-hero h1 span { 
+      color: var(--secondary); display: inline-block;
+      animation: pulseGlow 2.5s ease-in-out infinite alternate;
+    }
+    @keyframes pulseGlow {
+      from { text-shadow: 0 0 10px rgba(255, 206, 0, 0.4); }
+      to { text-shadow: 0 0 25px rgba(255, 206, 0, 0.8), 0 0 10px rgba(255, 255, 255, 0.6); }
+    }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+    
+    .insights-hero p { 
+      opacity: 0.9; max-width: 700px; margin: 0 auto; font-size: 1.1rem; line-height: 1.6; 
+      animation: fadeInUp 0.8s ease 0.2s both; position: relative; z-index: 2;
+    }
+
+    /* ===== TAKEAWAYS ===== */
+    .takeaways-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: -60px; position: relative; z-index: 10; margin-bottom: 40px; }
+    .takeaway-card { background: white; padding: 24px; border-radius: var(--radius); box-shadow: var(--shadow-md); border-left: 5px solid var(--primary); transition: var(--transition); }
+    .takeaway-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
     .takeaway-card .icon { font-size: 1.5rem; color: var(--primary); margin-bottom: 10px; }
-    .takeaway-card h3 { font-size: 1rem; color: var(--gray); margin: 0 0 8px 0; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+    .takeaway-card h3 { font-size: 0.9rem; color: var(--gray); margin: 0 0 8px 0; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
     .takeaway-card p { font-size: 1.1rem; font-weight: 700; color: var(--dark); margin: 0; line-height: 1.4; }
 
-    /* Controls */
-    .controls-section { background: white; padding: 20px 24px; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 30px; border: 1px solid var(--border); display: flex; flex-wrap: wrap; gap: 15px; align-items: center; justify-content: space-between; }
+    /* ===== CONTROLS & TABS ===== */
+    .controls-section { background: white; padding: 20px 24px; border-radius: var(--radius); box-shadow: var(--shadow-sm); margin-bottom: 24px; border: 1px solid var(--border); display: flex; flex-wrap: wrap; gap: 15px; align-items: center; justify-content: space-between; }
     .search-wrap { position: relative; flex-grow: 1; max-width: 400px; }
-    .search-wrap input { width: 100%; padding: 12px 20px 12px 45px; border: 1px solid var(--border); border-radius: 50px; font-size: 1rem; outline: none; transition: var(--transition); font-family: inherit; }
-    .search-wrap input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(200, 16, 46, 0.1); }
+    .search-wrap input { width: 100%; padding: 12px 20px 12px 45px; border: 1px solid var(--border); border-radius: 50px; font-size: 1rem; outline: none; transition: var(--transition); font-family: inherit; background: var(--light); }
+    .search-wrap input:focus { border-color: var(--primary); background: white; box-shadow: 0 0 0 3px rgba(200, 16, 46, 0.1); }
     .search-wrap i { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: var(--gray); }
     
     .filter-chips { display: flex; flex-wrap: wrap; gap: 10px; }
@@ -49,23 +116,24 @@
     .chip:hover { background: #e9ecef; }
     .chip.active { background: var(--primary); color: white; border-color: var(--primary); }
 
-    /* Tabs */
-    .tabs-container { display: flex; gap: 10px; margin-bottom: 30px; border-bottom: 2px solid var(--border); padding-bottom: 0; }
-    .tab-btn { background: none; border: none; padding: 15px 25px; font-size: 1rem; font-weight: 600; color: var(--gray); cursor: pointer; transition: var(--transition); border-bottom: 3px solid transparent; margin-bottom: -2px; font-family: inherit; }
+    .tabs-container { display: flex; gap: 10px; margin-bottom: 30px; border-bottom: 2px solid var(--border); padding-bottom: 0; overflow-x: auto; }
+    .tab-btn { background: none; border: none; padding: 15px 25px; font-size: 1rem; font-weight: 600; color: var(--gray); cursor: pointer; transition: var(--transition); border-bottom: 3px solid transparent; margin-bottom: -2px; font-family: inherit; white-space: nowrap; display: flex; align-items: center; gap: 8px; }
     .tab-btn:hover { color: var(--dark); }
     .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
 
-    /* Grid */
-    .insights-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 24px; margin-bottom: 60px; }
+    /* ===== GRID ===== */
+    .insights-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 24px; margin-bottom: 60px; }
     .insight-card { background: white; border-radius: var(--radius); padding: 24px; border: 1px solid var(--border); transition: var(--transition); cursor: pointer; display: flex; flex-direction: column; position: relative; overflow: hidden; }
-    .insight-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); border-color: var(--secondary); }
+    .insight-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: var(--secondary); }
     .insight-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--primary); }
     .insight-card.challenge::before { background: var(--gray); }
+    .insight-card.resource::before { background: #2ecc71; }
     
     .ic-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
-    .ic-badge { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 4px 10px; border-radius: 20px; }
-    .badge-innovation { background: rgba(200, 16, 46, 0.1); color: var(--primary); }
-    .badge-gap { background: rgba(108, 117, 125, 0.1); color: var(--gray); }
+    .ic-badge { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; padding: 4px 10px; border-radius: 20px; }
+    .badge-innovation { background: rgba(200, 16, 46, 0.1); color: var(--primary); border: 1px solid rgba(200, 16, 46, 0.2); }
+    .badge-gap { background: rgba(108, 117, 125, 0.1); color: var(--gray); border: 1px solid rgba(108, 117, 125, 0.2); }
+    .badge-resource { background: rgba(46, 204, 113, 0.1); color: #27ae60; border: 1px solid rgba(46, 204, 113, 0.2); }
     
     .ic-title { font-size: 1.1rem; font-weight: 700; margin: 0 0 10px 0; color: var(--dark); line-height: 1.4; flex-grow: 1; }
     .ic-meta { font-size: 0.85rem; color: var(--gray); margin-bottom: 15px; display: flex; gap: 15px; flex-wrap: wrap; }
@@ -74,30 +142,36 @@
     .ic-footer { margin-top: 20px; padding-top: 15px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
     .ic-read-more { font-size: 0.85rem; font-weight: 600; color: var(--primary); display: flex; align-items: center; gap: 5px; }
 
-    /* Modal */
+    /* ===== MODAL ===== */
     .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; opacity: 0; transition: opacity 0.3s ease; }
     .modal-overlay.show { display: flex; opacity: 1; }
-    .modal-content { background: white; border-radius: 16px; max-width: 700px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative; transform: translateY(20px); transition: transform 0.3s ease; box-shadow: 0 25px 50px rgba(0,0,0,0.25); }
+    .modal-content { background: white; border-radius: 12px; max-width: 700px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative; transform: translateY(20px); transition: transform 0.3s ease; box-shadow: 0 25px 50px rgba(0,0,0,0.25); border: 1px solid var(--border); }
     .modal-overlay.show .modal-content { transform: translateY(0); }
-    .modal-header { padding: 24px; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: white; z-index: 10; border-radius: 16px 16px 0 0; }
+    .modal-header { padding: 24px; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: white; z-index: 10; border-radius: 12px 12px 0 0; }
     .modal-header h2 { margin: 0 0 10px 0; font-size: 1.4rem; line-height: 1.4; }
-    .modal-close { position: absolute; top: 24px; right: 24px; background: var(--light); border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; transition: var(--transition); }
-    .modal-close:hover { background: var(--primary); color: white; }
+    .modal-close { position: absolute; top: 24px; right: 24px; background: var(--light); border: 1px solid var(--border); width: 32px; height: 32px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; transition: var(--transition); }
+    .modal-close:hover { background: var(--primary); color: white; border-color: var(--primary); }
     .modal-body { padding: 24px; }
-    .modal-section { margin-bottom: 24px; }
+    .modal-section { margin-bottom: 24px; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: var(--light); }
     .modal-section h4 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: var(--gray); margin: 0 0 12px 0; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-    .modal-section p, .modal-section ul { font-size: 0.95rem; line-height: 1.7; color: #495057; margin: 0; }
+    .modal-section p, .modal-section ul { font-size: 0.95rem; line-height: 1.7; color: var(--dark); margin: 0; }
     .modal-section ul { padding-left: 20px; }
     .modal-section ul li { margin-bottom: 8px; }
-    .modal-footer { padding: 24px; border-top: 1px solid var(--border); background: var(--light); border-radius: 0 0 16px 16px; display: flex; justify-content: flex-end; }
-    .btn-access { background: var(--primary); color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 8px; transition: var(--transition); }
-    .btn-access:hover { background: #a00d26; }
+    .modal-footer { padding: 24px; border-top: 1px solid var(--border); background: var(--light); border-radius: 0 0 12px 12px; display: flex; justify-content: flex-end; }
+    .btn-access { background: var(--primary); color: white; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 8px; transition: var(--transition); border: 1px solid var(--primary); }
+    .btn-access:hover { background: #a00d26; border-color: #a00d26; transform: translateY(-2px); }
 
     .empty-state { text-align: center; padding: 60px 20px; color: var(--gray); grid-column: 1 / -1; }
     .empty-state i { font-size: 3rem; margin-bottom: 15px; opacity: 0.3; }
 
     @media (max-width: 768px) {
-      .insights-hero h1 { font-size: 1.8rem; }
+      .mobile-menu-toggle { display: block; }
+      .nav-list {
+        display: none; flex-direction: column; width: 100%; position: absolute;
+        top: 100%; left: 0; background: var(--dark); padding: 20px; box-shadow: var(--shadow-md);
+      }
+      .nav-list.active { display: flex; }
+      .insights-hero h1 { font-size: 2.2rem; }
       .controls-section { flex-direction: column; align-items: stretch; }
       .search-wrap { max-width: 100%; }
       .insights-grid { grid-template-columns: 1fr; }
@@ -108,23 +182,36 @@
 
   <div class="flag-bar"><div class="black"></div><div class="red"></div><div class="gold"></div></div>
 
+  <!-- UNIFORM NAVIGATION MENU -->
   <nav>
-    <div class="wrapper" style="display: flex; justify-content: space-between; align-items: center;">
-      <a href="index.html" style="color: white; font-weight: 700; font-size: 1.2rem; text-decoration: none;"><i class="fas fa-globe-africa" style="color: var(--secondary);"></i> Open Data Africa</a>
-      <ul class="nav-list" style="display: flex; gap: 20px; list-style: none; margin: 0; padding: 0;">
-        <li><a href="index.html" style="color: rgba(255,255,255,0.8); text-decoration: none;">Home</a></li>
-        <li><a href="datasets.html" style="color: rgba(255,255,255,0.8); text-decoration: none;">Datasets</a></li>
-        <li><a href="dashboard.html" style="color: rgba(255,255,255,0.8); text-decoration: none;">Dashboard</a></li>
-        <li><a href="countries.html" style="color: rgba(255,255,255,0.8); text-decoration: none;">Countries</a></li>
-        <li><a href="insights.html" style="color: white; text-decoration: none; border-bottom: 2px solid var(--secondary);">Insights</a></li>
+    <div class="wrapper nav-container">
+      <a href="index.html" class="nav-logo">
+        <i class="fas fa-globe-africa"></i> Open Data Africa
+      </a>
+      <button class="mobile-menu-toggle" aria-label="Toggle menu" onclick="toggleMenu()">
+        <i class="fas fa-bars"></i>
+      </button>
+      <ul class="nav-list" id="navList">
+        <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="about.html"><i class="fas fa-info-circle"></i> About</a></li>
+        <li><a href="datasets.html"><i class="fas fa-database"></i> Datasets</a></li>
+        <li><a href="use-cases.html"><i class="fas fa-lightbulb"></i> Use Cases</a></li>
+        <li><a href="dashboard.html"><i class="fas fa-chart-bar"></i> Dashboard</a></li>
+        <li><a href="countries.html"><i class="fas fa-map-marked-alt"></i> Countries</a></li>
+        <li><a href="insights.html" aria-current="page"><i class="fas fa-file-alt"></i> Insights</a></li>
+        <li><a href="contribute.html"><i class="fas fa-upload"></i> Contribute</a></li>
+        <li><a href="aodria.html"><i class="fas fa-award"></i> AODRIA</a></li>
       </ul>
     </div>
   </nav>
 
   <header class="insights-hero">
     <div class="wrapper">
+      <div class="hero-badge">
+        <i class="fas fa-chart-line"></i> Trends, Gaps & Policy Resources
+      </div>
       <h1>Data <span>Insights</span> & Trends</h1>
-      <p>Discover how open data is driving AI innovation across Africa, and identify the critical gaps we still need to fill.</p>
+      <p>Discover how open data is driving AI innovation across Africa, identify critical data gaps, and access key policy resources for decision-makers.</p>
     </div>
   </header>
 
@@ -148,8 +235,9 @@
 
     <!-- Tabs -->
     <div class="tabs-container">
-      <button class="tab-btn active" data-tab="innovation"><i class="fas fa-lightbulb" style="margin-right:8px;"></i> Innovation Highlights</button>
-      <button class="tab-btn" data-tab="gaps"><i class="fas fa-exclamation-triangle" style="margin-right:8px;"></i> Data Gaps & Challenges</button>
+      <button class="tab-btn active" data-tab="innovation"><i class="fas fa-lightbulb"></i> Innovation Highlights</button>
+      <button class="tab-btn" data-tab="gaps"><i class="fas fa-exclamation-triangle"></i> Data Gaps & Challenges</button>
+      <button class="tab-btn" data-tab="resources"><i class="fas fa-book-open"></i> Policy & External Resources</button>
     </div>
 
     <!-- Grid -->
@@ -178,7 +266,7 @@
           <div id="modalContent"></div>
         </div>
         <div class="modal-section" id="sourceSection">
-          <h4><i class="fas fa-database"></i> Source Dataset</h4>
+          <h4><i class="fas fa-database"></i> Source / Reference</h4>
           <p id="modalSource"></p>
         </div>
       </div>
@@ -188,7 +276,7 @@
     </div>
   </div>
 
-  <footer style="background: var(--dark); color: white; padding: 40px 0; text-align: center; margin-top: 40px;">
+  <footer style="background: var(--dark); color: white; padding: 40px 0; text-align: center; margin-top: 40px; border-top: 4px solid var(--primary);">
     <div class="wrapper">
       <p>&copy; 2026 Open Data Africa | AI Made in Africa / GIZ AU</p>
     </div>
@@ -196,9 +284,58 @@
 
   <script>
     let allData = [];
-    let insights = []; // Processed insights
+    let insights = []; // Processed insights from catalog
     let currentTab = 'innovation';
     let currentDomain = 'all';
+
+    // Curated External Resources for Policymakers (Simulating "Latest Web Resources")
+    const externalResources = [
+      {
+        title: "African Union Data Policy Framework",
+        domain: "Policy",
+        country: "Africa-wide",
+        excerpt: "The AU's comprehensive framework guiding data governance, privacy, and cross-border data flows to foster a unified digital single market.",
+        link: "https://au.int/en/documents/20220218/data-policy-framework",
+        source: "African Union Commission"
+      },
+      {
+        title: "GIZ: AI Strategy and Guidelines for Africa",
+        domain: "Policy",
+        country: "Africa-wide",
+        excerpt: "Strategic guidelines and capacity-building frameworks for responsible, inclusive, and sovereign AI development across the continent.",
+        link: "https://www.giz.de/en/worldwide/401339.html",
+        source: "GIZ African Union Office"
+      },
+      {
+        title: "Stanford AI Index Report 2024 (Africa Focus)",
+        domain: "Research",
+        country: "Global / Africa",
+        excerpt: "Annual report tracking the rapid developments in AI, including specific chapters on AI research output, investment, and policy in African nations.",
+        link: "https://aiindex.stanford.edu/report/",
+        source: "Stanford University"
+      },
+      {
+        title: "World Bank: Open Data for Sustainable Development",
+        domain: "Socioeconomic",
+        country: "Africa-wide",
+        excerpt: "Key datasets and analytical reports on how open data drives economic growth, climate resilience, and public service delivery in developing regions.",
+        link: "https://data.worldbank.org/",
+        source: "The World Bank Group"
+      },
+      {
+        title: "Smart Africa: Blueprint for AI",
+        domain: "Digital Infrastructure",
+        country: "Africa-wide",
+        excerpt: "A continental blueprint outlining the infrastructure, skills, and regulatory requirements needed to scale AI solutions across African member states.",
+        link: "https://smartafrica.org/",
+        source: "Smart Africa Alliance"
+      }
+    ];
+
+    // Mobile menu toggle function
+    function toggleMenu() { 
+      document.getElementById('navList').classList.toggle('active'); 
+    }
 
     document.addEventListener('DOMContentLoaded', async () => {
       try {
@@ -236,11 +373,11 @@
         });
 
       } catch (err) {
+        console.error(err);
         document.getElementById('takeawaysContainer').innerHTML = '<div class="takeaway-card" style="grid-column: 1/-1; border-color: red;"><p style="color: red;">Error loading data. Check data/catalog.json</p></div>';
       }
     });
 
-    // Clean and split text into readable points
     function cleanText(text) {
       if (!text) return [];
       return text.split(/,|-|🔹|\n/).map(s => s.trim()).filter(s => s.length > 5 && !s.startsWith('http'));
@@ -284,7 +421,8 @@
     function renderTakeaways() {
       const totalInnovations = insights.filter(i => i.type === 'innovation').length;
       const totalGaps = insights.filter(i => i.type === 'gap').length;
-      const topDomain = Object.values(allData.reduce((acc, d) => { acc[d.Domain] = (acc[d.Domain]||0)+1; return acc; }, {})).sort((a,b)=>b-a)[0];
+      const domainCounts = allData.reduce((acc, d) => { acc[d.Domain] = (acc[d.Domain]||0)+1; return acc; }, {});
+      const topDomain = Object.entries(domainCounts).sort((a,b)=>b[1]-a[1])[0]?.[0] || 'N/A';
       
       document.getElementById('takeawaysContainer').innerHTML = `
         <div class="takeaway-card">
@@ -300,7 +438,7 @@
         <div class="takeaway-card" style="border-left-color: var(--secondary);">
           <div class="icon" style="color: #d4af37;"><i class="fas fa-chart-line"></i></div>
           <h3>Most Active Domain</h3>
-          <p>${topDomain || 'N/A'} leads in dataset availability.</p>
+          <p>${topDomain} leads in dataset availability.</p>
         </div>
       `;
     }
@@ -324,15 +462,28 @@
       
       grid.innerHTML = '';
       
-      const filtered = insights.filter(i => {
-        const matchesTab = i.type === currentTab;
-        const matchesDomain = currentDomain === 'all' || i.domain === currentDomain;
-        const matchesSearch = !searchTerm || 
-          i.title.toLowerCase().includes(searchTerm) || 
-          i.domain.toLowerCase().includes(searchTerm) ||
-          i.country.toLowerCase().includes(searchTerm);
-        return matchesTab && matchesDomain && matchesSearch;
-      });
+      let filtered = [];
+
+      if (currentTab === 'resources') {
+        filtered = externalResources.filter(i => {
+          const matchesDomain = currentDomain === 'all' || i.domain === currentDomain || currentDomain === 'Policy'; // Show all for resources or match policy
+          const matchesSearch = !searchTerm || 
+            i.title.toLowerCase().includes(searchTerm) || 
+            i.excerpt.toLowerCase().includes(searchTerm) ||
+            i.source.toLowerCase().includes(searchTerm);
+          return matchesDomain && matchesSearch;
+        });
+      } else {
+        filtered = insights.filter(i => {
+          const matchesTab = i.type === currentTab;
+          const matchesDomain = currentDomain === 'all' || i.domain === currentDomain;
+          const matchesSearch = !searchTerm || 
+            i.title.toLowerCase().includes(searchTerm) || 
+            i.domain.toLowerCase().includes(searchTerm) ||
+            i.country.toLowerCase().includes(searchTerm);
+          return matchesTab && matchesDomain && matchesSearch;
+        });
+      }
 
       if (filtered.length === 0) {
         emptyState.style.display = 'block';
@@ -340,15 +491,20 @@
       }
       emptyState.style.display = 'none';
 
-      // Show top 50 to prevent DOM overload, sorted by relevance
       filtered.slice(0, 50).forEach((item, index) => {
         const isGap = item.type === 'gap';
+        const isResource = currentTab === 'resources';
+        
+        let badgeClass = isResource ? 'badge-resource' : (isGap ? 'badge-gap' : 'badge-innovation');
+        let badgeText = isResource ? 'External Resource' : (isGap ? 'Data Gap' : 'Innovation');
+        let cardClass = `insight-card ${isGap ? 'challenge' : ''} ${isResource ? 'resource' : ''}`;
+
         const card = document.createElement('div');
-        card.className = `insight-card ${isGap ? 'challenge' : ''}`;
+        card.className = cardClass;
         card.onclick = () => openModal(item);
         card.innerHTML = `
           <div class="ic-header">
-            <span class="ic-badge ${isGap ? 'badge-gap' : 'badge-innovation'}">${isGap ? 'Data Gap' : 'Innovation'}</span>
+            <span class="ic-badge ${badgeClass}">${badgeText}</span>
             <span style="font-size:0.75rem; color:var(--gray);">#${index + 1}</span>
           </div>
           <h3 class="ic-title">${item.title}</h3>
@@ -356,8 +512,9 @@
             <span><i class="fas fa-tag"></i> ${item.domain}</span>
             <span><i class="fas fa-globe-africa"></i> ${item.country}</span>
           </div>
+          <p class="ic-excerpt">${item.excerpt || item.title}</p>
           <div class="ic-footer">
-            <span style="font-size:0.8rem; color:var(--gray);"><i class="fas fa-database"></i> ${item.source.substring(0, 30)}${item.source.length>30?'...':''}</span>
+            <span style="font-size:0.8rem; color:var(--gray);"><i class="fas fa-building"></i> ${item.source.substring(0, 30)}${item.source.length>30?'...':''}</span>
             <span class="ic-read-more">Read More <i class="fas fa-arrow-right"></i></span>
           </div>
         `;
@@ -367,29 +524,38 @@
 
     function openModal(item) {
       const isGap = item.type === 'gap';
+      const isResource = currentTab === 'resources';
+      
+      let badgeClass = isResource ? 'badge-resource' : (isGap ? 'badge-gap' : 'badge-innovation');
+      let badgeText = isResource ? 'External Resource' : (isGap ? 'Data Gap / Challenge' : 'Innovation / Use Case');
+
       document.getElementById('modalBadges').innerHTML = `
-        <span class="ic-badge ${isGap ? 'badge-gap' : 'badge-innovation'}" style="display:inline-block;">${isGap ? 'Data Gap / Challenge' : 'Innovation / Use Case'}</span>
+        <span class="ic-badge ${badgeClass}" style="display:inline-block;">${badgeText}</span>
         <span class="ic-badge" style="background:#e9ecef; color:#495057; display:inline-block; margin-left:5px;">${item.domain}</span>
       `;
       document.getElementById('modalTitle').innerText = item.title;
       document.getElementById('modalMeta').innerHTML = `
         <span><i class="fas fa-globe-africa"></i> ${item.country}</span>
-        <span><i class="fas fa-database"></i> ${item.source}</span>
+        <span><i class="fas fa-building"></i> ${item.source}</span>
       `;
       
-      document.getElementById('modalSectionTitle').innerHTML = isGap 
-        ? '<i class="fas fa-exclamation-triangle"></i> Challenge Details' 
-        : '<i class="fas fa-lightbulb"></i> Use Case Details';
-      
-      const contentDiv = document.getElementById('modalContent');
-      const list = item.fullText.map(t => `<li>${t}</li>`).join('');
-      contentDiv.innerHTML = `<ul>${list}</ul>`;
+      if (isResource) {
+        document.getElementById('modalSectionTitle').innerHTML = '<i class="fas fa-book-open"></i> Resource Overview';
+        document.getElementById('modalContent').innerHTML = `<p>${item.excerpt}</p>`;
+      } else {
+        document.getElementById('modalSectionTitle').innerHTML = isGap 
+          ? '<i class="fas fa-exclamation-triangle"></i> Challenge Details' 
+          : '<i class="fas fa-lightbulb"></i> Use Case Details';
+        
+        const list = (item.fullText || []).map(t => `<li>${t}</li>`).join('');
+        document.getElementById('modalContent').innerHTML = list ? `<ul>${list}</ul>` : '<p>No detailed text available.</p>';
+      }
 
-      document.getElementById('modalSource').innerText = `This insight was extracted from the dataset: "${item.source}"`;
+      document.getElementById('modalSource').innerText = `Reference: ${item.source}`;
       
       const footer = document.getElementById('modalFooter');
       if (item.link && item.link.startsWith('http')) {
-        footer.innerHTML = `<a href="${item.link}" target="_blank" class="btn-access"><i class="fas fa-external-link-alt"></i> View Source Dataset</a>`;
+        footer.innerHTML = `<a href="${item.link}" target="_blank" class="btn-access"><i class="fas fa-external-link-alt"></i> View Source / Resource</a>`;
         footer.style.display = 'flex';
       } else {
         footer.style.display = 'none';
