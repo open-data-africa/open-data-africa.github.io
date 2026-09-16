@@ -3,235 +3,398 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="Data insights, AI innovation trends, and policy resources for open data in Africa.">
-  <title>Insights & Trends | Open Data Africa</title>
+  <meta name="description" content="Data intelligence, policy insights, and strategic analysis for African open data and AI development.">
+  <title>Policy Insights & Intelligence | Open Data Africa</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   
   <link rel="stylesheet" href="css/style.css">
 
   <style>
-    /* ===== CSS VARIABLES - CONSISTENT WITH INDEX.HTML ===== */
-    :root {
-      --german-black: #1a1a1a;
-      --german-red: #c8102e;
-      --german-gold: #ffce00;
-      --white: #ffffff;
-      --light: #f8f9fa;
-      --gray: #6c757d;
-      --gray-light: #e9ecef;
-      --border: #dee2e6;
-      --shadow-sm: 0 2px 4px rgba(0,0,0,0.04);
-      --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
-      --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
-      --radius: 10px;
-      --radius-lg: 12px;
-      --transition: all 0.3s ease;
-    }
-    body { font-family: 'Inter', sans-serif; background: #f0f2f5; color: var(--german-black); margin: 0; }
-    .wrapper { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+    /* =========================================
+       PAGE-SPECIFIC STYLES: INSIGHTS
+       ========================================= */
 
-    /* ===== FLAG BAR ===== */
-    .flag-bar { height: 6px; width: 100%; display: flex; position: fixed; top: 0; z-index: 1001; }
-    .flag-bar .black { flex: 1; background: var(--german-black); }
-    .flag-bar .red { flex: 1; background: var(--german-red); }
-    .flag-bar .gold { flex: 1; background: var(--german-gold); }
-
-    /* ===== IMPROVED NAVIGATION WITH DROPDOWN ===== */
-    nav {
-      background: var(--german-black);
-      padding: 1rem 0;
-      position: sticky;
-      top: 6px;
-      z-index: 1000;
-      box-shadow: var(--shadow-md);
-    }
-    .nav-container { display: flex; justify-content: space-between; align-items: center; }
-    .nav-logo {
-      color: var(--white); font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 1.2rem;
-      display: flex; align-items: center; gap: 10px; text-decoration: none; transition: var(--transition);
-    }
-    .nav-logo:hover { color: var(--german-gold); transform: scale(1.02); }
-    .nav-logo i { color: var(--german-gold); }
-    .nav-list { display: flex; gap: 1.5rem; margin: 0; padding: 0; list-style: none; align-items: center; }
-    .nav-list li a {
-      color: rgba(255,255,255,0.85); font-weight: 500; font-size: 0.95rem;
-      padding: 8px 16px; border-radius: var(--radius); transition: var(--transition); text-decoration: none;
-      display: flex; align-items: center; gap: 6px;
-    }
-    .nav-list li a:hover { background: rgba(255,255,255,0.1); color: var(--white); }
-    .nav-list li a[aria-current="page"] {
-      border-bottom: 2px solid var(--german-gold); background: transparent; color: var(--white);
-    }
-
-    /* ===== DROPDOWN STYLES ===== */
-    .nav-dropdown { position: relative; }
-    .dropdown-toggle { cursor: pointer; }
-    .dropdown-menu {
-      position: absolute; top: 100%; left: 0; background: var(--white); min-width: 180px;
-      border-radius: var(--radius); box-shadow: var(--shadow-lg); padding: 8px 0;
-      opacity: 0; visibility: hidden; transform: translateY(10px); transition: var(--transition);
-      z-index: 100; list-style: none; border: 1px solid var(--border);
-    }
-    .nav-dropdown:hover .dropdown-menu { opacity: 1; visibility: visible; transform: translateY(0); }
-    .dropdown-menu li a {
-      color: var(--german-black); padding: 10px 20px; display: block; font-size: 0.9rem; border-bottom: none;
-    }
-    .dropdown-menu li a:hover { background: var(--light); color: var(--german-red); }
-    
-    /* Active state for the dropdown parent when on a grouped page */
-    .nav-dropdown.active .dropdown-toggle { 
-      color: var(--german-gold); border-bottom: 2px solid var(--german-gold); 
-    }
-
-    .nav-cta {
-      background: var(--german-red) !important; color: var(--white) !important;
-      border-radius: 50px !important; padding: 8px 20px !important; font-weight: 600 !important;
-    }
-    .nav-cta:hover {
-      background: #a00d26 !important; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(200, 16, 46, 0.3);
-    }
-    .mobile-menu-toggle { display: none; background: transparent; border: none; color: var(--white); font-size: 1.5rem; cursor: pointer; }
-
-    /* ===== ANIMATED HERO SECTION ===== */
-    .insights-hero { 
-      background: linear-gradient(135deg, var(--german-black) 0%, #2d2d2d 100%); 
-      padding: 80px 0 120px; text-align: center; color: white; position: relative; 
-      border-bottom: 4px solid var(--german-gold); overflow: hidden;
+    /* Hero Section */
+    .insights-hero {
+      background: linear-gradient(135deg, var(--german-black) 0%, #2d2d2d 100%);
+      padding: 80px 0 120px;
+      text-align: center;
+      color: white;
+      position: relative;
+      overflow: hidden;
     }
     .insights-hero::before {
-      content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
       background-image: radial-gradient(circle at 20% 50%, rgba(200, 16, 46, 0.15) 0%, transparent 50%),
                         radial-gradient(circle at 80% 80%, rgba(255, 206, 0, 0.1) 0%, transparent 50%);
-      opacity: 0.6; pointer-events: none;
+      opacity: 0.6;
+      pointer-events: none;
     }
     .hero-badge {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: rgba(255, 206, 0, 0.15); color: var(--german-gold);
-      padding: 8px 16px; border-radius: 50px; font-size: 0.85rem; font-weight: 600;
-      margin-bottom: 20px; border: 1px solid rgba(255, 206, 0, 0.3);
-      animation: fadeInDown 0.8s ease both; position: relative; z-index: 2;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 206, 0, 0.15);
+      color: var(--german-gold);
+      padding: 8px 16px;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      border: 1px solid rgba(255, 206, 0, 0.3);
+      animation: fadeInDown 0.8s ease both;
+      position: relative;
+      z-index: 2;
     }
-    .insights-hero h1 { 
-      font-family: 'Poppins', sans-serif; font-size: 3.2rem; font-weight: 800;
-      margin: 0 0 15px 0; color: #ffffff; text-shadow: 0 4px 20px rgba(255, 206, 0, 0.3);
-      animation: fadeInUp 0.8s ease 0.1s both; letter-spacing: -1px; position: relative; z-index: 2;
+    .insights-hero h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 3.2rem;
+      font-weight: 800;
+      margin: 0 0 15px 0;
+      color: #ffffff;
+      text-shadow: 0 4px 20px rgba(255, 206, 0, 0.3);
+      animation: fadeInUp 0.8s ease 0.1s both;
+      letter-spacing: -1px;
+      position: relative;
+      z-index: 2;
     }
-    .insights-hero h1 span { 
-      color: var(--german-gold); display: inline-block;
+    .insights-hero h1 span {
+      color: var(--german-gold);
+      display: inline-block;
       animation: pulseGlow 2.5s ease-in-out infinite alternate;
     }
-    @keyframes pulseGlow {
-      from { text-shadow: 0 0 10px rgba(255, 206, 0, 0.4); }
-      to { text-shadow: 0 0 25px rgba(255, 206, 0, 0.8), 0 0 10px rgba(255, 255, 255, 0.6); }
+    .insights-hero p {
+      opacity: 0.9;
+      max-width: 700px;
+      margin: 0 auto;
+      font-size: 1.1rem;
+      line-height: 1.6;
+      animation: fadeInUp 0.8s ease 0.2s both;
+      position: relative;
+      z-index: 2;
     }
-    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-    .insights-hero p { 
-      opacity: 0.9; max-width: 700px; margin: 0 auto 30px; font-size: 1.1rem; line-height: 1.6; 
-      animation: fadeInUp 0.8s ease 0.2s both; position: relative; z-index: 2;
+
+    /* Executive Dashboard */
+    .exec-dashboard {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      margin-top: -60px;
+      position: relative;
+      z-index: 10;
+      margin-bottom: 40px;
+    }
+    .exec-card {
+      background: white;
+      padding: 24px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      text-align: center;
+      border-top: 4px solid var(--german-red);
+      transition: var(--transition);
+    }
+    .exec-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg);
+    }
+    .exec-card .icon {
+      font-size: 2rem;
+      color: var(--german-red);
+      margin-bottom: 10px;
+    }
+    .exec-card .value {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--german-black);
+      display: block;
+      margin: 10px 0;
+    }
+    .exec-card .label {
+      font-size: 0.85rem;
+      color: var(--gray);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .exec-card .trend {
+      font-size: 0.8rem;
+      margin-top: 8px;
+      font-weight: 600;
+    }
+    .trend.positive { color: #28a745; }
+    .trend.negative { color: #dc3545; }
+    .trend.neutral { color: var(--gray); }
+
+    /* Section Headers */
+    .section-header {
+      text-align: center;
+      margin: 60px 0 40px;
+    }
+    .section-header h2 {
+      font-size: 2.2rem;
+      color: var(--german-black);
+      margin-bottom: 15px;
+      position: relative;
+      padding-bottom: 15px;
+    }
+    .section-header h2::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 4px;
+      background: linear-gradient(90deg, var(--german-red), var(--german-gold));
+      border-radius: 2px;
+    }
+    .section-header p {
+      font-size: 1.1rem;
+      color: var(--gray);
+      max-width: 700px;
+      margin: 0 auto;
     }
 
-    /* ===== TAKEAWAYS ===== */
-    .takeaways-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: -60px; position: relative; z-index: 10; margin-bottom: 40px; }
-    .takeaway-card { background: white; padding: 24px; border-radius: var(--radius); box-shadow: var(--shadow-md); border-left: 5px solid var(--german-red); transition: var(--transition); }
-    .takeaway-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
-    .takeaway-card .icon { font-size: 1.5rem; color: var(--german-red); margin-bottom: 10px; }
-    .takeaway-card h3 { font-size: 0.9rem; color: var(--gray); margin: 0 0 8px 0; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-    .takeaway-card p { font-size: 1.1rem; font-weight: 700; color: var(--german-black); margin: 0; line-height: 1.4; }
+    /* Analysis Grid */
+    .analysis-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 30px;
+      margin-bottom: 60px;
+    }
+    .analysis-card {
+      background: white;
+      padding: 30px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border);
+    }
+    .analysis-card h3 {
+      font-size: 1.3rem;
+      color: var(--german-black);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .analysis-card h3 i {
+      color: var(--german-red);
+    }
+    .chart-container {
+      position: relative;
+      height: 300px;
+      margin-bottom: 20px;
+    }
 
-    /* ===== CONTROLS & TABS ===== */
-    .controls-section { background: white; padding: 20px 24px; border-radius: var(--radius); box-shadow: var(--shadow-sm); margin-bottom: 24px; border: 1px solid var(--border); display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between; }
-    .search-wrap { position: relative; flex-grow: 1; max-width: 400px; }
-    .search-wrap input { width: 100%; padding: 12px 16px 12px 42px; border: 1px solid var(--border); border-radius: 50px; font-size: 0.95rem; outline: none; transition: var(--transition); font-family: inherit; background: var(--light); }
-    .search-wrap input:focus { border-color: var(--german-red); background: white; box-shadow: 0 0 0 3px rgba(200, 16, 46, 0.1); }
-    .search-wrap i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--gray); }
-    
-    .filter-chips { display: flex; flex-wrap: wrap; gap: 10px; }
-    .chip { background: white; border: 1px solid var(--border); padding: 8px 16px; border-radius: 50px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: var(--transition); }
-    .chip:hover { background: var(--gray-light); }
-    .chip.active { background: var(--german-red); color: white; border-color: var(--german-red); }
+    /* Policy Recommendations */
+    .policy-section {
+      background: linear-gradient(135deg, var(--german-black) 0%, #2d2d2d 100%);
+      padding: 60px 40px;
+      border-radius: var(--radius-lg);
+      margin: 60px 0;
+      color: white;
+    }
+    .policy-section h2 {
+      color: white;
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .policy-section h2::after {
+      background: linear-gradient(90deg, var(--german-gold), var(--german-red));
+    }
+    .recommendations-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+    }
+    .recommendation-card {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 24px;
+      border-radius: var(--radius);
+      border-left: 4px solid var(--german-gold);
+      backdrop-filter: blur(10px);
+    }
+    .recommendation-card h4 {
+      color: var(--german-gold);
+      font-size: 1.1rem;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .recommendation-card p {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-bottom: 0;
+    }
+    .recommendation-card .priority {
+      display: inline-block;
+      background: var(--german-gold);
+      color: var(--german-black);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin-top: 12px;
+    }
 
-    .tabs-container { display: flex; gap: 10px; margin-bottom: 30px; border-bottom: 2px solid var(--border); padding-bottom: 0; overflow-x: auto; }
-    .tab-btn { background: none; border: none; padding: 15px 25px; font-size: 1rem; font-weight: 600; color: var(--gray); cursor: pointer; transition: var(--transition); border-bottom: 3px solid transparent; margin-bottom: -2px; font-family: inherit; white-space: nowrap; display: flex; align-items: center; gap: 8px; }
-    .tab-btn:hover { color: var(--german-black); }
-    .tab-btn.active { color: var(--german-red); border-bottom-color: var(--german-red); }
+    /* Resource Hub */
+    .resource-hub {
+      margin: 60px 0;
+    }
+    .resource-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 30px;
+      border-bottom: 2px solid var(--border);
+      overflow-x: auto;
+    }
+    .resource-tab {
+      background: none;
+      border: none;
+      padding: 15px 25px;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--gray);
+      cursor: pointer;
+      transition: var(--transition);
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .resource-tab:hover {
+      color: var(--german-black);
+    }
+    .resource-tab.active {
+      color: var(--german-red);
+      border-bottom-color: var(--german-red);
+    }
+    .resource-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 24px;
+    }
+    .resource-card {
+      background: white;
+      padding: 24px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+    }
+    .resource-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--german-gold);
+    }
+    .resource-card .badge {
+      display: inline-block;
+      background: rgba(200, 16, 46, 0.1);
+      color: var(--german-red);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      align-self: flex-start;
+    }
+    .resource-card h4 {
+      font-size: 1.1rem;
+      color: var(--german-black);
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+    .resource-card p {
+      font-size: 0.9rem;
+      color: var(--gray);
+      line-height: 1.6;
+      margin-bottom: 15px;
+      flex-grow: 1;
+    }
+    .resource-card .meta {
+      font-size: 0.8rem;
+      color: var(--gray);
+      margin-bottom: 15px;
+      display: flex;
+      gap: 15px;
+    }
+    .resource-card .meta span {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .resource-card a {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--german-red);
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: var(--transition);
+    }
+    .resource-card a:hover {
+      color: var(--german-black);
+      gap: 10px;
+    }
 
-    /* ===== GRID ===== */
-    .insights-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; margin-bottom: 60px; }
-    .insight-card { background: white; border-radius: var(--radius); padding: 24px; border: 1px solid var(--border); transition: var(--transition); cursor: pointer; display: flex; flex-direction: column; position: relative; overflow: hidden; }
-    .insight-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: var(--german-gold); }
-    .insight-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--german-red); }
-    .insight-card.challenge::before { background: var(--gray); }
-    .insight-card.resource::before { background: #2ecc71; }
-    
-    .ic-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
-    .ic-badge { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; padding: 4px 10px; border-radius: 20px; }
-    .badge-innovation { background: rgba(200, 16, 46, 0.1); color: var(--german-red); border: 1px solid rgba(200, 16, 46, 0.2); }
-    .badge-gap { background: rgba(108, 117, 125, 0.1); color: var(--gray); border: 1px solid rgba(108, 117, 125, 0.2); }
-    .badge-resource { background: rgba(46, 204, 113, 0.1); color: #27ae60; border: 1px solid rgba(46, 204, 113, 0.2); }
-    
-    .ic-title { font-size: 1.1rem; font-weight: 700; margin: 0 0 10px 0; color: var(--german-black); line-height: 1.4; flex-grow: 1; }
-    .ic-meta { font-size: 0.85rem; color: var(--gray); margin-bottom: 15px; display: flex; gap: 15px; flex-wrap: wrap; }
-    .ic-meta span { display: flex; align-items: center; gap: 5px; }
-    .ic-excerpt { font-size: 0.9rem; color: #495057; line-height: 1.6; margin: 0; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-    .ic-footer { margin-top: 20px; padding-top: 15px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-    .ic-read-more { font-size: 0.85rem; font-weight: 600; color: var(--german-red); display: flex; align-items: center; gap: 5px; }
+    /* Key Findings */
+    .findings-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      margin: 40px 0;
+    }
+    .finding-card {
+      background: white;
+      padding: 24px;
+      border-radius: var(--radius);
+      border-left: 4px solid var(--german-red);
+      box-shadow: var(--shadow-sm);
+    }
+    .finding-card.critical {
+      border-left-color: #dc3545;
+    }
+    .finding-card.opportunity {
+      border-left-color: #28a745;
+    }
+    .finding-card h4 {
+      font-size: 1rem;
+      color: var(--german-black);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .finding-card p {
+      font-size: 0.9rem;
+      color: var(--gray);
+      line-height: 1.6;
+      margin-bottom: 0;
+    }
 
-    /* ===== MODAL ===== */
-    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 20px; opacity: 0; transition: opacity 0.3s ease; }
-    .modal-overlay.show { display: flex; opacity: 1; }
-    .modal-content { background: white; border-radius: 12px; max-width: 700px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative; transform: translateY(20px); transition: transform 0.3s ease; box-shadow: 0 25px 50px rgba(0,0,0,0.25); border: 1px solid var(--border); }
-    .modal-overlay.show .modal-content { transform: translateY(0); }
-    .modal-header { padding: 24px; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: white; z-index: 10; border-radius: 12px 12px 0 0; }
-    .modal-header h2 { margin: 0 0 10px 0; font-size: 1.4rem; line-height: 1.4; }
-    .modal-close { position: absolute; top: 24px; right: 24px; background: var(--light); border: 1px solid var(--border); width: 32px; height: 32px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; transition: var(--transition); }
-    .modal-close:hover { background: var(--german-red); color: white; border-color: var(--german-red); }
-    .modal-body { padding: 24px; }
-    .modal-section { margin-bottom: 24px; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: var(--light); }
-    .modal-section h4 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: var(--gray); margin: 0 0 12px 0; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-    .modal-section p, .modal-section ul { font-size: 0.95rem; line-height: 1.7; color: var(--german-black); margin: 0; }
-    .modal-section ul { padding-left: 20px; }
-    .modal-section ul li { margin-bottom: 8px; }
-    .modal-footer { padding: 24px; border-top: 1px solid var(--border); background: var(--light); border-radius: 0 0 12px 12px; display: flex; justify-content: flex-end; }
-    .btn-access { background: var(--german-red); color: white; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 8px; transition: var(--transition); border: 1px solid var(--german-red); }
-    .btn-access:hover { background: #a00d26; border-color: #a00d26; transform: translateY(-2px); }
-
-    /* ===== FOOTER ===== */
-    footer { background: var(--german-black); color: var(--white); padding: 40px 0; text-align: center; margin-top: 40px; border-top: 4px solid var(--german-red); }
-    footer p { color: rgba(255,255,255,0.8); margin: 0; }
-
-    /* ===== MOBILE RESPONSIVE ===== */
+    /* Mobile Responsive */
     @media (max-width: 768px) {
-      .mobile-menu-toggle { display: block; }
-      .nav-list {
-        display: none; flex-direction: column; width: 100%; position: absolute;
-        top: 100%; left: 0; background: var(--german-black); padding: 20px; 
-        box-shadow: var(--shadow-lg); align-items: flex-start; gap: 0;
-      }
-      .nav-list.active { display: flex; }
-      .nav-list li { width: 100%; }
-      .nav-list li a { padding: 12px 16px; width: 100%; border-bottom: 1px solid rgba(255,255,255,0.05); }
-      .nav-list li a[aria-current="page"] { border-bottom: 1px solid rgba(255,255,255,0.05); border-left: 3px solid var(--german-gold); }
-      
-      .nav-dropdown { width: 100%; }
-      .dropdown-menu {
-        position: static; opacity: 1; visibility: visible; transform: none; box-shadow: none;
-        background: rgba(255,255,255,0.05); margin-top: 0; display: none; border: none; padding-left: 20px;
-      }
-      .nav-dropdown.open .dropdown-menu { display: block; }
-      .dropdown-menu li a { color: rgba(255,255,255,0.7); font-size: 0.9rem; }
-      .dropdown-menu li a:hover { background: rgba(255,255,255,0.1); color: var(--german-gold); }
-      
-      .nav-cta { background: var(--german-gold) !important; color: var(--german-black) !important; text-align: center; justify-content: center; margin-top: 10px; }
-
       .insights-hero h1 { font-size: 2.2rem; }
-      .controls-section { flex-direction: column; align-items: stretch; }
-      .search-wrap { max-width: 100%; }
-      .insights-grid { grid-template-columns: 1fr; }
+      .insights-hero p { font-size: 1rem; }
+      .analysis-grid { grid-template-columns: 1fr; }
+      .recommendations-grid { grid-template-columns: 1fr; }
+      .resource-grid { grid-template-columns: 1fr; }
+      .findings-grid { grid-template-columns: 1fr; }
+      .policy-section { padding: 40px 20px; }
     }
   </style>
 </head>
@@ -243,7 +406,7 @@
     <div class="gold"></div>
   </div>
 
-  <!-- IMPROVED NAVIGATION MENU -->
+  <!-- UNIFORM NAVIGATION MENU -->
   <nav>
     <div class="wrapper nav-container">
       <a href="index.html" class="nav-logo" title="Go to Home">
@@ -260,7 +423,6 @@
         <li><a href="use-cases.html">Use Cases</a></li>
         <li><a href="dashboard.html">Dashboard</a></li>
         
-        <!-- Grouped Dropdown (Active because we are on a grouped page) -->
         <li class="nav-dropdown active" id="exploreDropdown">
           <a href="#" class="dropdown-toggle" onclick="toggleMobileDropdown(event)">
             Explore <i class="fas fa-chevron-down" style="font-size: 0.7rem; margin-left: 4px;"></i>
@@ -278,130 +440,204 @@
     </div>
   </nav>
 
+  <!-- HERO SECTION -->
   <header class="insights-hero">
     <div class="wrapper">
       <div class="hero-badge">
-        <i class="fas fa-chart-line"></i> Trends, Gaps & Policy Resources
+        <i class="fas fa-chart-line"></i> Policy Intelligence & Strategic Analysis
       </div>
-      <h1>Data <span>Insights</span> & Trends</h1>
-      <p>Discover how open data is driving AI innovation across Africa, identify critical data gaps, and access key policy resources for decision-makers.</p>
+      <h1>Data <span>Insights</span> & Intelligence</h1>
+      <p>Evidence-based analysis and strategic recommendations for policymakers, researchers, and AI innovators across Africa.</p>
     </div>
   </header>
 
   <main class="wrapper">
-    <!-- Key Takeaways -->
-    <div class="takeaways-container" id="takeawaysContainer">
-      <div class="takeaway-card"><span class="num" style="font-size:1.5rem;">...</span></div>
-    </div>
-
-    <!-- Controls -->
-    <div class="controls-section">
-      <div class="search-wrap">
-        <i class="fas fa-search"></i>
-        <input type="text" id="insightSearch" placeholder="Search insights, use cases, or challenges...">
+    
+    <!-- Executive Dashboard -->
+    <div class="exec-dashboard" id="execDashboard">
+      <div class="exec-card">
+        <div class="icon"><i class="fas fa-database"></i></div>
+        <span class="value" id="totalDatasets">...</span>
+        <span class="label">Total Datasets</span>
+        <div class="trend neutral">Continental Coverage</div>
       </div>
-      <div class="filter-chips" id="domainFilters">
-        <div class="chip active" data-filter="all">All Domains</div>
+      <div class="exec-card">
+        <div class="icon"><i class="fas fa-globe-africa"></i></div>
+        <span class="value" id="totalCountries">...</span>
+        <span class="label">Countries Covered</span>
+        <div class="trend positive"><i class="fas fa-arrow-up"></i> Expanding</div>
+      </div>
+      <div class="exec-card">
+        <div class="icon"><i class="fas fa-tags"></i></div>
+        <span class="value" id="totalDomains">...</span>
+        <span class="label">Research Domains</span>
+        <div class="trend neutral">Multi-Sector</div>
+      </div>
+      <div class="exec-card">
+        <div class="icon"><i class="fas fa-lock-open"></i></div>
+        <span class="value" id="openAccess">...</span>
+        <span class="label">Open Access</span>
+        <div class="trend positive"><i class="fas fa-check"></i> 100% Open</div>
       </div>
     </div>
 
-    <!-- Tabs -->
-    <div class="tabs-container">
-      <button class="tab-btn active" data-tab="innovation"><i class="fas fa-lightbulb"></i> Innovation Highlights</button>
-      <button class="tab-btn" data-tab="gaps"><i class="fas fa-exclamation-triangle"></i> Data Gaps & Challenges</button>
-      <button class="tab-btn" data-tab="resources"><i class="fas fa-book-open"></i> Policy & External Resources</button>
+    <!-- Key Findings -->
+    <div class="section-header">
+      <h2><i class="fas fa-lightbulb"></i> Key Findings</h2>
+      <p>Critical insights derived from comprehensive analysis of Africa's open data ecosystem</p>
     </div>
 
-    <!-- Grid -->
-    <div class="insights-grid" id="insightsGrid"></div>
+    <div class="findings-grid" id="findingsGrid">
+      <!-- Dynamically populated -->
+    </div>
+
+    <!-- Geographic & Sector Analysis -->
+    <div class="section-header">
+      <h2><i class="fas fa-chart-pie"></i> Geographic & Sector Analysis</h2>
+      <p>Visual breakdown of data distribution across countries and research domains</p>
+    </div>
+
+    <div class="analysis-grid">
+      <div class="analysis-card">
+        <h3><i class="fas fa-map-marked-alt"></i> Geographic Distribution</h3>
+        <div class="chart-container">
+          <canvas id="countryChart"></canvas>
+        </div>
+        <p style="font-size: 0.9rem; color: var(--gray); text-align: center;">
+          Top 10 countries by dataset availability
+        </p>
+      </div>
+
+      <div class="analysis-card">
+        <h3><i class="fas fa-th-large"></i> Domain Coverage</h3>
+        <div class="chart-container">
+          <canvas id="domainChart"></canvas>
+        </div>
+        <p style="font-size: 0.9rem; color: var(--gray); text-align: center;">
+          Distribution across research sectors
+        </p>
+      </div>
+
+      <div class="analysis-card">
+        <h3><i class="fas fa-calendar-check"></i> Data Freshness</h3>
+        <div class="chart-container">
+          <canvas id="freshnessChart"></canvas>
+        </div>
+        <p style="font-size: 0.9rem; color: var(--gray); text-align: center;">
+          Dataset update frequency analysis
+        </p>
+      </div>
+
+      <div class="analysis-card">
+        <h3><i class="fas fa-file-contract"></i> Licensing Analysis</h3>
+        <div class="chart-container">
+          <canvas id="licenseChart"></canvas>
+        </div>
+        <p style="font-size: 0.9rem; color: var(--gray); text-align: center;">
+          Open data license distribution
+        </p>
+      </div>
+    </div>
+
+    <!-- Policy Recommendations -->
+    <div class="policy-section">
+      <h2><i class="fas fa-gavel"></i> Evidence-Based Policy Recommendations</h2>
+      <div class="recommendations-grid" id="recommendationsGrid">
+        <!-- Dynamically populated -->
+      </div>
+    </div>
+
+    <!-- Resource Hub -->
+    <div class="section-header">
+      <h2><i class="fas fa-book-open"></i> Strategic Resource Hub</h2>
+      <p>Curated policy frameworks, research reports, and implementation guides</p>
+    </div>
+
+    <div class="resource-hub">
+      <div class="resource-tabs">
+        <button class="resource-tab active" data-category="policy">
+          <i class="fas fa-gavel"></i> Policy Frameworks
+        </button>
+        <button class="resource-tab" data-category="research">
+          <i class="fas fa-microscope"></i> Research Reports
+        </button>
+        <button class="resource-tab" data-category="implementation">
+          <i class="fas fa-tools"></i> Implementation Guides
+        </button>
+        <button class="resource-tab" data-category="standards">
+          <i class="fas fa-certificate"></i> Standards & Best Practices
+        </button>
+      </div>
+
+      <div class="resource-grid" id="resourceGrid">
+        <!-- Dynamically populated -->
+      </div>
+    </div>
+
   </main>
 
-  <!-- Detail Modal -->
-  <div class="modal-overlay" id="insightModal">
-    <div class="modal-content">
-      <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
-      <div class="modal-header">
-        <div id="modalBadges" style="margin-bottom: 10px;"></div>
-        <h2 id="modalTitle">Insight Title</h2>
-        <div id="modalMeta" style="color: var(--gray); font-size: 0.9rem; margin-top: 10px; display: flex; gap: 15px; flex-wrap: wrap;"></div>
-      </div>
-      <div class="modal-body">
-        <div class="modal-section">
-          <h4 id="modalSectionTitle"><i class="fas fa-info-circle"></i> Details</h4>
-          <div id="modalContent"></div>
-        </div>
-        <div class="modal-section" id="sourceSection">
-          <h4><i class="fas fa-database"></i> Source / Reference</h4>
-          <p id="modalSource"></p>
-        </div>
-      </div>
-      <div class="modal-footer" id="modalFooter"></div>
-    </div>
-  </div>
-
+  <!-- Footer -->
   <footer>
     <div class="wrapper">
-      <p>&copy; 2026 Open Data Africa | AI Made in Africa / GIZ AU</p>
+      <div class="footer-content">
+        
+        <div>
+          <h4><i class="fas fa-globe-africa"></i> Open Data Africa</h4>
+          <p>Open data ecosystems across Africa through benchmarking, recognition, and capacity building.</p>
+          <div class="footer-social">
+            <a href="https://www.linkedin.com/company/giz-african-union/posts/?feedView=all" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+          </div>
+        </div>
+
+        <div>
+          <h4><i class="fas fa-link"></i> Quick Links</h4>
+          <ul>
+            <li><a href="index.html"><i class="fas fa-chevron-right"></i> Home</a></li>
+            <li><a href="about.html"><i class="fas fa-chevron-right"></i> About Us</a></li>
+            <li><a href="datasets.html"><i class="fas fa-chevron-right"></i> Datasets</a></li>
+            <li><a href="aodria.html"><i class="fas fa-chevron-right"></i> AODRIA Framework</a></li>
+            <li><a href="contribute.html"><i class="fas fa-chevron-right"></i> Submit Data</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4><i class="fas fa-file-alt"></i> Resources</h4>
+          <ul>
+            <li><a href="resources.html"><i class="fas fa-chevron-right"></i> Publications</a></li>
+            <li><a href="faq.html"><i class="fas fa-chevron-right"></i> FAQ</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4><i class="fas fa-envelope"></i> Contact</h4>
+          <p><i class="fas fa-envelope"></i> aimadeinafrica@giz.de</p>
+          <p><i class="fas fa-map-marker-alt"></i> GIZ African Union, Addis Ababa, Ethiopia</p>
+        </div>
+
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2026 Open Data Africa | AI Made in Africa / GIZ AU</p>
+      </div>
     </div>
   </footer>
 
   <script>
     let allData = [];
-    let insights = [];
-    let currentTab = 'innovation';
-    let currentDomain = 'all';
+    let charts = {};
 
-    // Curated External Resources for Policymakers
-    const externalResources = [
-      {
-        title: "African Union Data Policy Framework",
-        domain: "Policy",
-        country: "Africa-wide",
-        excerpt: "The AU's comprehensive framework guiding data governance, privacy, and cross-border data flows to foster a unified digital single market.",
-        link: "https://au.int/en/documents/20220218/data-policy-framework",
-        source: "African Union Commission"
-      },
-      {
-        title: "GIZ: AI Strategy and Guidelines for Africa",
-        domain: "Policy",
-        country: "Africa-wide",
-        excerpt: "Strategic guidelines and capacity-building frameworks for responsible, inclusive, and sovereign AI development across the continent.",
-        link: "https://www.giz.de/en/worldwide/401339.html",
-        source: "GIZ African Union Office"
-      },
-      {
-        title: "Stanford AI Index Report 2024 (Africa Focus)",
-        domain: "Research",
-        country: "Global / Africa",
-        excerpt: "Annual report tracking the rapid developments in AI, including specific chapters on AI research output, investment, and policy in African nations.",
-        link: "https://aiindex.stanford.edu/report/",
-        source: "Stanford University"
-      },
-      {
-        title: "World Bank: Open Data for Sustainable Development",
-        domain: "Socioeconomic",
-        country: "Africa-wide",
-        excerpt: "Key datasets and analytical reports on how open data drives economic growth, climate resilience, and public service delivery in developing regions.",
-        link: "https://data.worldbank.org/",
-        source: "The World Bank Group"
-      },
-      {
-        title: "Smart Africa: Blueprint for AI",
-        domain: "Digital Infrastructure",
-        country: "Africa-wide",
-        excerpt: "A continental blueprint outlining the infrastructure, skills, and regulatory requirements needed to scale AI solutions across African member states.",
-        link: "https://smartafrica.org/",
-        source: "Smart Africa Alliance"
-      }
-    ];
+    // Mobile menu functions
+    function toggleMenu() {
+      document.getElementById('navList').classList.toggle('active');
+    }
 
-    function toggleMenu() { document.getElementById('navList').classList.toggle('active'); }
     function toggleMobileDropdown(event) {
       if (window.innerWidth <= 768) {
         event.preventDefault();
         document.getElementById('exploreDropdown').classList.toggle('open');
       }
     }
+
     document.addEventListener('click', function(event) {
       const navList = document.getElementById('navList');
       const toggle = document.querySelector('.mobile-menu-toggle');
@@ -412,233 +648,387 @@
       }
     });
 
+    // Load and analyze data
     document.addEventListener('DOMContentLoaded', async () => {
       try {
         const res = await fetch('data/catalog.json');
-        if (!res.ok) throw new Error('Failed to load');
+        if (!res.ok) throw new Error('Failed to load catalog');
         allData = await res.json();
-        
-        processData();
-        renderTakeaways();
-        renderDomainChips();
-        renderInsights();
 
-        document.getElementById('insightSearch').addEventListener('input', renderInsights);
-        
-        document.querySelectorAll('.chip').forEach(chip => {
-          chip.addEventListener('click', (e) => {
-            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-            e.target.classList.add('active');
-            currentDomain = e.target.dataset.filter;
-            renderInsights();
-          });
-        });
+        updateExecutiveDashboard();
+        generateKeyFindings();
+        createVisualizations();
+        generatePolicyRecommendations();
+        loadResources('policy');
 
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-          btn.addEventListener('click', (e) => {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        // Resource tab switching
+        document.querySelectorAll('.resource-tab').forEach(tab => {
+          tab.addEventListener('click', (e) => {
+            document.querySelectorAll('.resource-tab').forEach(t => t.classList.remove('active'));
             e.currentTarget.classList.add('active');
-            currentTab = e.currentTarget.dataset.tab;
-            renderInsights();
+            loadResources(e.currentTarget.dataset.category);
           });
-        });
-
-        document.getElementById('insightModal').addEventListener('click', (e) => {
-          if (e.target.id === 'insightModal') closeModal();
         });
 
       } catch (err) {
-        console.error(err);
-        document.getElementById('takeawaysContainer').innerHTML = '<div class="takeaway-card" style="grid-column: 1/-1; border-color: red;"><p style="color: red;">Error loading data. Check data/catalog.json</p></div>';
+        console.error('Error loading data:', err);
       }
     });
 
-    function cleanText(text) {
-      if (!text) return [];
-      return text.split(/,|-|🔹|\n/).map(s => s.trim()).filter(s => s.length > 5 && !s.startsWith('http'));
+    // Executive Dashboard
+    function updateExecutiveDashboard() {
+      const totalDatasets = allData.length;
+      const uniqueCountries = new Set(allData.map(d => d.Country)).size;
+      const uniqueDomains = new Set(allData.map(d => d.Domain)).size;
+      const openAccess = '100%';
+
+      document.getElementById('totalDatasets').textContent = totalDatasets;
+      document.getElementById('totalCountries').textContent = uniqueCountries;
+      document.getElementById('totalDomains').textContent = uniqueDomains;
+      document.getElementById('openAccess').textContent = openAccess;
     }
 
-    function processData() {
-      insights = [];
+    // Key Findings
+    function generateKeyFindings() {
+      const findings = [];
+
+      // Analyze geographic distribution
+      const countryCounts = {};
       allData.forEach(d => {
-        const useCases = cleanText(d['Use Cases']);
-        useCases.forEach(uc => {
-          insights.push({
-            type: 'innovation',
-            title: uc,
-            domain: d['Domain'],
-            country: d['Country'],
-            source: d['Dataset Name'],
-            link: d['Link'],
-            fullText: useCases,
-            challenges: cleanText(d['Challenges/Notes'])
-          });
-        });
+        countryCounts[d.Country] = (countryCounts[d.Country] || 0) + 1;
+      });
+      const topCountry = Object.entries(countryCounts).sort((a, b) => b[1] - a[1])[0];
+      const bottomCountries = Object.entries(countryCounts).sort((a, b) => a[1] - b[1]).slice(0, 3);
 
-        const challenges = cleanText(d['Challenges/Notes']);
-        challenges.forEach(ch => {
-          insights.push({
-            type: 'gap',
-            title: ch,
-            domain: d['Domain'],
-            country: d['Country'],
-            source: d['Dataset Name'],
-            link: d['Link'],
-            fullText: challenges,
-            useCases: useCases
-          });
-        });
+      findings.push({
+        type: 'opportunity',
+        icon: 'fa-map-marker-alt',
+        title: 'Geographic Concentration',
+        text: `${topCountry[0]} leads with ${topCountry[1]} datasets, representing ${Math.round((topCountry[1]/allData.length)*100)}% of total coverage. Strategic expansion needed in underrepresented regions.`
+      });
+
+      // Analyze domain distribution
+      const domainCounts = {};
+      allData.forEach(d => {
+        domainCounts[d.Domain] = (domainCounts[d.Domain] || 0) + 1;
+      });
+      const topDomain = Object.entries(domainCounts).sort((a, b) => b[1] - a[1])[0];
+
+      findings.push({
+        type: 'neutral',
+        icon: 'fa-chart-bar',
+        title: 'Sector Leadership',
+        text: `${topDomain[0]} dominates with ${topDomain[1]} datasets, indicating strong research focus. Cross-sector integration opportunities exist in emerging domains.`
+      });
+
+      // Analyze data freshness
+      const recentDatasets = allData.filter(d => {
+        const updated = d['Last Updated'];
+        if (!updated) return false;
+        const year = parseInt(updated.split('-')[0] || updated.split('/')[2] || updated);
+        return year >= 2023;
+      });
+      const freshnessPercent = Math.round((recentDatasets.length / allData.length) * 100);
+
+      findings.push({
+        type: freshnessPercent > 50 ? 'opportunity' : 'critical',
+        icon: 'fa-clock',
+        title: 'Data Freshness',
+        text: `${freshnessPercent}% of datasets updated since 2023. ${freshnessPercent < 50 ? 'Critical need for regular update mechanisms and data maintenance protocols.' : 'Strong commitment to data currency and relevance.'}`
+      });
+
+      // Analyze licensing
+      const openLicenses = allData.filter(d => {
+        const license = (d.License || '').toLowerCase();
+        return license.includes('cc') || license.includes('open') || license.includes('public');
+      });
+      const openPercent = Math.round((openLicenses.length / allData.length) * 100);
+
+      findings.push({
+        type: 'opportunity',
+        icon: 'fa-lock-open',
+        title: 'Open Access Commitment',
+        text: `${openPercent}% of datasets use open licenses (CC-BY, CC0, ODC). Strong foundation for AI training and research, though license standardization recommended.`
+      });
+
+      // Render findings
+      const findingsGrid = document.getElementById('findingsGrid');
+      findingsGrid.innerHTML = findings.map(f => `
+        <div class="finding-card ${f.type}">
+          <h4><i class="fas ${f.icon}"></i> ${f.title}</h4>
+          <p>${f.text}</p>
+        </div>
+      `).join('');
+    }
+
+    // Visualizations
+    function createVisualizations() {
+      // Country distribution
+      const countryCounts = {};
+      allData.forEach(d => {
+        countryCounts[d.Country] = (countryCounts[d.Country] || 0) + 1;
+      });
+      const topCountries = Object.entries(countryCounts).sort((a, b) => b[1] - a[1]).slice(0, 10);
+
+      charts.country = new Chart(document.getElementById('countryChart'), {
+        type: 'bar',
+        data: {
+          labels: topCountries.map(c => c[0]),
+          datasets: [{
+            label: 'Datasets',
+            data: topCountries.map(c => c[1]),
+            backgroundColor: '#c8102e',
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { beginAtZero: true, ticks: { stepSize: 1 } }
+          }
+        }
+      });
+
+      // Domain distribution
+      const domainCounts = {};
+      allData.forEach(d => {
+        domainCounts[d.Domain] = (domainCounts[d.Domain] || 0) + 1;
+      });
+      const domains = Object.entries(domainCounts).sort((a, b) => b[1] - a[1]);
+
+      charts.domain = new Chart(document.getElementById('domainChart'), {
+        type: 'doughnut',
+        data: {
+          labels: domains.map(d => d[0]),
+          datasets: [{
+            data: domains.map(d => d[1]),
+            backgroundColor: [
+              '#c8102e', '#ffce00', '#1a1a1a', '#6c757d', '#e9ecef',
+              '#a00d26', '#d4af37', '#495057', '#28a745', '#17a2b8'
+            ]
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: { boxWidth: 12, font: { size: 11 } }
+            }
+          }
+        }
+      });
+
+      // Data freshness
+      const freshnessBuckets = {
+        '2024-2026': 0,
+        '2022-2023': 0,
+        '2020-2021': 0,
+        'Before 2020': 0,
+        'Unknown': 0
+      };
+
+      allData.forEach(d => {
+        const updated = d['Last Updated'];
+        if (!updated) {
+          freshnessBuckets['Unknown']++;
+          return;
+        }
+        const year = parseInt(updated.split('-')[0] || updated.split('/')[2] || updated);
+        if (year >= 2024) freshnessBuckets['2024-2026']++;
+        else if (year >= 2022) freshnessBuckets['2022-2023']++;
+        else if (year >= 2020) freshnessBuckets['2020-2021']++;
+        else freshnessBuckets['Before 2020']++;
+      });
+
+      charts.freshness = new Chart(document.getElementById('freshnessChart'), {
+        type: 'pie',
+        data: {
+          labels: Object.keys(freshnessBuckets),
+          datasets: [{
+            data: Object.values(freshnessBuckets),
+            backgroundColor: ['#28a745', '#17a2b8', '#ffc107', '#dc3545', '#6c757d']
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: { boxWidth: 12, font: { size: 11 } }
+            }
+          }
+        }
+      });
+
+      // License analysis
+      const licenseCounts = {
+        'CC-BY': 0,
+        'CC0': 0,
+        'ODC': 0,
+        'Other Open': 0,
+        'Unknown/Unspecified': 0
+      };
+
+      allData.forEach(d => {
+        const license = (d.License || '').toLowerCase();
+        if (license.includes('cc-by') || license.includes('cc by')) licenseCounts['CC-BY']++;
+        else if (license.includes('cc0') || license.includes('cc-0')) licenseCounts['CC0']++;
+        else if (license.includes('odc') || license.includes('odbl')) licenseCounts['ODC']++;
+        else if (license.includes('open') || license.includes('public') || license.includes('cc')) licenseCounts['Other Open']++;
+        else licenseCounts['Unknown/Unspecified']++;
+      });
+
+      charts.license = new Chart(document.getElementById('licenseChart'), {
+        type: 'bar',
+        data: {
+          labels: Object.keys(licenseCounts),
+          datasets: [{
+            label: 'Datasets',
+            data: Object.values(licenseCounts),
+            backgroundColor: '#ffce00',
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          indexAxis: 'y',
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { beginAtZero: true, ticks: { stepSize: 1 } }
+          }
+        }
       });
     }
 
-    function renderTakeaways() {
-      const totalInnovations = insights.filter(i => i.type === 'innovation').length;
-      const totalGaps = insights.filter(i => i.type === 'gap').length;
-      const domainCounts = allData.reduce((acc, d) => { acc[d.Domain] = (acc[d.Domain]||0)+1; return acc; }, {});
-      const topDomain = Object.entries(domainCounts).sort((a,b)=>b[1]-a[1])[0]?.[0] || 'N/A';
-      
-      document.getElementById('takeawaysContainer').innerHTML = `
-        <div class="takeaway-card">
-          <div class="icon"><i class="fas fa-lightbulb"></i></div>
-          <h3>AI Innovations Tracked</h3>
-          <p>${totalInnovations} unique use cases identified across the catalog.</p>
-        </div>
-        <div class="takeaway-card" style="border-left-color: var(--gray);">
-          <div class="icon" style="color: var(--gray);"><i class="fas fa-exclamation-triangle"></i></div>
-          <h3>Data Gaps Identified</h3>
-          <p>${totalGaps} challenges and limitations documented for researchers.</p>
-        </div>
-        <div class="takeaway-card" style="border-left-color: var(--german-gold);">
-          <div class="icon" style="color: #d4af37;"><i class="fas fa-chart-line"></i></div>
-          <h3>Most Active Domain</h3>
-          <p>${topDomain} leads in dataset availability.</p>
-        </div>
-      `;
-    }
+    // Policy Recommendations
+    function generatePolicyRecommendations() {
+      const recommendations = [];
 
-    function renderDomainChips() {
-      const domains = [...new Set(allData.map(d => d.Domain))].sort();
-      const container = document.getElementById('domainFilters');
-      domains.forEach(d => {
-        const chip = document.createElement('div');
-        chip.className = 'chip';
-        chip.dataset.filter = d;
-        chip.innerText = d;
-        container.appendChild(chip);
+      // Analyze gaps
+      const countryCounts = {};
+      allData.forEach(d => {
+        countryCounts[d.Country] = (countryCounts[d.Country] || 0) + 1;
       });
-    }
+      const underrepresented = Object.entries(countryCounts).filter(c => c[1] < 3).map(c => c[0]);
 
-    function renderInsights() {
-      const grid = document.getElementById('insightsGrid');
-      const searchTerm = document.getElementById('insightSearch').value.toLowerCase();
-      grid.innerHTML = '';
-      
-      let filtered = [];
-
-      if (currentTab === 'resources') {
-        filtered = externalResources.filter(i => {
-          const matchesDomain = currentDomain === 'all' || i.domain === currentDomain || currentDomain === 'Policy';
-          const matchesSearch = !searchTerm || 
-            i.title.toLowerCase().includes(searchTerm) || 
-            i.excerpt.toLowerCase().includes(searchTerm) ||
-            i.source.toLowerCase().includes(searchTerm);
-          return matchesDomain && matchesSearch;
-        });
-      } else {
-        filtered = insights.filter(i => {
-          const matchesTab = i.type === currentTab;
-          const matchesDomain = currentDomain === 'all' || i.domain === currentDomain;
-          const matchesSearch = !searchTerm || 
-            i.title.toLowerCase().includes(searchTerm) || 
-            i.domain.toLowerCase().includes(searchTerm) ||
-            i.country.toLowerCase().includes(searchTerm);
-          return matchesTab && matchesDomain && matchesSearch;
+      if (underrepresented.length > 0) {
+        recommendations.push({
+          icon: 'fa-map',
+          title: 'Expand Geographic Coverage',
+          text: `Prioritize data collection and open data initiatives in underrepresented countries: ${underrepresented.slice(0, 5).join(', ')}. Establish regional data hubs and capacity building programs.`,
+          priority: 'HIGH'
         });
       }
 
-      if (filtered.length === 0) {
-        grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 60px; color: var(--gray);"><i class="fas fa-search" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.3;"></i><h3>No insights found</h3><p>Try adjusting your search or filters.</p></div>';
-        return;
-      }
-
-      filtered.slice(0, 50).forEach((item, index) => {
-        const isGap = item.type === 'gap';
-        const isResource = currentTab === 'resources';
-        
-        let badgeClass = isResource ? 'badge-resource' : (isGap ? 'badge-gap' : 'badge-innovation');
-        let badgeText = isResource ? 'External Resource' : (isGap ? 'Data Gap' : 'Innovation');
-        let cardClass = `insight-card ${isGap ? 'challenge' : ''} ${isResource ? 'resource' : ''}`;
-
-        const card = document.createElement('div');
-        card.className = cardClass;
-        card.onclick = () => openModal(item);
-        card.innerHTML = `
-          <div class="ic-header">
-            <span class="ic-badge ${badgeClass}">${badgeText}</span>
-            <span style="font-size:0.75rem; color:var(--gray);">#${index + 1}</span>
-          </div>
-          <h3 class="ic-title">${item.title}</h3>
-          <div class="ic-meta">
-            <span><i class="fas fa-tag"></i> ${item.domain}</span>
-            <span><i class="fas fa-globe-africa"></i> ${item.country}</span>
-          </div>
-          <p class="ic-excerpt">${item.excerpt || item.title}</p>
-          <div class="ic-footer">
-            <span style="font-size:0.8rem; color:var(--gray);"><i class="fas fa-building"></i> ${item.source.substring(0, 30)}${item.source.length>30?'...':''}</span>
-            <span class="ic-read-more">Read More <i class="fas fa-arrow-right"></i></span>
-          </div>
-        `;
-        grid.appendChild(card);
+      // Domain gaps
+      const domainCounts = {};
+      allData.forEach(d => {
+        domainCounts[d.Domain] = (domainCounts[d.Domain] || 0) + 1;
       });
-    }
+      const lowDomains = Object.entries(domainCounts).filter(d => d[1] < 5).map(d => d[0]);
 
-    function openModal(item) {
-      const isGap = item.type === 'gap';
-      const isResource = currentTab === 'resources';
-      
-      let badgeClass = isResource ? 'badge-resource' : (isGap ? 'badge-gap' : 'badge-innovation');
-      let badgeText = isResource ? 'External Resource' : (isGap ? 'Data Gap / Challenge' : 'Innovation / Use Case');
-
-      document.getElementById('modalBadges').innerHTML = `
-        <span class="ic-badge ${badgeClass}" style="display:inline-block;">${badgeText}</span>
-        <span class="ic-badge" style="background:#e9ecef; color:#495057; display:inline-block; margin-left:5px;">${item.domain}</span>
-      `;
-      document.getElementById('modalTitle').innerText = item.title;
-      document.getElementById('modalMeta').innerHTML = `
-        <span><i class="fas fa-globe-africa"></i> ${item.country}</span>
-        <span><i class="fas fa-building"></i> ${item.source}</span>
-      `;
-      
-      if (isResource) {
-        document.getElementById('modalSectionTitle').innerHTML = '<i class="fas fa-book-open"></i> Resource Overview';
-        document.getElementById('modalContent').innerHTML = `<p>${item.excerpt}</p>`;
-      } else {
-        document.getElementById('modalSectionTitle').innerHTML = isGap 
-          ? '<i class="fas fa-exclamation-triangle"></i> Challenge Details' 
-          : '<i class="fas fa-lightbulb"></i> Use Case Details';
-        
-        const list = (item.fullText || []).map(t => `<li>${t}</li>`).join('');
-        document.getElementById('modalContent').innerHTML = list ? `<ul>${list}</ul>` : '<p>No detailed text available.</p>';
+      if (lowDomains.length > 0) {
+        recommendations.push({
+          icon: 'fa-layer-group',
+          title: 'Strengthen Underrepresented Sectors',
+          text: `Invest in open data initiatives for sectors with limited coverage: ${lowDomains.join(', ')}. These represent critical gaps for AI development and policy-making.`,
+          priority: 'HIGH'
+        });
       }
 
-      document.getElementById('modalSource').innerText = `Reference: ${item.source}`;
-      
-      const footer = document.getElementById('modalFooter');
-      if (item.link && item.link.startsWith('http')) {
-        footer.innerHTML = `<a href="${item.link}" target="_blank" class="btn-access"><i class="fas fa-external-link-alt"></i> View Source / Resource</a>`;
-        footer.style.display = 'flex';
-      } else {
-        footer.style.display = 'none';
+      // Data freshness
+      const staleData = allData.filter(d => {
+        const updated = d['Last Updated'];
+        if (!updated) return true;
+        const year = parseInt(updated.split('-')[0] || updated.split('/')[2] || updated);
+        return year < 2022;
+      });
+
+      if (staleData.length > allData.length * 0.3) {
+        recommendations.push({
+          icon: 'fa-sync',
+          title: 'Implement Data Maintenance Protocols',
+          text: `${Math.round((staleData.length/allData.length)*100)}% of datasets are outdated (pre-2022). Establish mandatory update schedules, automated refresh mechanisms, and data stewardship roles.`,
+          priority: 'MEDIUM'
+        });
       }
 
-      document.getElementById('insightModal').classList.add('show');
-      document.body.style.overflow = 'hidden';
+      // Licensing
+      const unclearLicenses = allData.filter(d => {
+        const license = (d.License || '').toLowerCase();
+        return !license || license === 'unknown' || license === 'unspecified';
+      });
+
+      if (unclearLicenses.length > 0) {
+        recommendations.push({
+          icon: 'fa-file-contract',
+          title: 'Standardize Open Licensing',
+          text: `${unclearLicenses.length} datasets lack clear licensing. Develop a continental licensing framework and provide guidance to data publishers on CC-BY, CC0, and ODC licenses.`,
+          priority: 'MEDIUM'
+        });
+      }
+
+      // AI readiness
+      recommendations.push({
+        icon: 'fa-robot',
+        title: 'Enhance AI-Readiness Standards',
+        text: 'Develop metadata standards, data quality frameworks, and interoperability guidelines to ensure datasets are machine-readable and suitable for AI training and research.',
+        priority: 'HIGH'
+      });
+
+      // Capacity building
+      recommendations.push({
+        icon: 'fa-graduation-cap',
+        title: 'Invest in Data Literacy & Capacity',
+        text: 'Launch continental training programs for data stewards, policymakers, and researchers. Focus on data governance, ethical AI, and open data best practices.',
+        priority: 'MEDIUM'
+      });
+
+      // Render recommendations
+      const recommendationsGrid = document.getElementById('recommendationsGrid');
+      recommendationsGrid.innerHTML = recommendations.map(r => `
+        <div class="recommendation-card">
+          <h4><i class="fas ${r.icon}"></i> ${r.title}</h4>
+          <p>${r.text}</p>
+          <span class="priority">${r.priority} PRIORITY</span>
+        </div>
+      `).join('');
     }
 
-    function closeModal() {
-      document.getElementById('insightModal').classList.remove('show');
-      document.body.style.overflow = 'auto';
-    }
-  </script>
-</body>
-</html>
+    // Resource Hub
+    const resources = {
+      policy: [
+        {
+          badge: 'Continental Framework',
+          title: 'African Union Data Policy Framework',
+          description: 'Comprehensive framework guiding data governance, privacy, and cross-border data flows to foster a unified digital single market across Africa.',
+          source: 'African Union Commission',
+          year: '2022',
+          link: 'https://au.int/en/documents/20220218/data-policy-framework'
+        },
+        {
+          badge: 'AI Strategy',
+          title: 'GIZ AI Strategy for Africa',
+          description: 'Strategic guidelines and capacity-building frameworks for responsible, inclusive, and sovereign AI development across the continent.',
+          source: 'GIZ African Union Office',
+          year: '2024',
+          link: 'https://www.giz.de/en/worldwide/401339.html'
+        },
+        {
+          badge: 'Regulatory Guide',
+          title: 'AU Convention on Cyber Security and Personal Data Protection',
+          description: 'Legal framework for personal data protection and cyber security across African Union member states.',
+          source: 'African Union',
+          year: '2014',
+          link: 'https://au.int/en/treaties/african-union-convention-cyber-security-and-personal-data-protection'
+        },
+        {
+          badge: 'Policy Brief',
+          title: 'Smart Africa Digital Transformation Strategy',
+          description: 'Continental blueprint for accelerating digital transformation and building a
