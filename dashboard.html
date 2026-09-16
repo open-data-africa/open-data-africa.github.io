@@ -21,687 +21,255 @@
     /* Hero */
     .dashboard-hero {
       background: linear-gradient(135deg, var(--german-black) 0%, #2d2d2d 100%);
-      padding: 80px 0 120px;
-      text-align: center;
-      color: white;
-      position: relative;
-      overflow: hidden;
+      padding: 80px 0 120px; text-align: center; color: white;
+      position: relative; overflow: hidden;
     }
     .dashboard-hero::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
+      content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
       background-image: radial-gradient(circle at 20% 50%, rgba(200, 16, 46, 0.15) 0%, transparent 50%),
                         radial-gradient(circle at 80% 80%, rgba(255, 206, 0, 0.1) 0%, transparent 50%);
-      opacity: 0.6;
-      pointer-events: none;
+      opacity: 0.6; pointer-events: none;
     }
     .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(255, 206, 0, 0.15);
-      color: var(--german-gold);
-      padding: 8px 16px;
-      border-radius: 50px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      margin-bottom: 20px;
-      border: 1px solid rgba(255, 206, 0, 0.3);
-      animation: fadeInDown 0.8s ease both;
-      position: relative;
-      z-index: 2;
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255, 206, 0, 0.15); color: var(--german-gold);
+      padding: 8px 16px; border-radius: 50px; font-size: 0.85rem; font-weight: 600;
+      margin-bottom: 20px; border: 1px solid rgba(255, 206, 0, 0.3);
+      animation: fadeInDown 0.8s ease both; position: relative; z-index: 2;
     }
     .dashboard-hero h1 {
-      font-family: 'Poppins', sans-serif;
-      font-size: 3.2rem;
-      font-weight: 800;
-      margin: 0 0 15px 0;
-      color: #ffffff;
-      text-shadow: 0 4px 20px rgba(255, 206, 0, 0.3);
-      animation: fadeInUp 0.8s ease 0.1s both;
-      letter-spacing: -1px;
-      position: relative;
-      z-index: 2;
+      font-family: 'Poppins', sans-serif; font-size: 3.2rem; font-weight: 800;
+      margin: 0 0 15px 0; color: #ffffff; text-shadow: 0 4px 20px rgba(255, 206, 0, 0.3);
+      animation: fadeInUp 0.8s ease 0.1s both; letter-spacing: -1px; position: relative; z-index: 2;
     }
-    .dashboard-hero h1 span {
-      color: var(--german-gold);
-      display: inline-block;
-      animation: pulseGlow 2.5s ease-in-out infinite alternate;
-    }
+    .dashboard-hero h1 span { color: var(--german-gold); display: inline-block; animation: pulseGlow 2.5s ease-in-out infinite alternate; }
     .dashboard-hero p {
-      opacity: 0.9;
-      max-width: 700px;
-      margin: 0 auto;
-      font-size: 1.1rem;
-      line-height: 1.6;
-      animation: fadeInUp 0.8s ease 0.2s both;
-      position: relative;
-      z-index: 2;
+      opacity: 0.9; max-width: 700px; margin: 0 auto; font-size: 1.1rem; line-height: 1.6;
+      animation: fadeInUp 0.8s ease 0.2s both; position: relative; z-index: 2;
     }
 
     /* Stats Cards */
     .stats-showcase {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 24px;
-      margin-top: -60px;
-      position: relative;
-      z-index: 10;
-      margin-bottom: 50px;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 24px; margin-top: -60px; position: relative; z-index: 10; margin-bottom: 50px;
     }
     .stat-card-enhanced {
-      background: white;
-      padding: 28px;
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-md);
-      text-align: left;
-      border-left: 5px solid var(--german-red);
-      transition: var(--transition);
-      position: relative;
-      overflow: hidden;
+      background: white; padding: 28px; border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md); text-align: left; border-left: 5px solid var(--german-red);
+      transition: var(--transition); position: relative; overflow: hidden;
     }
     .stat-card-enhanced::before {
-      content: '';
-      position: absolute;
-      top: 0; right: 0;
-      width: 100px; height: 100px;
+      content: ''; position: absolute; top: 0; right: 0; width: 100px; height: 100px;
       background: linear-gradient(135deg, rgba(200, 16, 46, 0.05), transparent);
-      border-radius: 50%;
-      transform: translate(30%, -30%);
+      border-radius: 50%; transform: translate(30%, -30%);
     }
-    .stat-card-enhanced:hover {
-      transform: translateY(-5px);
-      box-shadow: var(--shadow-lg);
-    }
+    .stat-card-enhanced:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); }
     .stat-card-enhanced .icon {
-      width: 50px; height: 50px;
-      background: linear-gradient(135deg, var(--german-red), #a00d26);
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-size: 1.5rem;
-      margin-bottom: 16px;
+      width: 50px; height: 50px; background: linear-gradient(135deg, var(--german-red), #a00d26);
+      border-radius: 12px; display: flex; align-items: center; justify-content: center;
+      color: white; font-size: 1.5rem; margin-bottom: 16px;
     }
-    .stat-card-enhanced .value {
-      font-size: 2.5rem;
-      font-weight: 800;
-      color: var(--german-black);
-      display: block;
-      margin: 8px 0;
-      line-height: 1;
-    }
-    .stat-card-enhanced .label {
-      font-size: 0.9rem;
-      color: var(--gray);
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .stat-card-enhanced .trend {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 0.8rem;
-      margin-top: 8px;
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-weight: 600;
-    }
+    .stat-card-enhanced .value { font-size: 2.5rem; font-weight: 800; color: var(--german-black); display: block; margin: 8px 0; line-height: 1; }
+    .stat-card-enhanced .label { font-size: 0.9rem; color: var(--gray); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+    .stat-card-enhanced .trend { display: inline-flex; align-items: center; gap: 4px; font-size: 0.8rem; margin-top: 8px; padding: 4px 10px; border-radius: 20px; font-weight: 600; }
     .trend.up { background: rgba(40, 167, 69, 0.1); color: #28a745; }
     .trend.neutral { background: rgba(108, 117, 125, 0.1); color: var(--gray); }
 
-    /* Charts */
+    /* Charts Grid */
     .charts-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-      gap: 24px;
-      margin-bottom: 50px;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 24px; margin-bottom: 50px;
     }
     .chart-card {
-      background: white;
-      padding: 28px;
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-sm);
-      border: 1px solid var(--border);
-      transition: var(--transition);
+      background: white; padding: 28px; border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm); border: 1px solid var(--border); transition: var(--transition);
     }
-    .chart-card:hover {
-      box-shadow: var(--shadow-md);
-      transform: translateY(-2px);
-    }
+    .chart-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
     .chart-card h3 {
-      font-size: 1.2rem;
-      color: var(--german-black);
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding-bottom: 16px;
-      border-bottom: 2px solid var(--light);
+      font-size: 1.2rem; color: var(--german-black); margin-bottom: 20px;
+      display: flex; align-items: center; gap: 10px; padding-bottom: 16px; border-bottom: 2px solid var(--light);
     }
     .chart-card h3 i { color: var(--german-red); }
-    .chart-container {
-      position: relative;
-      height: 320px;
-    }
+    .chart-container { position: relative; height: 320px; }
 
-    /* Freshness Summary */
-    .freshness-summary {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin-top: 20px;
-      padding-top: 16px;
-      border-top: 1px solid var(--border);
+    /* Freshness Doughnut Center Label */
+    .freshness-wrapper { position: relative; }
+    .freshness-center-label {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -55%);
+      text-align: center; pointer-events: none; z-index: 5;
     }
-    .freshness-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 14px;
-      background: var(--light);
-      border-radius: 8px;
-      transition: var(--transition);
+    .freshness-center-label .big-num { font-size: 2.2rem; font-weight: 800; color: var(--german-black); display: block; line-height: 1; }
+    .freshness-center-label .sub-text { font-size: 0.75rem; color: var(--gray); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+    .freshness-legend {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border);
     }
-    .freshness-item:hover {
-      background: var(--gray-light);
+    .freshness-legend-item {
+      display: flex; align-items: center; gap: 8px; font-size: 0.8rem; color: var(--gray); font-weight: 600;
     }
-    .freshness-dot {
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-    .freshness-item .f-label {
-      font-size: 0.8rem;
-      color: var(--gray);
-      font-weight: 600;
-      flex-grow: 1;
-    }
-    .freshness-item .f-value {
-      font-size: 0.9rem;
-      font-weight: 800;
-      color: var(--german-black);
-    }
+    .freshness-legend-item .dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+    .freshness-legend-item .count { margin-left: auto; font-weight: 700; color: var(--german-black); }
 
-    /* Trending */
+    /* Trending Datasets */
     .trending-section {
       background: linear-gradient(135deg, var(--german-black) 0%, #2d2d2d 100%);
-      padding: 50px 40px;
-      border-radius: var(--radius-lg);
-      margin: 50px 0;
-      color: white;
+      padding: 50px 40px; border-radius: var(--radius-lg); margin: 50px 0; color: white;
     }
-    .trending-section h2 {
-      color: white;
-      text-align: center;
-      margin-bottom: 40px;
-    }
-    .trending-section h2::after {
-      background: linear-gradient(90deg, var(--german-gold), var(--german-red));
-    }
-    .trending-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 20px;
-    }
+    .trending-section h2 { color: white; text-align: center; margin-bottom: 40px; }
+    .trending-section h2::after { background: linear-gradient(90deg, var(--german-gold), var(--german-red)); }
+    .trending-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
     .trending-card {
-      background: rgba(255, 255, 255, 0.05);
-      padding: 24px;
-      border-radius: var(--radius);
-      border-left: 4px solid var(--german-gold);
-      backdrop-filter: blur(10px);
-      transition: var(--transition);
+      background: rgba(255, 255, 255, 0.05); padding: 24px; border-radius: var(--radius);
+      border-left: 4px solid var(--german-gold); backdrop-filter: blur(10px); transition: var(--transition);
     }
-    .trending-card:hover {
-      background: rgba(255, 255, 255, 0.1);
-      transform: translateX(5px);
-    }
-    .trending-card h4 {
-      color: var(--german-gold);
-      font-size: 1.05rem;
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+    .trending-card:hover { background: rgba(255, 255, 255, 0.1); transform: translateX(5px); }
+    .trending-card h4 { color: var(--german-gold); font-size: 1.05rem; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
     .trending-card p {
-      color: rgba(255, 255, 255, 0.8);
-      font-size: 0.9rem;
-      line-height: 1.5;
-      margin-bottom: 12px;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
+      color: rgba(255, 255, 255, 0.8); font-size: 0.9rem; line-height: 1.5; margin-bottom: 12px;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
     }
-    .trending-card .meta {
-      display: flex;
-      gap: 15px;
-      font-size: 0.8rem;
-      color: rgba(255, 255, 255, 0.6);
-    }
-    .trending-card .meta span {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
+    .trending-card .meta { display: flex; gap: 15px; font-size: 0.8rem; color: rgba(255, 255, 255, 0.6); }
+    .trending-card .meta span { display: flex; align-items: center; gap: 5px; }
 
     /* Search & Filters */
     .search-filters-section {
-      background: white;
-      padding: 24px;
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-sm);
-      margin-bottom: 30px;
-      border: 1px solid var(--border);
+      background: white; padding: 24px; border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm); margin-bottom: 30px; border: 1px solid var(--border);
     }
-    .search-bar {
-      position: relative;
-      margin-bottom: 20px;
-    }
+    .search-bar { position: relative; margin-bottom: 20px; }
     .search-bar input {
-      width: 100%;
-      padding: 14px 50px 14px 50px;
-      border: 2px solid var(--border);
-      border-radius: 50px;
-      font-size: 1rem;
-      outline: none;
-      transition: var(--transition);
-      font-family: inherit;
-      background: var(--light);
+      width: 100%; padding: 14px 50px 14px 50px; border: 2px solid var(--border);
+      border-radius: 50px; font-size: 1rem; outline: none; transition: var(--transition);
+      font-family: inherit; background: var(--light);
     }
-    .search-bar input:focus {
-      border-color: var(--german-red);
-      background: white;
-      box-shadow: 0 0 0 3px rgba(200, 16, 46, 0.1);
-    }
-    .search-bar .search-icon {
-      position: absolute;
-      left: 20px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--gray);
-      font-size: 1.1rem;
-    }
+    .search-bar input:focus { border-color: var(--german-red); background: white; box-shadow: 0 0 0 3px rgba(200, 16, 46, 0.1); }
+    .search-bar .search-icon { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: var(--gray); font-size: 1.1rem; }
     .search-bar .clear-btn {
-      position: absolute;
-      right: 15px;
-      top: 50%;
-      transform: translateY(-50%);
-      background: var(--border);
-      border: none;
-      width: 28px; height: 28px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      color: var(--gray);
-      transition: var(--transition);
+      position: absolute; right: 15px; top: 50%; transform: translateY(-50%);
+      background: var(--border); border: none; width: 28px; height: 28px; border-radius: 50%;
+      cursor: pointer; display: none; align-items: center; justify-content: center;
+      color: var(--gray); transition: var(--transition);
     }
-    .search-bar .clear-btn:hover {
-      background: var(--german-red);
-      color: white;
-    }
-    .search-bar .clear-btn.visible {
-      display: flex;
-    }
-    .filters-header {
-      font-size: 1rem;
-      color: var(--german-black);
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 600;
-    }
+    .search-bar .clear-btn:hover { background: var(--german-red); color: white; }
+    .search-bar .clear-btn.visible { display: flex; }
+    .filters-header { font-size: 1rem; color: var(--german-black); margin-bottom: 12px; display: flex; align-items: center; gap: 10px; font-weight: 600; }
     .filters-header i { color: var(--german-red); }
-    .filter-chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
+    .filter-chips { display: flex; flex-wrap: wrap; gap: 10px; }
     .filter-chip {
-      background: var(--light);
-      border: 2px solid var(--border);
-      padding: 10px 18px;
-      border-radius: 50px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: var(--transition);
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
+      background: var(--light); border: 2px solid var(--border); padding: 10px 18px;
+      border-radius: 50px; font-size: 0.9rem; font-weight: 600; cursor: pointer;
+      transition: var(--transition); display: inline-flex; align-items: center; gap: 6px;
     }
-    .filter-chip:hover {
-      background: var(--german-gold);
-      border-color: var(--german-gold);
-      color: var(--german-black);
-    }
-    .filter-chip.active {
-      background: var(--german-red);
-      border-color: var(--german-red);
-      color: white;
-    }
+    .filter-chip:hover { background: var(--german-gold); border-color: var(--german-gold); color: var(--german-black); }
+    .filter-chip.active { background: var(--german-red); border-color: var(--german-red); color: white; }
 
     /* Dataset Cards */
-    .datasets-section {
-      margin: 50px 0;
-    }
-    .datasets-section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 30px;
-      flex-wrap: wrap;
-      gap: 15px;
-    }
-    .datasets-section-header h2 {
-      margin: 0;
-      font-size: 1.8rem;
-    }
+    .datasets-section { margin: 0 0 50px; }
+    .datasets-section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 15px; }
+    .datasets-section-header h2 { margin: 0; font-size: 1.8rem; }
     .results-count {
-      font-size: 0.95rem;
-      color: var(--gray);
-      font-weight: 600;
-      background: var(--light);
-      padding: 8px 16px;
-      border-radius: 50px;
-      border: 1px solid var(--border);
+      font-size: 0.95rem; color: var(--gray); font-weight: 600;
+      background: var(--light); padding: 8px 16px; border-radius: 50px; border: 1px solid var(--border);
     }
     .results-count strong { color: var(--german-red); }
-    .dataset-cards-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 24px;
-    }
+    .dataset-cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; }
     .dataset-card {
-      background: white;
-      padding: 24px;
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--border);
-      transition: var(--transition);
-      position: relative;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
+      background: white; padding: 24px; border-radius: var(--radius-lg); border: 1px solid var(--border);
+      transition: var(--transition); position: relative; overflow: hidden; display: flex; flex-direction: column;
     }
     .dataset-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0;
-      width: 4px; height: 100%;
+      content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
       background: linear-gradient(to bottom, var(--german-red), var(--german-gold));
     }
-    .dataset-card:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-md);
-      border-color: var(--german-gold);
-    }
+    .dataset-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: var(--german-gold); }
     .dataset-card .badge {
-      display: inline-block;
-      background: rgba(200, 16, 46, 0.1);
-      color: var(--german-red);
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 0.7rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      margin-bottom: 12px;
-      align-self: flex-start;
+      display: inline-block; background: rgba(200, 16, 46, 0.1); color: var(--german-red);
+      padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 700;
+      text-transform: uppercase; margin-bottom: 12px; align-self: flex-start;
     }
-    .dataset-card h4 {
-      font-size: 1.1rem;
-      color: var(--german-black);
-      margin-bottom: 10px;
-      line-height: 1.4;
-    }
-    .dataset-card .meta-row {
-      display: flex;
-      gap: 12px;
-      font-size: 0.8rem;
-      color: var(--gray);
-      margin-bottom: 12px;
-      flex-wrap: wrap;
-    }
-    .dataset-card .meta-row span {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
+    .dataset-card h4 { font-size: 1.1rem; color: var(--german-black); margin-bottom: 10px; line-height: 1.4; }
+    .dataset-card .meta-row { display: flex; gap: 12px; font-size: 0.8rem; color: var(--gray); margin-bottom: 12px; flex-wrap: wrap; }
+    .dataset-card .meta-row span { display: flex; align-items: center; gap: 4px; }
     .dataset-card .description {
-      font-size: 0.9rem;
-      color: var(--gray);
-      line-height: 1.6;
-      margin-bottom: 16px;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      flex-grow: 1;
+      font-size: 0.9rem; color: var(--gray); line-height: 1.6; margin-bottom: 16px;
+      display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; flex-grow: 1;
     }
     .dataset-card .engagement {
-      display: flex;
-      gap: 16px;
-      font-size: 0.8rem;
-      color: var(--gray);
-      margin-bottom: 16px;
-      padding: 12px;
-      background: var(--light);
-      border-radius: 8px;
+      display: flex; gap: 16px; font-size: 0.8rem; color: var(--gray); margin-bottom: 16px;
+      padding: 12px; background: var(--light); border-radius: 8px;
     }
-    .dataset-card .engagement span {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      font-weight: 600;
-    }
+    .dataset-card .engagement span { display: flex; align-items: center; gap: 5px; font-weight: 600; }
     .dataset-card .engagement i { color: var(--german-red); }
-    .dataset-card .actions {
-      display: flex;
-      gap: 10px;
-    }
+    .dataset-card .actions { display: flex; gap: 10px; }
     .dataset-card .btn-view {
-      flex: 1;
-      background: var(--german-red);
-      color: white;
-      padding: 10px;
-      border-radius: 8px;
-      text-align: center;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 0.9rem;
-      transition: var(--transition);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      border: 1px solid var(--german-red);
+      flex: 1; background: var(--german-red); color: white; padding: 10px; border-radius: 8px;
+      text-align: center; text-decoration: none; font-weight: 600; font-size: 0.9rem;
+      transition: var(--transition); display: flex; align-items: center; justify-content: center;
+      gap: 6px; border: 1px solid var(--german-red);
     }
-    .dataset-card .btn-view:hover {
-      background: #a00d26;
-      transform: translateY(-2px);
-    }
+    .dataset-card .btn-view:hover { background: #a00d26; transform: translateY(-2px); }
     .dataset-card .btn-details {
-      flex: 1;
-      background: white;
-      color: var(--german-black);
-      padding: 10px;
-      border-radius: 8px;
-      text-align: center;
-      font-weight: 600;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: var(--transition);
-      border: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
+      flex: 1; background: white; color: var(--german-black); padding: 10px; border-radius: 8px;
+      text-align: center; font-weight: 600; font-size: 0.9rem; cursor: pointer;
+      transition: var(--transition); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center; gap: 6px;
     }
-    .dataset-card .btn-details:hover {
-      background: var(--light);
-      border-color: var(--german-gold);
-    }
+    .dataset-card .btn-details:hover { background: var(--light); border-color: var(--german-gold); }
 
     /* Pagination */
-    .pagination {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 12px;
-      margin: 40px 0;
-      flex-wrap: wrap;
-    }
+    .pagination { display: flex; justify-content: center; align-items: center; gap: 12px; margin: 40px 0; flex-wrap: wrap; }
     .page-btn {
-      background: white;
-      border: 1px solid var(--border);
-      color: var(--german-black);
-      padding: 10px 16px;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: var(--transition);
-      font-weight: 600;
-      font-size: 0.9rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
+      background: white; border: 1px solid var(--border); color: var(--german-black);
+      padding: 10px 16px; border-radius: 8px; cursor: pointer; transition: var(--transition);
+      font-weight: 600; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 6px;
     }
-    .page-btn:hover:not(:disabled) {
-      background: var(--german-red);
-      color: white;
-      border-color: var(--german-red);
-      transform: translateY(-2px);
-    }
+    .page-btn:hover:not(:disabled) { background: var(--german-red); color: white; border-color: var(--german-red); transform: translateY(-2px); }
     .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
     .page-info {
-      font-size: 0.9rem;
-      color: var(--gray);
-      font-weight: 600;
-      padding: 10px 16px;
-      background: var(--light);
-      border-radius: 8px;
-      border: 1px solid var(--border);
+      font-size: 0.9rem; color: var(--gray); font-weight: 600; padding: 10px 16px;
+      background: var(--light); border-radius: 8px; border: 1px solid var(--border);
     }
 
     /* Empty State */
     .empty-state {
-      text-align: center;
-      padding: 60px 20px;
-      color: var(--gray);
-      background: white;
-      border-radius: var(--radius-lg);
-      border: 1px dashed var(--border);
-      grid-column: 1 / -1;
+      text-align: center; padding: 60px 20px; color: var(--gray);
+      background: white; border-radius: var(--radius-lg); border: 1px dashed var(--border); grid-column: 1 / -1;
     }
     .empty-state i { font-size: 3rem; margin-bottom: 15px; opacity: 0.3; }
     .empty-state h3 { color: var(--german-black); margin-bottom: 10px; }
 
     /* Modal */
     .modal-overlay {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.6);
-      backdrop-filter: blur(4px);
-      z-index: 2000;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      opacity: 0;
-      transition: opacity 0.3s ease;
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(4px); z-index: 2000; display: none; align-items: center;
+      justify-content: center; padding: 20px; opacity: 0; transition: opacity 0.3s ease;
     }
     .modal-overlay.show { display: flex; opacity: 1; }
     .modal-content {
-      background: white;
-      border-radius: 16px;
-      max-width: 700px;
-      width: 100%;
-      max-height: 90vh;
-      overflow-y: auto;
-      position: relative;
-      transform: translateY(20px);
-      transition: transform 0.3s ease;
-      box-shadow: 0 25px 50px rgba(0,0,0,0.25);
-      border: 1px solid var(--border);
+      background: white; border-radius: 16px; max-width: 700px; width: 100%; max-height: 90vh;
+      overflow-y: auto; position: relative; transform: translateY(20px); transition: transform 0.3s ease;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.25); border: 1px solid var(--border);
     }
     .modal-overlay.show .modal-content { transform: translateY(0); }
-    .modal-header {
-      padding: 24px;
-      border-bottom: 1px solid var(--border);
-      position: sticky;
-      top: 0;
-      background: white;
-      z-index: 10;
-      border-radius: 16px 16px 0 0;
-    }
+    .modal-header { padding: 24px; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: white; z-index: 10; border-radius: 16px 16px 0 0; }
     .modal-header h2 { margin: 0 0 10px 0; font-size: 1.4rem; line-height: 1.4; }
     .modal-close {
-      position: absolute;
-      top: 24px; right: 24px;
-      background: var(--light);
-      border: 1px solid var(--border);
-      width: 32px; height: 32px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-      transition: var(--transition);
+      position: absolute; top: 24px; right: 24px; background: var(--light); border: 1px solid var(--border);
+      width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: flex;
+      align-items: center; justify-content: center; font-size: 1.2rem; transition: var(--transition);
     }
     .modal-close:hover { background: var(--german-red); color: white; border-color: var(--german-red); }
     .modal-body { padding: 24px; }
-    .modal-section {
-      margin-bottom: 24px;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 16px;
-      background: var(--light);
-    }
-    .modal-section h4 {
-      font-size: 0.85rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: var(--gray);
-      margin: 0 0 12px 0;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+    .modal-section { margin-bottom: 24px; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: var(--light); }
+    .modal-section h4 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: var(--gray); margin: 0 0 12px 0; font-weight: 700; display: flex; align-items: center; gap: 8px; }
     .modal-section p, .modal-section ul { font-size: 0.95rem; line-height: 1.7; color: var(--german-black); margin: 0; }
     .modal-section ul { padding-left: 20px; }
     .modal-section ul li { margin-bottom: 8px; }
-    .modal-footer {
-      padding: 24px;
-      border-top: 1px solid var(--border);
-      background: var(--light);
-      border-radius: 0 0 16px 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 15px;
-    }
+    .modal-footer { padding: 24px; border-top: 1px solid var(--border); background: var(--light); border-radius: 0 0 16px 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
     .btn-access {
-      background: var(--german-red);
-      color: white;
-      padding: 10px 20px;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 0.9rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      transition: var(--transition);
-      border: 1px solid var(--german-red);
+      background: var(--german-red); color: white; padding: 10px 20px; border-radius: 8px;
+      text-decoration: none; font-weight: 600; font-size: 0.9rem; display: inline-flex;
+      align-items: center; gap: 8px; transition: var(--transition); border: 1px solid var(--german-red);
     }
     .btn-access:hover { background: #a00d26; border-color: #a00d26; transform: translateY(-2px); }
 
@@ -714,36 +282,25 @@
       .dataset-cards-grid { grid-template-columns: 1fr; }
       .trending-section { padding: 40px 20px; }
       .datasets-section-header { flex-direction: column; align-items: flex-start; }
-      .freshness-summary { grid-template-columns: 1fr; }
+      .freshness-legend { grid-template-columns: 1fr 1fr; }
     }
   </style>
 </head>
 <body>
 
-  <div class="flag-bar">
-    <div class="black"></div>
-    <div class="red"></div>
-    <div class="gold"></div>
-  </div>
+  <div class="flag-bar"><div class="black"></div><div class="red"></div><div class="gold"></div></div>
 
-  <!-- NAVIGATION -->
   <nav>
     <div class="wrapper nav-container">
-      <a href="index.html" class="nav-logo" title="Go to Home">
-        <i class="fas fa-globe-africa"></i> Open Data Africa
-      </a>
-      <button class="mobile-menu-toggle" aria-label="Toggle menu" onclick="toggleMenu()">
-        <i class="fas fa-bars"></i>
-      </button>
+      <a href="index.html" class="nav-logo" title="Go to Home"><i class="fas fa-globe-africa"></i> Open Data Africa</a>
+      <button class="mobile-menu-toggle" aria-label="Toggle menu" onclick="toggleMenu()"><i class="fas fa-bars"></i></button>
       <ul class="nav-list" id="navList">
         <li><a href="about.html">About</a></li>
         <li><a href="datasets.html">Datasets</a></li>
         <li><a href="use-cases.html">Use Cases</a></li>
         <li><a href="dashboard.html" aria-current="page">Dashboard</a></li>
         <li class="nav-dropdown" id="exploreDropdown">
-          <a href="#" class="dropdown-toggle" onclick="toggleMobileDropdown(event)">
-            Explore <i class="fas fa-chevron-down" style="font-size: 0.7rem; margin-left: 4px;"></i>
-          </a>
+          <a href="#" class="dropdown-toggle" onclick="toggleMobileDropdown(event)">Explore <i class="fas fa-chevron-down" style="font-size: 0.7rem; margin-left: 4px;"></i></a>
           <ul class="dropdown-menu">
             <li><a href="countries.html">Countries</a></li>
             <li><a href="insights.html">Insights</a></li>
@@ -756,7 +313,6 @@
     </div>
   </nav>
 
-  <!-- HERO -->
   <header class="dashboard-hero">
     <div class="wrapper">
       <div class="hero-badge"><i class="fas fa-chart-line"></i> Real-Time Analytics & Insights</div>
@@ -766,25 +322,25 @@
   </header>
 
   <main class="wrapper">
-
-    <!-- 1. STATS CARDS (TOP) -->
+    
+    <!-- 1. STATS CARDS (Top) -->
     <div class="stats-showcase" id="statsShowcase">
       <div class="stat-card-enhanced">
         <div class="icon"><i class="fas fa-database"></i></div>
         <span class="value" id="totalDatasets">...</span>
         <span class="label">Total Datasets</span>
-        <div class="trend up"><i class="fas fa-arrow-up"></i> Active</div>
+        <div class="trend up"><i class="fas fa-arrow-up"></i> Active Collection</div>
       </div>
       <div class="stat-card-enhanced">
         <div class="icon"><i class="fas fa-globe-africa"></i></div>
         <span class="value" id="totalCountries">...</span>
-        <span class="label">Countries</span>
+        <span class="label">Countries Covered</span>
         <div class="trend up"><i class="fas fa-arrow-up"></i> Continental</div>
       </div>
       <div class="stat-card-enhanced">
         <div class="icon"><i class="fas fa-tags"></i></div>
         <span class="value" id="totalDomains">...</span>
-        <span class="label">Domains</span>
+        <span class="label">Research Domains</span>
         <div class="trend neutral"><i class="fas fa-layer-group"></i> Multi-Sector</div>
       </div>
       <div class="stat-card-enhanced">
@@ -795,7 +351,7 @@
       </div>
     </div>
 
-    <!-- 2. CHARTS (BELOW STATS) -->
+    <!-- 2. CHARTS GRID -->
     <div class="charts-grid">
       <div class="chart-card">
         <h3><i class="fas fa-chart-pie"></i> Datasets by Domain</h3>
@@ -806,23 +362,29 @@
         <div class="chart-container"><canvas id="countryChart"></canvas></div>
       </div>
       <div class="chart-card">
-        <h3><i class="fas fa-chart-line"></i> Data Types</h3>
+        <h3><i class="fas fa-shapes"></i> Data Types Distribution</h3>
         <div class="chart-container"><canvas id="typeChart"></canvas></div>
       </div>
       <div class="chart-card">
         <h3><i class="fas fa-heartbeat"></i> Data Freshness Health</h3>
-        <div class="chart-container"><canvas id="freshnessChart"></canvas></div>
-        <div class="freshness-summary" id="freshnessSummary"></div>
+        <div class="freshness-wrapper">
+          <div class="chart-container"><canvas id="freshnessChart"></canvas></div>
+          <div class="freshness-center-label">
+            <span class="big-num" id="freshnessPercent">...</span>
+            <span class="sub-text">Fresh Data</span>
+          </div>
+        </div>
+        <div class="freshness-legend" id="freshnessLegend"></div>
       </div>
     </div>
 
-    <!-- 3. TRENDING (MIDDLE) -->
+    <!-- 3. TRENDING DATASETS (Middle) -->
     <div class="trending-section">
       <h2><i class="fas fa-fire"></i> Trending Datasets</h2>
       <div class="trending-grid" id="trendingGrid"></div>
     </div>
 
-    <!-- 4. SEARCH + DATASETS (BOTTOM) -->
+    <!-- 4. SEARCH + DATASET CARDS + PAGINATION (Bottom) -->
     <div class="search-filters-section">
       <div class="search-bar">
         <i class="fas fa-search search-icon"></i>
@@ -837,8 +399,8 @@
 
     <div class="datasets-section">
       <div class="datasets-section-header">
-        <h2><i class="fas fa-database" style="color: var(--german-red);"></i> Browse Datasets</h2>
-        <div class="results-count" id="resultsCount">Showing <strong>0</strong> of <strong>0</strong></div>
+        <h2><i class="fas fa-database" style="color: var(--german-red);"></i> Explore Datasets</h2>
+        <div class="results-count" id="resultsCount">Showing <strong>0</strong> of <strong>0</strong> datasets</div>
       </div>
       <div class="dataset-cards-grid" id="datasetCardsGrid"></div>
       <div class="pagination" id="pagination"></div>
@@ -846,7 +408,7 @@
 
   </main>
 
-  <!-- MODAL -->
+  <!-- Detail Modal -->
   <div class="modal-overlay" id="detailModal">
     <div class="modal-content">
       <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
@@ -856,21 +418,11 @@
         <div id="modalMeta" style="color: var(--gray); font-size: 0.9rem; margin-top: 10px; display: flex; gap: 15px; flex-wrap: wrap;"></div>
       </div>
       <div class="modal-body">
-        <div class="modal-section">
-          <h4><i class="fas fa-lightbulb" style="color: var(--german-gold);"></i> Research Use Cases</h4>
-          <ul id="modalUseCases"></ul>
-        </div>
-        <div class="modal-section">
-          <h4><i class="fas fa-exclamation-triangle" style="color: var(--german-red);"></i> Challenges & Notes</h4>
-          <p id="modalChallenges"></p>
-        </div>
+        <div class="modal-section"><h4><i class="fas fa-lightbulb" style="color: var(--german-gold);"></i> Research Use Cases</h4><ul id="modalUseCases"></ul></div>
+        <div class="modal-section"><h4><i class="fas fa-exclamation-triangle" style="color: var(--german-red);"></i> Challenges & Notes</h4><p id="modalChallenges"></p></div>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-          <div class="modal-section" style="margin-bottom: 0;">
-            <h4>License</h4><p id="modalLicense"></p>
-          </div>
-          <div class="modal-section" style="margin-bottom: 0;">
-            <h4>Last Updated</h4><p id="modalUpdated"></p>
-          </div>
+          <div class="modal-section" style="margin-bottom: 0;"><h4>License</h4><p id="modalLicense"></p></div>
+          <div class="modal-section" style="margin-bottom: 0;"><h4>Last Updated</h4><p id="modalUpdated"></p></div>
         </div>
       </div>
       <div class="modal-footer">
@@ -883,33 +435,21 @@
     </div>
   </div>
 
-  <!-- FOOTER -->
   <footer>
     <div class="wrapper">
       <div class="footer-content">
         <div>
           <h4><i class="fas fa-globe-africa"></i> Open Data Africa</h4>
           <p>Open data ecosystems across Africa through benchmarking, recognition, and capacity building.</p>
-          <div class="footer-social">
-            <a href="https://www.linkedin.com/company/giz-african-union/posts/?feedView=all" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
-          </div>
+          <div class="footer-social"><a href="https://www.linkedin.com/company/giz-african-union/posts/?feedView=all" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a></div>
         </div>
         <div>
           <h4><i class="fas fa-link"></i> Quick Links</h4>
-          <ul>
-            <li><a href="index.html"><i class="fas fa-chevron-right"></i> Home</a></li>
-            <li><a href="about.html"><i class="fas fa-chevron-right"></i> About Us</a></li>
-            <li><a href="datasets.html"><i class="fas fa-chevron-right"></i> Datasets</a></li>
-            <li><a href="aodria.html"><i class="fas fa-chevron-right"></i> AODRIA</a></li>
-            <li><a href="contribute.html"><i class="fas fa-chevron-right"></i> Submit Data</a></li>
-          </ul>
+          <ul><li><a href="index.html"><i class="fas fa-chevron-right"></i> Home</a></li><li><a href="about.html"><i class="fas fa-chevron-right"></i> About Us</a></li><li><a href="datasets.html"><i class="fas fa-chevron-right"></i> Datasets</a></li><li><a href="aodria.html"><i class="fas fa-chevron-right"></i> AODRIA</a></li><li><a href="contribute.html"><i class="fas fa-chevron-right"></i> Submit Data</a></li></ul>
         </div>
         <div>
           <h4><i class="fas fa-file-alt"></i> Resources</h4>
-          <ul>
-            <li><a href="resources.html"><i class="fas fa-chevron-right"></i> Publications</a></li>
-            <li><a href="faq.html"><i class="fas fa-chevron-right"></i> FAQ</a></li>
-          </ul>
+          <ul><li><a href="resources.html"><i class="fas fa-chevron-right"></i> Publications</a></li><li><a href="faq.html"><i class="fas fa-chevron-right"></i> FAQ</a></li></ul>
         </div>
         <div>
           <h4><i class="fas fa-envelope"></i> Contact</h4>
@@ -917,9 +457,7 @@
           <p><i class="fas fa-map-marker-alt"></i> GIZ African Union, Addis Ababa, Ethiopia</p>
         </div>
       </div>
-      <div class="footer-bottom">
-        <p>&copy; 2026 Open Data Africa | AI Made in Africa / GIZ AU</p>
-      </div>
+      <div class="footer-bottom"><p>&copy; 2026 Open Data Africa | AI Made in Africa / GIZ AU</p></div>
     </div>
   </footer>
 
@@ -934,19 +472,13 @@
 
     function toggleMenu() { document.getElementById('navList').classList.toggle('active'); }
     function toggleMobileDropdown(event) {
-      if (window.innerWidth <= 768) {
-        event.preventDefault();
-        document.getElementById('exploreDropdown').classList.toggle('open');
-      }
+      if (window.innerWidth <= 768) { event.preventDefault(); document.getElementById('exploreDropdown').classList.toggle('open'); }
     }
     document.addEventListener('click', function(event) {
       const navList = document.getElementById('navList');
       const toggle = document.querySelector('.mobile-menu-toggle');
-      const exploreDropdown = document.getElementById('exploreDropdown');
-      if (!navList.contains(event.target) && !toggle.contains(event.target)) {
-        navList.classList.remove('active');
-        if (exploreDropdown) exploreDropdown.classList.remove('open');
-      }
+      const dd = document.getElementById('exploreDropdown');
+      if (!navList.contains(event.target) && !toggle.contains(event.target)) { navList.classList.remove('active'); if (dd) dd.classList.remove('open'); }
     });
 
     document.addEventListener('DOMContentLoaded', async () => {
@@ -955,7 +487,6 @@
         if (!res.ok) throw new Error('Failed to load');
         allData = await res.json();
         filteredData = [...allData];
-
         updateStats();
         createQuickFilters();
         createCharts();
@@ -963,105 +494,81 @@
         renderCards();
 
         document.getElementById('datasetSearch').addEventListener('input', (e) => {
-          currentPage = 1;
-          applyFilters();
+          currentPage = 1; applyFilters();
           document.getElementById('clearSearch').classList.toggle('visible', e.target.value.length > 0);
         });
-
         document.querySelectorAll('.filter-chip').forEach(chip => {
           chip.addEventListener('click', (e) => {
             document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
             e.currentTarget.classList.add('active');
             currentFilter = e.currentTarget.dataset.filter;
-            currentPage = 1;
-            applyFilters();
+            currentPage = 1; applyFilters();
           });
         });
-
-        document.getElementById('detailModal').addEventListener('click', (e) => {
-          if (e.target.id === 'detailModal') closeModal();
-        });
+        document.getElementById('detailModal').addEventListener('click', (e) => { if (e.target.id === 'detailModal') closeModal(); });
       } catch (err) { console.error(err); }
     });
 
     function clearSearch() {
       document.getElementById('datasetSearch').value = '';
       document.getElementById('clearSearch').classList.remove('visible');
-      currentPage = 1;
-      applyFilters();
+      currentPage = 1; applyFilters();
     }
 
     function updateStats() {
-      const engagement = JSON.parse(localStorage.getItem('oda_engagement') || '{}');
-      const totalViews = Object.values(engagement).reduce((s, i) => s + (i.views || 0), 0);
       document.getElementById('totalDatasets').textContent = allData.length;
       document.getElementById('totalCountries').textContent = new Set(allData.map(d => d.Country)).size;
       document.getElementById('totalDomains').textContent = new Set(allData.map(d => d.Domain)).size;
-      document.getElementById('totalViews').textContent = totalViews;
+      const eng = JSON.parse(localStorage.getItem('oda_engagement') || '{}');
+      document.getElementById('totalViews').textContent = Object.values(eng).reduce((s, i) => s + (i.views || 0), 0);
     }
 
     function createQuickFilters() {
       const domains = [...new Set(allData.map(d => d.Domain))].sort();
-      const container = document.getElementById('quickFilters');
-      domains.forEach(domain => {
-        const chip = document.createElement('div');
-        chip.className = 'filter-chip';
-        chip.dataset.filter = domain;
-        chip.innerHTML = `<i class="fas fa-tag"></i> ${domain}`;
-        container.appendChild(chip);
-      });
+      const c = document.getElementById('quickFilters');
+      domains.forEach(d => { const chip = document.createElement('div'); chip.className = 'filter-chip'; chip.dataset.filter = d; chip.innerHTML = '<i class="fas fa-tag"></i> ' + d; c.appendChild(chip); });
     }
 
     function applyFilters() {
       const term = document.getElementById('datasetSearch').value.toLowerCase().trim();
       filteredData = allData.filter(d => {
-        const matchDomain = currentFilter === 'all' || d.Domain === currentFilter;
-        const matchSearch = !term ||
-          d['Dataset Name'].toLowerCase().includes(term) ||
-          d.Domain.toLowerCase().includes(term) ||
-          d.Country.toLowerCase().includes(term) ||
-          (d['Use Cases'] || '').toLowerCase().includes(term) ||
-          (d.Source || '').toLowerCase().includes(term);
-        return matchDomain && matchSearch;
+        const mD = currentFilter === 'all' || d.Domain === currentFilter;
+        const mS = !term || d['Dataset Name'].toLowerCase().includes(term) || d.Domain.toLowerCase().includes(term) || d.Country.toLowerCase().includes(term) || (d['Use Cases'] || '').toLowerCase().includes(term) || (d.Source || '').toLowerCase().includes(term);
+        return mD && mS;
       });
       renderCards();
     }
 
     function createCharts() {
-      const colors = ['#c8102e','#ffce00','#1a1a1a','#6c757d','#e9ecef','#a00d26','#d4af37','#495057','#28a745','#17a2b8'];
+      const colors = ['#c8102e', '#ffce00', '#1a1a1a', '#6c757d', '#e9ecef', '#a00d26', '#d4af37', '#495057', '#28a745', '#17a2b8'];
 
       // Domain doughnut
-      const dc = {};
-      allData.forEach(d => dc[d.Domain] = (dc[d.Domain]||0)+1);
-      const doms = Object.entries(dc).sort((a,b)=>b[1]-a[1]);
+      const dc = {}; allData.forEach(d => { dc[d.Domain] = (dc[d.Domain] || 0) + 1; });
+      const ds = Object.entries(dc).sort((a, b) => b[1] - a[1]);
       charts.domain = new Chart(document.getElementById('domainChart'), {
-        type: 'doughnut',
-        data: { labels: doms.map(d=>d[0]), datasets: [{ data: doms.map(d=>d[1]), backgroundColor: colors, borderWidth: 0 }] },
+        type: 'doughnut', data: { labels: ds.map(d => d[0]), datasets: [{ data: ds.map(d => d[1]), backgroundColor: colors, borderWidth: 0 }] },
         options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } } } }
       });
 
       // Country bar
-      const cc = {};
-      allData.forEach(d => cc[d.Country] = (cc[d.Country]||0)+1);
-      const topC = Object.entries(cc).sort((a,b)=>b[1]-a[1]).slice(0,10);
+      const cc = {}; allData.forEach(d => { cc[d.Country] = (cc[d.Country] || 0) + 1; });
+      const tc = Object.entries(cc).sort((a, b) => b[1] - a[1]).slice(0, 10);
       charts.country = new Chart(document.getElementById('countryChart'), {
-        type: 'bar',
-        data: { labels: topC.map(c=>c[0]), datasets: [{ label: 'Datasets', data: topC.map(c=>c[1]), backgroundColor: '#c8102e', borderRadius: 6 }] },
+        type: 'bar', data: { labels: tc.map(c => c[0]), datasets: [{ label: 'Datasets', data: tc.map(c => c[1]), backgroundColor: '#c8102e', borderRadius: 6 }] },
         options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
       });
 
-      // Types bar
-      const tc = {};
-      allData.forEach(d => tc[d['Data Type']] = (tc[d['Data Type']]||0)+1);
-      const types = Object.entries(tc).sort((a,b)=>b[1]-a[1]);
+      // Type horizontal bar
+      const tyc = {}; allData.forEach(d => { tyc[d['Data Type']] = (tyc[d['Data Type']] || 0) + 1; });
+      const ty = Object.entries(tyc).sort((a, b) => b[1] - a[1]);
       charts.type = new Chart(document.getElementById('typeChart'), {
-        type: 'bar',
-        data: { labels: types.map(t=>t[0]), datasets: [{ label: 'Datasets', data: types.map(t=>t[1]), backgroundColor: '#ffce00', borderRadius: 6 }] },
+        type: 'bar', data: { labels: ty.map(t => t[0]), datasets: [{ label: 'Datasets', data: ty.map(t => t[1]), backgroundColor: '#ffce00', borderRadius: 6 }] },
         options: { responsive: true, maintainAspectRatio: false, indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true, ticks: { stepSize: 1 } } } }
       });
 
-      // Freshness polar area chart
+      // Freshness doughnut with center label
       const fb = { 'Fresh (2024-2026)': 0, 'Recent (2022-2023)': 0, 'Aging (2020-2021)': 0, 'Outdated (<2020)': 0, 'Unknown': 0 };
+      const fColors = ['#28a745', '#17a2b8', '#ffc107', '#dc3545', '#6c757d'];
       allData.forEach(d => {
         const u = d['Last Updated'];
         if (!u) { fb['Unknown']++; return; }
@@ -1073,79 +580,35 @@
         else fb['Outdated (<2020)']++;
       });
 
-      const fColors = ['#28a745','#17a2b8','#ffc107','#dc3545','#6c757d'];
+      const freshCount = fb['Fresh (2024-2026)'] + fb['Recent (2022-2023)'];
+      const freshPct = allData.length > 0 ? Math.round((freshCount / allData.length) * 100) : 0;
+      document.getElementById('freshnessPercent').textContent = freshPct + '%';
+
       charts.freshness = new Chart(document.getElementById('freshnessChart'), {
-        type: 'polarArea',
-        data: {
-          labels: Object.keys(fb),
-          datasets: [{
-            data: Object.values(fb),
-            backgroundColor: fColors.map(c => c + '99'),
-            borderColor: fColors,
-            borderWidth: 2
-          }]
-        },
+        type: 'doughnut',
+        data: { labels: Object.keys(fb), datasets: [{ data: Object.values(fb), backgroundColor: fColors, borderWidth: 3, borderColor: '#ffffff' }] },
         options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false },
-            tooltip: {
-              callbacks: {
-                label: function(ctx) {
-                  const pct = ((ctx.raw / allData.length) * 100).toFixed(1);
-                  return `${ctx.label}: ${ctx.raw} datasets (${pct}%)`;
-                }
-              }
-            }
-          },
-          scales: {
-            r: {
-              ticks: { display: false },
-              grid: { color: 'rgba(0,0,0,0.05)' }
-            }
-          }
+          responsive: true, maintainAspectRatio: false, cutout: '65%',
+          plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(ctx) { return ctx.label + ': ' + ctx.raw + ' datasets (' + ((ctx.raw / allData.length) * 100).toFixed(1) + '%)'; } } } }
         }
       });
 
-      // Freshness summary cards
-      const summaryEl = document.getElementById('freshnessSummary');
-      const fLabels = Object.keys(fb);
-      const fValues = Object.values(fb);
-      summaryEl.innerHTML = fLabels.map((label, i) => `
-        <div class="freshness-item">
-          <span class="freshness-dot" style="background: ${fColors[i]};"></span>
-          <span class="f-label">${label}</span>
-          <span class="f-value">${fValues[i]}</span>
-        </div>
-      `).join('');
+      // Custom legend with counts
+      const legendEl = document.getElementById('freshnessLegend');
+      legendEl.innerHTML = Object.entries(fb).map((entry, i) =>
+        '<div class="freshness-legend-item"><span class="dot" style="background:' + fColors[i] + ';"></span>' + entry[0] + '<span class="count">' + entry[1] + '</span></div>'
+      ).join('');
     }
 
     function renderTrending() {
       const grid = document.getElementById('trendingGrid');
       const eng = JSON.parse(localStorage.getItem('oda_engagement') || '{}');
-      const sorted = allData.map(d => {
-        const id = d['Dataset Name'].replace(/[^a-zA-Z0-9]/g,'_').substring(0,20);
-        return { ...d, views: eng[id]?.views || 0 };
-      }).sort((a,b) => b.views - a.views).slice(0,6);
-
+      const sorted = allData.map(d => { const id = d['Dataset Name'].replace(/[^a-zA-Z0-9]/g, '_').substring(0, 20); return { ...d, views: eng[id]?.views || 0 }; }).sort((a, b) => b.views - a.views).slice(0, 6);
       if (sorted.every(d => d.views === 0)) {
-        grid.innerHTML = `<div class="trending-card" style="grid-column:1/-1; text-align:center;">
-          <h4><i class="fas fa-info-circle"></i> No views tracked yet</h4>
-          <p>Start exploring datasets to see trending content here!</p>
-        </div>`;
+        grid.innerHTML = '<div class="trending-card" style="grid-column:1/-1;text-align:center;"><h4><i class="fas fa-info-circle"></i> No views tracked yet</h4><p>Start exploring datasets to see trending content here!</p></div>';
         return;
       }
-      grid.innerHTML = sorted.map(d => `
-        <div class="trending-card">
-          <h4><i class="fas fa-fire"></i> ${d['Dataset Name']}</h4>
-          <p>${d['Use Cases'] || 'No use cases listed.'}</p>
-          <div class="meta">
-            <span><i class="fas fa-eye"></i> ${d.views} views</span>
-            <span><i class="fas fa-tag"></i> ${d.Domain}</span>
-          </div>
-        </div>
-      `).join('');
+      grid.innerHTML = sorted.map(d => '<div class="trending-card"><h4><i class="fas fa-fire"></i> ' + d['Dataset Name'] + '</h4><p>' + (d['Use Cases'] || 'No use cases listed.') + '</p><div class="meta"><span><i class="fas fa-eye"></i> ' + d.views + ' views</span><span><i class="fas fa-tag"></i> ' + d.Domain + '</span></div></div>').join('');
     }
 
     function renderCards() {
@@ -1155,40 +618,21 @@
       const totalPages = Math.ceil(total / itemsPerPage) || 1;
       if (currentPage > totalPages) currentPage = totalPages;
       const start = (currentPage - 1) * itemsPerPage;
-      const end = Math.min(start + itemsPerPage, total);
-      const page = filteredData.slice(start, end);
+      const pageData = filteredData.slice(start, start + itemsPerPage);
 
-      document.getElementById('resultsCount').innerHTML = `Showing <strong>${total===0?0:start+1}-${end}</strong> of <strong>${total}</strong>`;
+      document.getElementById('resultsCount').innerHTML = 'Showing <strong>' + (total === 0 ? 0 : start + 1) + '-' + Math.min(start + itemsPerPage, total) + '</strong> of <strong>' + total + '</strong> datasets';
 
-      if (page.length === 0) {
-        grid.innerHTML = `<div class="empty-state"><i class="fas fa-search"></i><h3>No datasets found</h3><p>Try adjusting your search or filters.</p></div>`;
+      if (pageData.length === 0) {
+        grid.innerHTML = '<div class="empty-state"><i class="fas fa-search"></i><h3>No datasets found</h3><p>Try adjusting your search or filters.</p></div>';
         document.getElementById('pagination').innerHTML = '';
         return;
       }
 
-      grid.innerHTML = page.map(d => {
-        const id = d['Dataset Name'].replace(/[^a-zA-Z0-9]/g,'_').substring(0,20);
-        const v = eng[id]?.views || 0;
-        const dl = eng[id]?.downloads || 0;
-        const sn = d['Dataset Name'].replace(/'/g,"\\'");
-        return `
-          <div class="dataset-card">
-            <span class="badge">${d.Domain}</span>
-            <h4>${d['Dataset Name']}</h4>
-            <div class="meta-row">
-              <span><i class="fas fa-globe-africa"></i> ${d.Country}</span>
-              <span><i class="fas fa-building"></i> ${(d.Source||'').substring(0,20)}${(d.Source||'').length>20?'...':''}</span>
-            </div>
-            <p class="description">${d['Use Cases'] || 'No description available.'}</p>
-            <div class="engagement">
-              <span><i class="fas fa-eye"></i> ${v} views</span>
-              <span><i class="fas fa-download"></i> ${dl} downloads</span>
-            </div>
-            <div class="actions">
-              <a href="${d['Link']}" target="_blank" class="btn-view" onclick="trackView('${sn}')"><i class="fas fa-external-link-alt"></i> Access</a>
-              <button class="btn-details" onclick="openModal('${sn}')"><i class="fas fa-info-circle"></i> Details</button>
-            </div>
-          </div>`;
+      grid.innerHTML = pageData.map(d => {
+        const id = d['Dataset Name'].replace(/[^a-zA-Z0-9]/g, '_').substring(0, 20);
+        const v = eng[id]?.views || 0; const dl = eng[id]?.downloads || 0;
+        const sn = d['Dataset Name'].replace(/'/g, "\\'");
+        return '<div class="dataset-card"><span class="badge">' + d.Domain + '</span><h4>' + d['Dataset Name'] + '</h4><div class="meta-row"><span><i class="fas fa-globe-africa"></i> ' + d.Country + '</span><span><i class="fas fa-building"></i> ' + (d.Source ? d.Source.substring(0, 20) + (d.Source.length > 20 ? '...' : '') : 'Unknown') + '</span></div><p class="description">' + (d['Use Cases'] || 'No description available.') + '</p><div class="engagement"><span><i class="fas fa-eye"></i> ' + v + ' views</span><span><i class="fas fa-download"></i> ' + dl + ' downloads</span></div><div class="actions"><a href="' + d['Link'] + '" target="_blank" class="btn-view" onclick="trackView(\'' + sn + '\')"><i class="fas fa-external-link-alt"></i> Access</a><button class="btn-details" onclick="openModal(\'' + sn + '\')"><i class="fas fa-info-circle"></i> Details</button></div></div>';
       }).join('');
 
       renderPagination(totalPages);
@@ -1197,46 +641,34 @@
     function renderPagination(totalPages) {
       const p = document.getElementById('pagination');
       if (totalPages <= 1) { p.innerHTML = ''; return; }
-      p.innerHTML = `
-        <button class="page-btn" onclick="goPage(1)" ${currentPage===1?'disabled':''}><i class="fas fa-angle-double-left"></i> First</button>
-        <button class="page-btn" onclick="goPage(${currentPage-1})" ${currentPage===1?'disabled':''}><i class="fas fa-chevron-left"></i> Prev</button>
-        <span class="page-info">Page ${currentPage} of ${totalPages}</span>
-        <button class="page-btn" onclick="goPage(${currentPage+1})" ${currentPage===totalPages?'disabled':''}>Next <i class="fas fa-chevron-right"></i></button>
-        <button class="page-btn" onclick="goPage(${totalPages})" ${currentPage===totalPages?'disabled':''}>Last <i class="fas fa-angle-double-right"></i></button>`;
+      p.innerHTML = '<button class="page-btn" onclick="goToPage(1)" ' + (currentPage === 1 ? 'disabled' : '') + '><i class="fas fa-angle-double-left"></i> First</button><button class="page-btn" onclick="goToPage(' + (currentPage - 1) + ')" ' + (currentPage === 1 ? 'disabled' : '') + '><i class="fas fa-chevron-left"></i> Prev</button><span class="page-info">Page ' + currentPage + ' of ' + totalPages + '</span><button class="page-btn" onclick="goToPage(' + (currentPage + 1) + ')" ' + (currentPage === totalPages ? 'disabled' : '') + '>Next <i class="fas fa-chevron-right"></i></button><button class="page-btn" onclick="goToPage(' + totalPages + ')" ' + (currentPage === totalPages ? 'disabled' : '') + '>Last <i class="fas fa-angle-double-right"></i></button>';
     }
 
-    function goPage(p) {
-      currentPage = p;
-      renderCards();
-      document.querySelector('.datasets-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+    function goToPage(page) { currentPage = page; renderCards(); document.querySelector('.datasets-section').scrollIntoView({ behavior: 'smooth', block: 'start' }); }
 
     function trackView(name) {
-      const id = name.replace(/[^a-zA-Z0-9]/g,'_').substring(0,20);
-      let e = JSON.parse(localStorage.getItem('oda_engagement')||'{}');
-      if (!e[id]) e[id] = { views: 0, downloads: 0 };
-      e[id].views++;
+      const id = name.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 20);
+      let e = JSON.parse(localStorage.getItem('oda_engagement') || '{}');
+      if (!e[id]) e[id] = { views: 0, downloads: 0 }; e[id].views++;
       localStorage.setItem('oda_engagement', JSON.stringify(e));
     }
 
     function openModal(name) {
-      const d = allData.find(i => i['Dataset Name'] === name);
-      if (!d) return;
+      const d = allData.find(i => i['Dataset Name'] === name); if (!d) return;
       trackView(name);
       document.getElementById('modalTitle').textContent = d['Dataset Name'];
-      document.getElementById('modalBadges').innerHTML = `<span style="display:inline-block;background:rgba(200,16,46,0.1);color:var(--german-red);padding:4px 12px;border-radius:20px;font-size:0.7rem;font-weight:700;text-transform:uppercase;">${d.Domain}</span>`;
-      document.getElementById('modalMeta').innerHTML = `<span><i class="fas fa-globe-africa"></i> ${d.Country}</span><span><i class="fas fa-building"></i> ${d.Source}</span>`;
+      document.getElementById('modalBadges').innerHTML = '<span style="display:inline-block;background:rgba(200,16,46,0.1);color:var(--german-red);padding:4px 12px;border-radius:20px;font-size:0.7rem;font-weight:700;text-transform:uppercase;">' + d.Domain + '</span>';
+      document.getElementById('modalMeta').innerHTML = '<span><i class="fas fa-globe-africa"></i> ' + d.Country + '</span><span><i class="fas fa-building"></i> ' + d.Source + '</span>';
       document.getElementById('modalLicense').textContent = d.License || 'Not specified';
       document.getElementById('modalUpdated').textContent = d['Last Updated'] || 'Unknown';
       document.getElementById('modalChallenges').textContent = d['Challenges/Notes'] || 'No specific challenges noted.';
       document.getElementById('modalLink').href = d['Link'];
-      const ul = document.getElementById('modalUseCases');
-      ul.innerHTML = '';
-      const ucs = (d['Use Cases']||'').split(/,|-|🔹|\n/).map(s=>s.trim()).filter(s=>s.length>3);
-      if (ucs.length > 0) ucs.forEach(u => { const li = document.createElement('li'); li.textContent = u; ul.appendChild(li); });
+      const ul = document.getElementById('modalUseCases'); ul.innerHTML = '';
+      const uc = (d['Use Cases'] || '').split(/,|-|🔹|\n/).map(s => s.trim()).filter(s => s.length > 3);
+      if (uc.length > 0) uc.forEach(u => { const li = document.createElement('li'); li.textContent = u; ul.appendChild(li); });
       else ul.innerHTML = '<li>No specific use cases listed.</li>';
-      const id = name.replace(/[^a-zA-Z0-9]/g,'_').substring(0,20);
-      const eng = JSON.parse(localStorage.getItem('oda_engagement')||'{}');
+      const id = name.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 20);
+      const eng = JSON.parse(localStorage.getItem('oda_engagement') || '{}');
       const st = eng[id] || { views: 0, downloads: 0 };
       document.getElementById('modalViews').textContent = st.views;
       document.getElementById('modalDownloads').textContent = st.downloads;
@@ -1244,10 +676,7 @@
       document.body.style.overflow = 'hidden';
     }
 
-    function closeModal() {
-      document.getElementById('detailModal').classList.remove('show');
-      document.body.style.overflow = 'auto';
-    }
+    function closeModal() { document.getElementById('detailModal').classList.remove('show'); document.body.style.overflow = 'auto'; }
   </script>
 
 </body>
